@@ -71,6 +71,11 @@ Long Chain Statement with multiple Nodes
 # Erlang
 R16B03 +
 
+
+# Build, Run, Test
+
+    $ make
+
 # License
 
 Apache2
