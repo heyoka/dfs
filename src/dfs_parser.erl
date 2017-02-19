@@ -16,7 +16,6 @@ unwrap({primary_exp,V}) -> V;
 unwrap({pexp,_V}=P) -> P;
 unwrap({_,_,V}) -> V;
 unwrap(V) when is_list(V) -> lists:flatten(V).
-unwrap_ident_expr({_,_,V}) -> V.
 unwrap_node_func({node, {N, P}}) -> {node, N, P};
 unwrap_node_func(V) -> V.
 -file("/opt/erlang/19_1/lib/parsetools-2.1.3/include/yeccpre.hrl", 0).
@@ -193,7 +192,7 @@ yecctoken2string(Other) ->
 
 
 
--file("src/dfs_parser.erl", 196).
+-file("src/dfs_parser.erl", 195).
 
 -dialyzer({nowarn_function, yeccpars2/7}).
 yeccpars2(0=S, Cat, Ss, Stack, T, Ts, Tzr) ->
@@ -1865,4 +1864,4 @@ yeccpars2_97_(__Stack0) ->
   end | __Stack].
 
 
--file("src/dfs_parser.yrl", 101).
+-file("src/dfs_parser.yrl", 100).

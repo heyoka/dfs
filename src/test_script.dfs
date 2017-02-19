@@ -32,7 +32,7 @@
         ?_chair?, %% 'red_chair', red_desk
         lambda: ("opmean.val" +2) * 3 + (float("hallo") rem 2 div 3),
         myNextParam,
-        lambda: ("max" - "min") /2
+        lambda: ("max" - "min") /2 ! 44
         )
 
       |lambda(
@@ -47,6 +47,8 @@
       .field('val')
       .as('mean', 'diff')
       .align(lambda: (hour(m)) > 3 AND (hour(TRUE) < 9))
+   %   @outlier()
+    %   .tolerance(sigma())
 
       %% write to outstream
       |stream_out(outStreamId)

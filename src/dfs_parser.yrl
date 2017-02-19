@@ -96,6 +96,5 @@ unwrap({primary_exp,V}) -> V;
 unwrap({pexp,_V}=P) -> P;
 unwrap({_,_,V}) -> V;
 unwrap(V) when is_list(V) -> lists:flatten(V).
-unwrap_ident_expr({_,_,V}) -> V.
 unwrap_node_func({node, {N, P}}) -> {node, N, P};
 unwrap_node_func(V) -> V.

@@ -4,89 +4,39 @@
 -author("Alexander Minichmair").
 
 %% API
--export([test/0, test/1, lambda_test/0]).
+-export([test/0]).
 -export([bool/1, int/1, float/1, string/1]).
 
-lambda_test() ->
-   L = "(2 *3 + math:sqrt(1.33*2.0005896742)/2) > 3 andalso S == \"server001.example.com\"",
-   S = "fun(S) -> " ++ L ++ " end.",
-   parse_fun(S).
-
-parse_fun(S) ->
-   {ok, Ts, _} = erl_scan:string(S),
-   {ok, Exprs} = erl_parse:parse_exprs(Ts),
-   {value, Fun, _} = erl_eval:exprs(Exprs, []),
-   Fun.
-
-
-test(string) ->
-   String = "
-   var inStreamId = '1.004.987349f9e87fwef'
-   var outStreamId = '2.404.5dfgs555sa5df5a'
-   var test = 5 > 3
-   var in1 =
-      |stream_in()
-      .from(inStreamId)
-      .deadman(15.0, 30.0)
-      .as('LOW on CARBONIDE !!!')
-
-   var in2 =
-      |stream_in()
-      .from('1.004.987349f9e87fwef')
-      |deadman(15.0, 30s)
-
-   in2
-      |join(in1)
-      .on('val')
-
-      |lambda(lambda: in1.val+in2.val)
-
-      |window()
-      .every(15s)
-      .period(30m)
-      .stats(esp_mean, esp_difference)
-      .field('val')
-      .as('mean', 'diff')
-      .align()
-
-      |stream_out(outStreamId)
-      .translate(5 > 'mean')
-
-   in1
-      @detectBoxOutage()
-      .tolerance(17m)",
-
-%%   String = "
-%%   |window()
-%%   .every(5+5)
-%%   .period(30h) ",
-%%   io:format("IN: ~p",[String]),
-   {ok, Tokens, EndLine} = dfs_lexer:string(String),
-%%   io:format("TOKENS: ~p~n" ,[Tokens])
-%%   ,
-   io:format("Parsed: ~n~p~n",[dfs_parser:parse(Tokens)]).
-%%   parse(dfs_parser:parse(Tokens)).
-
 test() ->
-   {ok, Tokens, _EndLine} = parse(file, "src/test_script.dfs"),
-   io:format("TOKENS: ~p~n" ,[Tokens])
-   ,
-   {ok, ParseTree} = dfs_parser:parse(Tokens),
-   io:format("~n~nParsed: ~n~p~n",[ParseTree]),
-   parse(ParseTree).
+   parse_file("src/test_script.dfs").
 
+parse_file(FileName) when is_list(FileName) ->
+   case parse(file, FileName) of
+      {ok, Tokens, _EndLine} ->
+         case dfs_parser:parse(Tokens) of
+            {ok, Data} -> case (catch parse(Data)) of
+                             Statements when is_list(Statements) -> Statements;
+                             {'EXIT', {Message, _Trace}} -> {error, Message};
+                             Error1 -> Error1
+                          end;
 
+            {error, {LN, dfs_parser, Message}} -> {{error, line, LN}, Message};
+            Error -> Error
+         end;
+      {error, {LN, dfs_lexer, Message}, _LN} -> {{error, line, LN}, Message};
+      Err -> Err
+   end.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 parse(file, FileName) ->
    {ok, Data} = file:read_file(FileName),
-   io:format("FILEDATA: ~p",[Data]),
-   StringData = binary_to_list(binary:replace(Data, <<"\\">>, <<"">>)),
+   StringData = binary_to_list(binary:replace(Data, <<"\\">>, <<>>)),
    dfs_lexer:string(StringData).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 parse(Tree) when is_list(Tree) ->
-   ets:new(dfs_parser, [set, public, named_table, {read_concurrency,true},{heir, self(), dfs_parser} ]),
+   ets_new(),
    io:format("~n~nUSE:~n"),
    [parse(Stmt) || Stmt <- Tree];
 
@@ -104,7 +54,7 @@ parse({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
    L = lists:last(ChainNodes),
    {Node,_,_} = L,
    case get_declaration(Identifier) of
-          nil -> erlang:error(io_lib:format("Undefined Identifier ~p used in chain expression",[Identifier]));
+          nil -> erlang:error("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
           {connect, Name} -> io:format("~n<identifier exp> connect node ~p to node ~p~n",[Name, Node])
          end,
    io:format("stmt IDENTIFIER EXPR: ~p ~n" ,[{Identifier, ChainNodes}])
@@ -145,12 +95,10 @@ param({identifier, Ident}) ->
    I = case get_declaration(Ident) of
           nil -> Ident;
           {connect, _} -> Ident;
-%%          {string, _LN, Contents} -> "\"" ++ binary_to_list(Contents) ++ "\"";
-%%          {string, Contents} -> "\"" ++ binary_to_list(Contents) ++ "\"";
           Other -> unwrap(Other)
       end,
    {identifier, I};
-param({pfunc, {_N, {params, Ps}}}=L) ->
+param({pfunc, {_N, {params, _Ps}}}=L) ->
    param({lambda, [L]});
 param({pfunc, N}) ->
    param({lambda, [{pfunc, {N,{params,[]}}}]});
@@ -182,7 +130,6 @@ param({lambda, LambdaList}) ->
    {lambda, make_lambda_fun(lists:concat(Lambda), Refs), BRefs}
 ;
 param({regex, Regex}) ->
-%%   io:format("REGEX PARAM FOUND: ~p~n",[Regex]),
    {regex, Regex};
 param(P) ->
 %%   io:format("PARAM: ~p~n",[P]),
@@ -223,9 +170,14 @@ make_lambda_fun(LambdaString, FunParams) ->
    Params = l_params(FunParams, []),
    F =  "fun(" ++ Params ++ ") -> " ++ LambdaString ++ " end.",
 %%   Fun = parse_fun(F),
-%%   io:format("Fun RETURN: ~p~n",[Fun(3)]),
    F
 .
+
+parse_fun(S) ->
+   {ok, Ts, _} = erl_scan:string(S),
+   {ok, Exprs} = erl_parse:parse_exprs(Ts),
+   {value, Fun, _} = erl_eval:exprs(Exprs, []),
+   Fun.
 
 l_params([], Acc) ->
    Acc;
@@ -425,3 +377,7 @@ string_to_number(L) when is_list(L) ->
                   false -> false
                end
    end.
+
+ets_new() ->
+   (catch ets:delete(dfs_parser)),
+   ets:new(dfs_parser, [set, public, named_table, {read_concurrency,true}]).
