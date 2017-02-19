@@ -6,7 +6,8 @@ Done using leex and yecc.
 # Why ?
 I love Erlang and always wanted to try leex and yecc for a DSL.
 
-This DSL will be used along with [dataflow](https://github.com/heyoka/dataflow) to build a Timeseries Analytics Framework
+This DSL will be used along with [dataflow](https://github.com/heyoka/dataflow) to build
+an Analytics Framework on top of dataflow computations powered by erlang style message passing.
 
 # Status
 In Progress
