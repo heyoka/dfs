@@ -22,15 +22,15 @@ In Progress
 # Examples
 Declaration (String Value)
 
-    def inStreamId = '14.987ew349f9e87fwef'
-    def outStreamId = '2.404.5dfgs555sa5df5a'
+    def inId = '14.987ew349f9e87fwef'
+    def outId = '202.5dfgs555sa5df5a'
     def dead_message = 'LOW on CARBONIDE !!!'
 
 Declaration (Chain)
 
     def in1 =
        |stream_in()
-        .from(inStreamId)
+        .from(inId)
 
 Use chain Declaration with another Chain Statement
 
@@ -54,11 +54,11 @@ Long Chain Statement with multiple Nodes
     |window()
      .every(15s)
      .period(30m)
-     .stats(esp_mean, esp_difference)
+     .stats(mean, difference)
      .field('val')
      .as('mean', 'diff')
      % write to outstream
-     |stream_out(outStreamId)
+     |stream_out(outId)
       .translate(lambda: 5 > "mean")
      |alert()
       .critical(

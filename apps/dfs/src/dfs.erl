@@ -8,13 +8,13 @@
 -export([bool/1, int/1, float/1, string/1]).
 
 test() ->
-   parse_file("apps/dfs/src/test_script.dfs").
+   parse("apps/dfs/src/test_script.dfs").
 
-parse_file(FileName) when is_list(FileName) ->
-   case parse(file, FileName) of
+parse(FileName) when is_list(FileName) ->
+   case parse_file(FileName) of
       {ok, Tokens, _EndLine} ->
          case dfs_parser:parse(Tokens) of
-            {ok, Data} -> parse(Data);
+            {ok, Data} -> eval(Data);
 %%               case (catch parse(Data)) of
 %%                             Statements when is_list(Statements) -> Statements;
 %%                             {'EXIT', {Message, _Trace}} -> {error, Message};
@@ -29,38 +29,48 @@ parse_file(FileName) when is_list(FileName) ->
    end.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-parse(file, FileName) ->
+parse_file(FileName) ->
    {ok, Data} = file:read_file(FileName),
    StringData = binary_to_list(binary:replace(Data, <<"\\">>, <<>>)),
    dfs_lexer:string(StringData).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-parse(Tree) when is_list(Tree) ->
+eval(Tree) when is_list(Tree) ->
    ets_new(),
-   io:format("~n~nUSE:~n"),
-   [parse(Stmt) || Stmt <- Tree];
+   Data = lists:foldl(
+      fun(E, {Ns, Cs}=A) ->
+         case eval(E) of
+            {{nodes, Nodes}, {connections, Connections}} -> {Ns++Nodes, Cs++Connections};
+            _ -> A
+         end
+      end,
+      {[],[]},
+      Tree
+   ),
 
-parse({statement, {declarate, DecName, {chain, Chain}}}) ->
-   {{nodes, ChainNodes}, {connections, _Connections}} = chain(Chain),
+   io:format("~nDATA:~n~p", [Data]);
+
+eval({statement, {declarate, DecName, {chain, Chain}}}) ->
+   {{nodes, ChainNodes}, {connections, _Connections}} = C = chain(Chain),
    save_chain_declaration(DecName, ChainNodes),
-   {LastNodeName, _LNP, _NP} = lists:last(ChainNodes),
-   io:format("stmt CHAIN DECLARATION: ~p [~p] ~n" ,[{DecName, ChainNodes}, LastNodeName]);
-parse({statement, {declarate, DecName, DecValue}}) ->
-   save_declaration(DecName, DecValue),
-   io:format("stmt VALUE DECLARATION: ~p~n" ,[{DecName, DecValue}]);
-parse({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
+%%   {LastNodeName, _LNP, _NP} = lists:last(ChainNodes),
+%%   io:format("stmt CHAIN DECLARATION: ~p [~p] ~n" ,[{DecName, ChainNodes}, LastNodeName]),
+   C;
+eval({statement, {declarate, DecName, DecValue}}) ->
+   save_declaration(DecName, DecValue);
+eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
 %%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Identifier, get_declaration(Identifier)]),
    {{nodes, ChainNodes}, {connections, Connections}} = chain(Chain),
-   L = lists:last(ChainNodes),
-   {Node,_,_} = L,
+   {Node,_,_} = hd(ChainNodes),
    NewConns =
    case get_declaration(Identifier) of
           nil -> erlang:error("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
-          {connect, Name} -> io:format("~n<identifier exp> connect node ~p to node ~p~n",[Name, Node]),
-                              [{Name, Node}|Connections]
+          {connect, Name} -> %io:format("~n<identifier exp> connect node ~p to node ~p~n",[Name, Node]),
+                              [{Node,Name}|Connections]
          end,
-   io:format("stmt IDENTIFIER EXPR: ~p ~n" ,[{Identifier, {{nodes, ChainNodes}, {connections, NewConns}}}])
+%%   io:format("stmt IDENTIFIER EXPR: ~p ~n" ,[{Identifier, {{nodes, ChainNodes}, {connections, NewConns}}}]),
+   {{nodes, ChainNodes}, {connections, NewConns}}
 .
 %%;
 %%   {Identifier, chain(Chain, [])}.
@@ -71,12 +81,12 @@ chain(ChainElements) when is_list(ChainElements) ->
          ({node, NodeName, {params, Params}}, #{nodes := [], current := {}}=Acc) ->
             Acc#{nodes => [], current => {NodeName, params(Params), []}};
          ({node, NodeName, {params, Params}}, #{nodes := Ns, current := {_Node, _NodePars, _Pas}=NP,conns := Cs}=Acc) ->
-            io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
+            %io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
             Acc#{nodes => (Ns ++ [NP]), current => {NodeName, params(Params), []}, conns => [{NodeName, _Node}|Cs]};
          ({node, NodeName}, #{nodes := [], current := {}}=Acc) ->
             Acc#{nodes => [], current => {NodeName, [], []}};
          ({node, NodeName}, #{nodes := Ns, current := {_Node, _NodeParams, _Params}=CN, conns := Cs}=Acc) ->
-            io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
+%%            io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
             Acc#{nodes => Ns++[CN], current => {NodeName, [], []}, conns => [{NodeName, _Node}|Cs]};
          ({func, Name, {params, Params}}, #{current := {Node, NodeParams, Ps}}=Acc) ->
             Acc#{current := {Node, NodeParams, Ps++[{Name, params(Params)}]}};
@@ -95,7 +105,7 @@ params(Params) when is_list(Params)->
    [param(P) || P <- Params].
 
 param({identifier, Ident}) ->
-   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
+%%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    I = case get_declaration(Ident) of
           nil -> Ident;
           {connect, _} -> Ident;
@@ -270,11 +280,11 @@ lexp({pfunc, {FName, {params, Params}}}) ->
 %%   io:format("#+#+#+#+#+#+#+#++#pfunc FUNCTION PARAMS ~p~n",[Params]),
    Ps = params_pfunc(Params),
 %%   io:format("pfunc PARAMS ~p~n",[Ps]),
-   io:format("~n(lexp)check function is callable: ~p(~p) ~n",[binary_to_list(FName), Ps]),
+%%   io:format("~n(lexp)check function is callable: ~p(~p) ~n",[binary_to_list(FName), Ps]),
    FuncName = pfunction(binary_to_list(FName), length(Params)),
    FuncName ++ "(" ++ Ps ++ ")";
 lexp({pfunc, FName}) ->
-   io:format("~n(lexp)check function is callable: ~p/0 ~n",[binary_to_list(FName)]),
+%%   io:format("~n(lexp)check function is callable: ~p/0 ~n",[binary_to_list(FName)]),
    pfunction(binary_to_list(FName), 0) ++ "()".
 
 
@@ -309,7 +319,7 @@ pfunction(FName, PCount) when is_list(FName) ->
                   _W -> "math:" ++ FName
                end
    end,
-   io:format("convert function name: ~p ==> ~p~n",[FName, NN]),
+%%   io:format("convert function name: ~p ==> ~p~n",[FName, NN]),
    NN.
 
 
