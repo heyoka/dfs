@@ -71,8 +71,11 @@ Long Chain Statement with multiple Nodes
 # Erlang
 R16B03 +
 
+# Compile
 
-# Build, Run, Test
+    rebar3 compile
+
+# Build (Lexer, Parser), Run, Test
 
     $ make
 

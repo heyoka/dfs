@@ -8,17 +8,18 @@
 -export([bool/1, int/1, float/1, string/1]).
 
 test() ->
-   parse_file("src/test_script.dfs").
+   parse_file("apps/dfs/src/test_script.dfs").
 
 parse_file(FileName) when is_list(FileName) ->
    case parse(file, FileName) of
       {ok, Tokens, _EndLine} ->
          case dfs_parser:parse(Tokens) of
-            {ok, Data} -> case (catch parse(Data)) of
-                             Statements when is_list(Statements) -> Statements;
-                             {'EXIT', {Message, _Trace}} -> {error, Message};
-                             Error1 -> Error1
-                          end;
+            {ok, Data} -> parse(Data);
+%%               case (catch parse(Data)) of
+%%                             Statements when is_list(Statements) -> Statements;
+%%                             {'EXIT', {Message, _Trace}} -> {error, Message};
+%%                             Error1 -> Error1
+%%                          end;
 
             {error, {LN, dfs_parser, Message}} -> {{error, line, LN}, Message};
             Error -> Error
@@ -41,7 +42,7 @@ parse(Tree) when is_list(Tree) ->
    [parse(Stmt) || Stmt <- Tree];
 
 parse({statement, {declarate, DecName, {chain, Chain}}}) ->
-   ChainNodes = chain(Chain),
+   {{nodes, ChainNodes}, {connections, _Connections}} = chain(Chain),
    save_chain_declaration(DecName, ChainNodes),
    {LastNodeName, _LNP, _NP} = lists:last(ChainNodes),
    io:format("stmt CHAIN DECLARATION: ~p [~p] ~n" ,[{DecName, ChainNodes}, LastNodeName]);
@@ -50,41 +51,44 @@ parse({statement, {declarate, DecName, DecValue}}) ->
    io:format("stmt VALUE DECLARATION: ~p~n" ,[{DecName, DecValue}]);
 parse({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
 %%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Identifier, get_declaration(Identifier)]),
-   ChainNodes = chain(Chain),
+   {{nodes, ChainNodes}, {connections, Connections}} = chain(Chain),
    L = lists:last(ChainNodes),
    {Node,_,_} = L,
+   NewConns =
    case get_declaration(Identifier) of
           nil -> erlang:error("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
-          {connect, Name} -> io:format("~n<identifier exp> connect node ~p to node ~p~n",[Name, Node])
+          {connect, Name} -> io:format("~n<identifier exp> connect node ~p to node ~p~n",[Name, Node]),
+                              [{Name, Node}|Connections]
          end,
-   io:format("stmt IDENTIFIER EXPR: ~p ~n" ,[{Identifier, ChainNodes}])
+   io:format("stmt IDENTIFIER EXPR: ~p ~n" ,[{Identifier, {{nodes, ChainNodes}, {connections, NewConns}}}])
 .
 %%;
 %%   {Identifier, chain(Chain, [])}.
 chain(ChainElements) when is_list(ChainElements) ->
-   #{nodes := Nodes, current := CurrentNode} =
+   #{nodes := Nodes, current := CurrentNode, conns := Connections} =
    lists:foldl(
       fun
-         ({node, NodeName, {params, Params}}, #{nodes := [], current := {}}) ->
-            #{nodes => [], current => {NodeName, params(Params), []}};
-         ({node, NodeName, {params, Params}}, #{nodes := Ns, current := {_Node, _NodePars, _Pas}=NP}) ->
+         ({node, NodeName, {params, Params}}, #{nodes := [], current := {}}=Acc) ->
+            Acc#{nodes => [], current => {NodeName, params(Params), []}};
+         ({node, NodeName, {params, Params}}, #{nodes := Ns, current := {_Node, _NodePars, _Pas}=NP,conns := Cs}=Acc) ->
             io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
-            #{nodes => Ns ++ [NP], current => {NodeName, params(Params), []}};
-         ({node, NodeName}, #{nodes := [], current := {}}) ->
-            #{nodes => [], current => {NodeName, [], []}};
-         ({node, NodeName}, #{nodes := Ns, current := {_Node, _NodeParams, _Params}=CN}) ->
+            Acc#{nodes => (Ns ++ [NP]), current => {NodeName, params(Params), []}, conns => [{NodeName, _Node}|Cs]};
+         ({node, NodeName}, #{nodes := [], current := {}}=Acc) ->
+            Acc#{nodes => [], current => {NodeName, [], []}};
+         ({node, NodeName}, #{nodes := Ns, current := {_Node, _NodeParams, _Params}=CN, conns := Cs}=Acc) ->
             io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
-            #{nodes => Ns++[CN], current => {NodeName, [], []}};
+            Acc#{nodes => Ns++[CN], current => {NodeName, [], []}, conns => [{NodeName, _Node}|Cs]};
          ({func, Name, {params, Params}}, #{current := {Node, NodeParams, Ps}}=Acc) ->
             Acc#{current := {Node, NodeParams, Ps++[{Name, params(Params)}]}};
          ({func, Name}, #{current := {Node, NodeParams, Ps}}=Acc) ->
             Acc#{current := {Node, NodeParams, Ps ++ [{Name, []}]}}
       end,
-      #{nodes => [], current => {}},
+      #{nodes => [], current => {}, conns => []},
       ChainElements
    ),
    AllNodes = Nodes ++ [CurrentNode],
-   AllNodes.
+%%   io:format(" Chain: ~p",[{{nodes, AllNodes}, {connections, Connections}}]),
+   {{nodes, AllNodes}, {connections, Connections}}.
 
 
 params(Params) when is_list(Params)->
