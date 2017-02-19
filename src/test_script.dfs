@@ -1,0 +1,66 @@
+
+   %% Definitions
+   def inStreamId = '1.004.987349f9e87fwef'
+   def outStreamId = '2.404.5dfgs555sa5df5a'
+   % false lambda: must be speicifed before primary-expr
+   def host = 'de.example.com'
+   def dead_message = 'LOW on CARBONIDE !!!'
+
+   def in1 =
+      |stream_in()
+      .from(inStreamId)
+
+   def in2 =
+      |stream_in()
+        .from('1.004.987349f9e87fwef')
+
+   def alle = 'viele'
+
+   in1
+   |deadman(15m, 30)
+        .as(dead_message)
+
+   in2
+      |deadman(15.0, 30s ,4,5,6,7,8)
+
+   def m = 'pm'
+
+   in2
+      |join(in1)
+      .on('val')
+      .translate(
+        ?_chair?, %% 'red_chair', red_desk
+        lambda: ("opmean.val" +2) * 3 + (float("hallo") rem 2 div 3),
+        myNextParam,
+        lambda: ("max" - "min") /2
+        )
+
+      |lambda(
+        lambda: "host" == 'server001.example.com',
+        mode,
+        '12354688978' %% numberstring here
+      )
+      |window()
+      .every(15s)
+      .period(30m)
+      .stats(esp_mean, esp_difference)
+      .field('val')
+      .as('mean', 'diff')
+      .align(lambda: (hour(m)) > 3 AND (hour(TRUE) < 9))
+
+      %% write to outstream
+      |stream_out(outStreamId)
+      .translate(lambda: 5 > "mean")
+      |alert()
+      .critical(
+      %% alert when point value is more than 3 stdvs away
+      %% from running mean
+        lambda: sigma("value") > 3, _global
+        )
+        .when(lambda: hour() >= 8 AND hour <= 18)
+
+   in1
+           |eval(lambda: "value" * "value", lambda: 1/"value2")
+               .as('value2', 'inv_value2')
+
+
