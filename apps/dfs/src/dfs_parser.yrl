@@ -34,7 +34,7 @@ chain             -> node function chain : [unwrap_node_func({node, unwrap1('$2'
 chain             -> '.' function chain : ['$2'] ++ '$3'.
 chain             -> '.' identifier chain : ['$2'] ++ '$3'.
 chain             -> '.' function : ['$2'].
-chain             -> node function : [{node, unwrap1('$2')}].
+chain             -> node function : [unwrap_node_func({node, unwrap1('$2')})].
 
 %primaryExpr      -> 'if' '(' primaryExpr ',' primary ',' primary ')' : [{'if', unwrap('$3'), unwrap('$5'), unwrap('$7')}].
 primaryExpr      -> function primaryExpr: [{pfunc, unwrap1('$1')}, unwrap('$2')].

@@ -14,7 +14,8 @@ parse(FileName) when is_list(FileName) ->
    case parse_file(FileName) of
       {ok, Tokens, _EndLine} ->
          case dfs_parser:parse(Tokens) of
-            {ok, Data} -> eval(Data);
+            {ok, Data} -> %io:format("~nDATA: ~n~p~n",[Data]),
+               eval(Data);
 %%               case (catch parse(Data)) of
 %%                             Statements when is_list(Statements) -> Statements;
 %%                             {'EXIT', {Message, _Trace}} -> {error, Message};

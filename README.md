@@ -16,7 +16,7 @@ In Progress
  * For Declarations the keyword 'def' is used instead of 'var'
  * Erlang-Style comments with '%'
  * There is no if statement in Lambda-Expressions, yet
- * Regex Exressions start and end with '?'
+ * Regular Expressions start and end with '?'
  * Built-In Functions (math, erlang and custom modules)
 
 # Examples
