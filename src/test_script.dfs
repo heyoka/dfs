@@ -5,6 +5,7 @@
    % false lambda: must be speicifed before primary-expr
    def host = 'de.example.com'
    def dead_message = 'LOW on CARBONIDE !!!'
+   def deadman_period = 15m
 
    def in1 =
       |stream_in()
@@ -17,11 +18,11 @@
    def alle = 'viele'
 
    in1
-   |deadman(15m, 30)
-        .as(dead_message)
+   |deadman(deadman_period, 30)
+        .msg(dead_message)
 
    in2
-      |deadman(15.0, 30s ,4,5,6,7,8)
+      |deadman(15, 30s)
 
    def m = 'pm'
 
@@ -30,13 +31,13 @@
       .on('val')
       .translate(
         ?_chair?, %% 'red_chair', red_desk
-        lambda: ("opmean.val" +2) * 3 + (float("hallo") rem 2 div 3),
+        lambda: "opmean.val" + 2 * max("val1", "val2")/3,
         myNextParam,
-        lambda: ("max" - "min") /2 ! 44
+        lambda: ("max" - "min") /2
         )
 
       |lambda(
-        lambda: "host" == 'server001.example.com',
+        lambda: str_trim("host") == 'server001.example.com',
         mode,
         '12354688978' %% numberstring here
       )
@@ -46,7 +47,7 @@
       .stats(esp_mean, esp_difference)
       .field('val')
       .as('mean', 'diff')
-      .align(lambda: (hour(m)) > 3 AND (hour(TRUE) < 9))
+      .align(lambda: (hour("ts")) > 3 AND (hour("ts") < 9))
    %   @outlier()
     %   .tolerance(sigma())
 
@@ -57,9 +58,10 @@
       .critical(
       %% alert when point value is more than 3 stdvs away
       %% from running mean
-        lambda: sigma("value") > 3, _global
+        lambda: sigma("value") > 3,
+        _global, 22.589
         )
-        .when(lambda: hour() >= 8 AND hour <= 18)
+        .when(lambda: hour("ts") >= 8 AND hour("ts") <= 18 AND day_of_week("ts") != 7)
 
    in1
            |eval(lambda: "value" * "value", lambda: 1/"value2")

@@ -37,13 +37,13 @@ chain             -> '.' function : ['$2'].
 chain             -> node function : [unwrap_node_func({node, unwrap1('$2')})].
 
 %primaryExpr      -> 'if' '(' primaryExpr ',' primary ',' primary ')' : [{'if', unwrap('$3'), unwrap('$5'), unwrap('$7')}].
-primaryExpr      -> function primaryExpr: [{pfunc, unwrap1('$1')}, unwrap('$2')].
 primaryExpr      -> primaryExpr primaryExpr: ['$1']++['$2'].
+primaryExpr      -> operator primary : {pexp, ['$1', '$2']}.
+primaryExpr      -> operator function : ['$1'] ++ [{pfunc, unwrap1('$2')}].
+primaryExpr      -> function primaryExpr: [{pfunc, unwrap1('$1')}, unwrap('$2')].
 %primaryExpr      -> operator primary operator: {pexp, ['$1', '$2', '$3']}.
 primaryExpr      -> operator primary primaryExpr: {pexp, ['$1', '$2', '$3']}.
 primaryExpr      -> primary operator primary : {pexp, ['$1', '$2', '$3']}.
-primaryExpr      -> operator primary : {pexp, ['$1', '$2']}.
-primaryExpr      -> operator function : ['$1'] ++ [{pfunc, unwrap1('$2')}].
 primaryExpr      -> function : [{pfunc,unwrap1('$1')}].
 %primaryExpr      -> identifier '(' primaryExpr ')' : {function, unwrap($1), {params, '$3'}}.
 

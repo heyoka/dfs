@@ -4,17 +4,27 @@
 -author("Alexander Minichmair").
 
 %% API
+-export([parse/1]).
+
 -export([test/0]).
--export([bool/1, int/1, float/1, string/1]).
 
 test() ->
    parse("apps/dfs/src/test_script.dfs").
-
 parse(FileName) when is_list(FileName) ->
+   parse(FileName, [esp_time]).
+parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
+   LambdaLibs = [dfs_std_lib|Libs],
+   %% ensure libs are there for us
+   lists:foreach(fun(E) -> code:ensure_loaded(E) end, LambdaLibs),
+   ets:new(?MODULE, [set, public, named_table]),
+   ets:insert(?MODULE, {lfunc, LambdaLibs}),
+
+   Res =
    case parse_file(FileName) of
       {ok, Tokens, _EndLine} ->
+         io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
          case dfs_parser:parse(Tokens) of
-            {ok, Data} -> %io:format("~nDATA: ~n~p~n",[Data]),
+            {ok, Data} -> io:format("~nDATA: ~n~p~n",[Data]),
                eval(Data);
 %%               case (catch parse(Data)) of
 %%                             Statements when is_list(Statements) -> Statements;
@@ -27,7 +37,10 @@ parse(FileName) when is_list(FileName) ->
          end;
       {error, {LN, dfs_lexer, Message}, _LN} -> {{error, line, LN}, Message};
       Err -> Err
-   end.
+   end,
+
+   ets:delete(?MODULE),
+   Res.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 parse_file(FileName) ->
@@ -38,7 +51,6 @@ parse_file(FileName) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 eval(Tree) when is_list(Tree) ->
-   ets_new(),
    Data = lists:foldl(
       fun(E, {Ns, Cs}=A) ->
          case eval(E) of
@@ -50,13 +62,13 @@ eval(Tree) when is_list(Tree) ->
       Tree
    ),
 
-   io:format("~nDATA:~n~p", [Data]);
+   io:format("~nNODE + Conn DATA:~n~p", [Data]);
 
 eval({statement, {declarate, DecName, {chain, Chain}}}) ->
    {{nodes, ChainNodes}, {connections, _Connections}} = C = chain(Chain),
    save_chain_declaration(DecName, ChainNodes),
 %%   {LastNodeName, _LNP, _NP} = lists:last(ChainNodes),
-%%   io:format("stmt CHAIN DECLARATION: ~p [~p] ~n" ,[{DecName, ChainNodes}, LastNodeName]),
+%%   io:format("stmt CHAIN DECLARATION: ~p  ~n" ,[{DecName, ChainNodes}]),
    C;
 eval({statement, {declarate, DecName, DecValue}}) ->
    save_declaration(DecName, DecValue);
@@ -80,15 +92,19 @@ chain(ChainElements) when is_list(ChainElements) ->
    lists:foldl(
       fun
          ({node, NodeName, {params, Params}}, #{nodes := [], current := {}}=Acc) ->
-            Acc#{nodes => [], current => {NodeName, params(Params), []}};
-         ({node, NodeName, {params, Params}}, #{nodes := Ns, current := {_Node, _NodePars, _Pas}=NP,conns := Cs}=Acc) ->
+            Id = node_id(),
+            Acc#{nodes => [], current => {{NodeName, Id}, params(Params), []}};
+         ({node, NodeName, {params, Params}}, #{nodes := Ns, current := {Node, _NodePars, _Pas}=NP,conns := Cs}=Acc) ->
             %io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
-            Acc#{nodes => (Ns ++ [NP]), current => {NodeName, params(Params), []}, conns => [{NodeName, _Node}|Cs]};
+            Id = node_id(),
+            Acc#{nodes => (Ns ++ [NP]), current => {{NodeName, Id}, params(Params), []}, conns => [{{NodeName, Id}, Node}|Cs]};
          ({node, NodeName}, #{nodes := [], current := {}}=Acc) ->
-            Acc#{nodes => [], current => {NodeName, [], []}};
-         ({node, NodeName}, #{nodes := Ns, current := {_Node, _NodeParams, _Params}=CN, conns := Cs}=Acc) ->
+            Id = node_id(),
+            Acc#{nodes => [], current => {{NodeName,Id}, [], []}};
+         ({node, NodeName}, #{nodes := Ns, current := {Node, _NodeParams, _Params}=CN, conns := Cs}=Acc) ->
+            Id = node_id(),
 %%            io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
-            Acc#{nodes => Ns++[CN], current => {NodeName, [], []}, conns => [{NodeName, _Node}|Cs]};
+            Acc#{nodes => Ns++[CN], current => {{NodeName, Id}, [], []}, conns => [{{NodeName,Id}, Node}|Cs]};
          ({func, Name, {params, Params}}, #{current := {Node, NodeParams, Ps}}=Acc) ->
             Acc#{current := {Node, NodeParams, Ps++[{Name, params(Params)}]}};
          ({func, Name}, #{current := {Node, NodeParams, Ps}}=Acc) ->
@@ -101,37 +117,35 @@ chain(ChainElements) when is_list(ChainElements) ->
 %%   io:format(" Chain: ~p",[{{nodes, AllNodes}, {connections, Connections}}]),
    {{nodes, AllNodes}, {connections, Connections}}.
 
+node_id() ->
+   erlang:unique_integer([positive,monotonic]).
 
 params(Params) when is_list(Params)->
    [param(P) || P <- Params].
 
 param({identifier, Ident}) ->
 %%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
-   I = case get_declaration(Ident) of
+   case get_declaration(Ident) of
           nil -> Ident;
-          {connect, _} -> Ident;
-          Other -> unwrap(Other)
-      end,
-   {identifier, I};
+          {connect, _} -> {identifier, Ident};
+          {Type, _LN, Val} -> {Type, Val}
+   end;
 param({pfunc, {_N, {params, _Ps}}}=L) ->
    param({lambda, [L]});
 param({pfunc, N}) ->
    param({lambda, [{pfunc, {N,{params,[]}}}]});
 param({lambda, LambdaList}) ->
-%%   io:format("+++Lambda Elements: ~p~n",[LambdaList]),
 {Lambda, BinRefs} =
       lists:foldl(
-         fun(E, {L, Rs}) -> %io:format("LAMBDA so far ::: : ~p~n",[L]),
+         fun(E, {L, Rs}) ->
             Refs0 =
             case E of
                {reference, _LN, Ref}=_R ->
                   [Ref|Rs];
-%%                 io:format("+++Lambda Reference: ~p~n",[R]);
-               {pexp, Eles} -> %io:format("+++++++++++++++++++++++++++++++++++++++++++++Lambda PEXP: ~p~n",[Eles]),
+               {pexp, Eles} ->
                   NewPs = extract_refs(Eles),
                   NewPs++Rs;
                {pfunc, {_FName, {params, Params}}}=_P ->
-%%                  io:format("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Lambda fun Params: ~p~n",[_P]),
                   NewPs = extract_refs(Params),
                   NewPs++Rs;
                _ -> Rs
@@ -184,8 +198,8 @@ param_from_ref(Ref) when is_binary(Ref) ->
 make_lambda_fun(LambdaString, FunParams) ->
    Params = l_params(FunParams, []),
    F =  "fun(" ++ Params ++ ") -> " ++ LambdaString ++ " end.",
-%%   Fun = parse_fun(F),
-   F
+   Fun = parse_fun(F),
+   Fun
 .
 
 parse_fun(S) ->
@@ -202,13 +216,11 @@ l_params([P|Ps], Acc) ->
   l_params(Ps, Acc ++ P ++ ", ").
 
 params_pfunc(Params) when is_list(Params) ->
-%%   io:format("*************************************************************BEFORE prarms_pfunc~p~n",[Params]),
    P = lists:map(
       fun(E) -> param_pfunc(E) end,
       Params
    ),
    P1 = l_params(P, []),
-%%   io:format("###########################################################AFTER prarms_pfunc~p~n",[P]),
 lists:flatten(P1)
 .
 param_pfunc({identifier, Ident}) ->
@@ -278,27 +290,24 @@ lexp({pexp, Elements}) when is_list(Elements) ->
 lexp({pexp, {pexp, Elements}}) when is_list(Elements) ->
    lists:concat([lexp(E) || E <- Elements]);
 lexp({pfunc, {FName, {params, Params}}}) ->
-%%   io:format("#+#+#+#+#+#+#+#++#pfunc FUNCTION PARAMS ~p~n",[Params]),
    Ps = params_pfunc(Params),
-%%   io:format("pfunc PARAMS ~p~n",[Ps]),
-%%   io:format("~n(lexp)check function is callable: ~p(~p) ~n",[binary_to_list(FName), Ps]),
    FuncName = pfunction(binary_to_list(FName), length(Params)),
    FuncName ++ "(" ++ Ps ++ ")";
 lexp({pfunc, FName}) ->
-%%   io:format("~n(lexp)check function is callable: ~p/0 ~n",[binary_to_list(FName)]),
    pfunction(binary_to_list(FName), 0) ++ "()".
 
 
 save_declaration(Ident, Value) ->
-   ets:insert(dfs_parser, {Ident, Value}).
+   ets:insert(?MODULE, {Ident, Value}).
 save_chain_declaration(Ident, Nodes) when is_list(Nodes) ->
    LastNode = lists:last(Nodes),
    {NodeName, _Np, _NCP} = LastNode,
-   ets:insert(dfs_parser, {Ident, {connect, NodeName}}).
+   ets:insert(?MODULE, {Ident, {connect, NodeName}}).
 get_declaration(Ident) ->
-   case ets:lookup(dfs_parser, Ident) of
-      [] -> nil;%%erlang:error("~nundefined declaration for ~p~n" ,[Ident]);
-      [{Ident, {connect, {Name, _Connection}}}] -> {connect, Name};
+%%   io:format("~nget_declaration: ~p~n",[ets:lookup(dfs_parser, Ident)]),
+   case ets:lookup(?MODULE, Ident) of
+      [] -> nil;
+      [{Ident, {connect, {_Name, _Connection}=N}}] -> {connect, N};
       [{Ident, Value}] -> Value
    end.
 
@@ -311,88 +320,27 @@ unwrap(V) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA FUNCTIONS %%%%%%%%%%%%%%%%%%%
 pfunction(FName, PCount) when is_list(FName) ->
+   NameAtom = list_to_atom(FName),
+   [{lfunc, Modules}] = ets:lookup(?MODULE, lfunc),
+   NN0 = lists:foldl(
+     fun
+        (E, Module) ->
+           case erlang:function_exported(E, NameAtom, PCount) of
+              true -> {done, atom_to_list(E) ++ ":" ++ FName};
+              false -> Module
+           end;
+        (_E, {done, Module}) -> Module
+     end,
+      nil,
+      Modules
+   ),
    NN =
-   case erlang:function_exported(?MODULE, list_to_atom(FName), PCount) of
-      true -> FName;
-      false -> Prefix =  string:sub_string(FName, 1, 4),
-         case Prefix of
-                  "str_" -> "string:" ++ string:sub_string(FName, 5, length(FName));
-                  _W -> "math:" ++ FName
-               end
+   case NN0 of
+      nil -> case erlang:function_exported(math, NameAtom, PCount) of
+                true -> "math:" ++ FName;
+                false -> FName %erlang:error("Function " ++ FName ++ " not found in library")
+             end;
+      {done, Else} -> Else
    end,
 %%   io:format("convert function name: ~p ==> ~p~n",[FName, NN]),
    NN.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%5 TYPE CONVERSIONS %%%
-bool(V) when is_integer(V) orelse is_float(V) ->
-   V > 0;
-bool(V) when is_list(V) ->
-   case string_to_number(V) of
-      false -> false;
-      V1    -> bool(V1)
-   end;
-bool(V) ->
-   V.
-
-int(V) when is_list(V) ->
-   case string_to_number(V) of
-      false -> 0;
-      Value -> erlang:trunc(Value)
-   end;
-int(V) when is_float(V) ->
-   erlang:trunc(V);
-int(V) when is_integer(V) ->
-   V;
-int(true) ->
-   1;
-int(false) ->
-   0.
-
-float(V) when is_list(V) ->
-   case string_to_number(V) of
-      false -> 0.0;
-      Value -> Value
-   end;
-float(true) ->
-   1.0;
-float(false) ->
-   0.0;
-float(V) when is_float(V) ->
-   V;
-float(V) when is_integer(V) ->
-   V0 = integer_to_list(V),
-   V1 = V0 ++ ".0",
-   list_to_float(V1);
-float(V) ->
-   V.
-
-string(V) when is_integer(V) ->
-   integer_to_list(V);
-string(V) when is_float(V) ->
-   float_to_list(V);
-string(V) when is_list(V) ->
-   V;
-string(true) ->
-   "true";
-string(false) ->
-   "false";
-string(V) ->
-   V.
-
-
-%%%%%%%%%%%%%%% Internal %%%%%%%%%%%%%%%%%%%%%%%%
-string_to_number(L) when is_list(L) ->
-   Float = (catch erlang:list_to_float(L)),
-   case is_number(Float) of
-      true -> Float;
-      false -> Int = (catch erlang:list_to_integer(L)),
-               case is_number(Int) of
-                  true -> Int;
-                  false -> false
-               end
-   end.
-
-ets_new() ->
-   (catch ets:delete(dfs_parser)),
-   ets:new(dfs_parser, [set, public, named_table, {read_concurrency,true}]).

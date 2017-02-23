@@ -12,7 +12,7 @@
 -export([format_error/1]).
 
 %% User code. This is placed here to allow extra attributes.
--file("src/dfs_lexer.xrl", 52).
+-file("apps/dfs/src/dfs_lexer.xrl", 52).
 
 -export([reserved_word/1]).
 
@@ -290,7 +290,7 @@ yysuf(List, N) -> lists:nthtail(N, List).
 %% return signal either an unrecognised character or end of current
 %% input.
 
--file("src/dfs_lexer.erl", 293).
+-file("apps/dfs/src/dfs_lexer.erl", 293).
 yystate() -> 68.
 
 yystate(75, [32|Ics], Line, Tlen, _, _) ->
@@ -1406,112 +1406,112 @@ yyaction(21, _, _, _) ->
 yyaction(_, _, _, _) -> error.
 
 -compile({inline,yyaction_0/2}).
--file("src/dfs_lexer.xrl", 25).
+-file("apps/dfs/src/dfs_lexer.xrl", 25).
 yyaction_0(TokenChars, TokenLine) ->
      { token, { 'if', TokenLine, list_to_atom (TokenChars) } } .
 
 -compile({inline,yyaction_1/2}).
--file("src/dfs_lexer.xrl", 26).
+-file("apps/dfs/src/dfs_lexer.xrl", 26).
 yyaction_1(TokenChars, TokenLine) ->
      { token, { var, TokenLine, list_to_atom (TokenChars) } } .
 
 -compile({inline,yyaction_2/2}).
--file("src/dfs_lexer.xrl", 27).
+-file("apps/dfs/src/dfs_lexer.xrl", 27).
 yyaction_2(TokenChars, TokenLine) ->
      { token, { def, TokenLine, list_to_atom (TokenChars) } } .
 
 -compile({inline,yyaction_3/2}).
--file("src/dfs_lexer.xrl", 28).
+-file("apps/dfs/src/dfs_lexer.xrl", 28).
 yyaction_3(TokenChars, TokenLine) ->
      { token, { operator, TokenLine, list_to_atom (TokenChars) } } .
 
 -compile({inline,yyaction_4/2}).
--file("src/dfs_lexer.xrl", 29).
+-file("apps/dfs/src/dfs_lexer.xrl", 29).
 yyaction_4(TokenChars, TokenLine) ->
      { token, { stream_id, TokenLine, list_to_binary (TokenChars) } } .
 
 -compile({inline,yyaction_5/2}).
--file("src/dfs_lexer.xrl", 30).
+-file("apps/dfs/src/dfs_lexer.xrl", 30).
 yyaction_5(TokenChars, TokenLine) ->
      { token, { lambda, TokenLine, list_to_binary (lists : sublist (TokenChars, 9, length (TokenChars))) } } .
 
 -compile({inline,yyaction_6/1}).
--file("src/dfs_lexer.xrl", 31).
+-file("apps/dfs/src/dfs_lexer.xrl", 31).
 yyaction_6(TokenLine) ->
      { token, { user_node, TokenLine, user_node } } .
 
 -compile({inline,yyaction_7/1}).
--file("src/dfs_lexer.xrl", 32).
+-file("apps/dfs/src/dfs_lexer.xrl", 32).
 yyaction_7(TokenLine) ->
      { token, { node, TokenLine, node } } .
 
 -compile({inline,yyaction_8/2}).
--file("src/dfs_lexer.xrl", 33).
+-file("apps/dfs/src/dfs_lexer.xrl", 33).
 yyaction_8(TokenChars, TokenLine) ->
      { token, { duration, TokenLine, TokenChars } } .
 
 -compile({inline,yyaction_9/2}).
--file("src/dfs_lexer.xrl", 34).
+-file("apps/dfs/src/dfs_lexer.xrl", 34).
 yyaction_9(TokenChars, TokenLine) ->
      { token, { identifier, TokenLine, list_to_binary (TokenChars) } } .
 
 -compile({inline,yyaction_10/2}).
--file("src/dfs_lexer.xrl", 35).
+-file("apps/dfs/src/dfs_lexer.xrl", 35).
 yyaction_10(TokenChars, TokenLine) ->
      { token, { reference, TokenLine, unquote (TokenChars) } } .
 
 -compile({inline,yyaction_11/2}).
--file("src/dfs_lexer.xrl", 37).
+-file("apps/dfs/src/dfs_lexer.xrl", 37).
 yyaction_11(TokenChars, TokenLine) ->
      { token, { float, TokenLine, list_to_float (TokenChars) } } .
 
 -compile({inline,yyaction_12/2}).
--file("src/dfs_lexer.xrl", 38).
+-file("apps/dfs/src/dfs_lexer.xrl", 38).
 yyaction_12(TokenChars, TokenLine) ->
      { token, { int, TokenLine, list_to_integer (TokenChars) } } .
 
 -compile({inline,yyaction_13/2}).
--file("src/dfs_lexer.xrl", 39).
+-file("apps/dfs/src/dfs_lexer.xrl", 39).
 yyaction_13(TokenChars, TokenLine) ->
      { token, { string, TokenLine, list_to_binary (strip (TokenChars, length (TokenChars))) } } .
 
 -compile({inline,yyaction_14/2}).
--file("src/dfs_lexer.xrl", 40).
+-file("apps/dfs/src/dfs_lexer.xrl", 40).
 yyaction_14(TokenChars, TokenLine) ->
      { token, { text, TokenLine, list_to_binary (strip (TokenChars, length (TokenChars))) } } .
 
 -compile({inline,yyaction_15/2}).
--file("src/dfs_lexer.xrl", 41).
+-file("apps/dfs/src/dfs_lexer.xrl", 41).
 yyaction_15(TokenChars, TokenLine) ->
      { token, { regex, TokenLine, prep_regex (TokenChars) } } .
 
 -compile({inline,yyaction_16/1}).
--file("src/dfs_lexer.xrl", 42).
+-file("apps/dfs/src/dfs_lexer.xrl", 42).
 yyaction_16(TokenLine) ->
      { token, { bool, TokenLine, true } } .
 
 -compile({inline,yyaction_17/1}).
--file("src/dfs_lexer.xrl", 43).
+-file("apps/dfs/src/dfs_lexer.xrl", 43).
 yyaction_17(TokenLine) ->
      { token, { bool, TokenLine, false } } .
 
 -compile({inline,yyaction_18/2}).
--file("src/dfs_lexer.xrl", 45).
+-file("apps/dfs/src/dfs_lexer.xrl", 45).
 yyaction_18(TokenChars, TokenLine) ->
      { token, { list_to_atom (TokenChars), TokenLine } } .
 
 -compile({inline,yyaction_19/0}).
--file("src/dfs_lexer.xrl", 46).
+-file("apps/dfs/src/dfs_lexer.xrl", 46).
 yyaction_19() ->
      skip_token .
 
 -compile({inline,yyaction_20/0}).
--file("src/dfs_lexer.xrl", 47).
+-file("apps/dfs/src/dfs_lexer.xrl", 47).
 yyaction_20() ->
      skip_token .
 
 -compile({inline,yyaction_21/0}).
--file("src/dfs_lexer.xrl", 48).
+-file("apps/dfs/src/dfs_lexer.xrl", 48).
 yyaction_21() ->
      skip_token .
 
