@@ -126,7 +126,7 @@ params(Params) when is_list(Params)->
 param({identifier, Ident}) ->
 %%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
-          nil -> Ident;
+          nil -> {identifier,Ident};
           {connect, _} -> {identifier, Ident};
           {Type, _LN, Val} -> {Type, Val}
    end;
