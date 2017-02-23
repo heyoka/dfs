@@ -9,7 +9,7 @@
 -export([test/0]).
 
 test() ->
-   parse("apps/dfs/src/test_script.dfs").
+   parse("src/test_script.dfs").
 parse(FileName) when is_list(FileName) ->
    parse(FileName, [esp_time]).
 parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
