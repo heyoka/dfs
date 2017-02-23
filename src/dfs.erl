@@ -11,7 +11,7 @@
 test() ->
    parse("src/test_script.dfs").
 parse(FileName) when is_list(FileName) ->
-   parse(FileName, [esp_time]).
+   parse(FileName, []).
 parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
    LambdaLibs = [dfs_std_lib|Libs],
    %% ensure libs are there for us
