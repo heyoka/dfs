@@ -62,7 +62,8 @@ eval(Tree) when is_list(Tree) ->
       Tree
    ),
 
-   io:format("~nNODE + Conn DATA:~n~p", [Data]);
+   io:format("~nNODE + Conn DATA:~n~p", [Data]),
+   Data;
 
 eval({statement, {declarate, DecName, {chain, Chain}}}) ->
    {{nodes, ChainNodes}, {connections, _Connections}} = C = chain(Chain),
