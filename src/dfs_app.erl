@@ -5,7 +5,11 @@
 
 -behavior(application).
 %% API
--export([start/0]).
+-export([start/2, stop/1]).
 
-start() ->
+
+start(_StartType, _StartArgs) ->
+   dfs_sup:start_link().
+
+stop(_State) ->
    ok.
