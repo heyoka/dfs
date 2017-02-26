@@ -6,9 +6,10 @@
    def host = 'de.example.com'
    def dead_message = 'LOW on CARBONIDE !!!'
    def deadman_period = 15m
+   def bool = TRUE
 
    def in1 =
-      |stream_in()
+      |stream_in(bool)
       .from(inStreamId)
 
    def in2 =

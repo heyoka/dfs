@@ -32,7 +32,7 @@ def             :   {token, {def, TokenLine, list_to_atom(TokenChars)}}.
 {Lambda}        :   {token, {lambda, TokenLine, list_to_binary(lists:sublist(TokenChars,9,length(TokenChars)))}}.
 {UserNode}      :   {token, {user_node, TokenLine, 'user_node'}}.
 {Node}          :   {token, {node, TokenLine, 'node'}}.
-{Duration}      :   {token, {duration,TokenLine,TokenChars}}.
+{Duration}      :   {token, {duration,TokenLine,list_to_binary(TokenChars)}}.
 {Identifier}    :   {token, {identifier,TokenLine,list_to_binary(TokenChars)}}.
 {Reference}     :   {token, {reference,TokenLine,unquote(TokenChars)}}.
 %{Number}       :   {token, {number,TokenLine,list_to_float(TokenChars)}}.

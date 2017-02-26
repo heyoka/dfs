@@ -1464,7 +1464,7 @@ yyaction_7(TokenLine) ->
 -compile({inline,yyaction_8/2}).
 -file("src/dfs_lexer.xrl", 33).
 yyaction_8(TokenChars, TokenLine) ->
-     { token, { duration, TokenLine, TokenChars } } .
+     { token, { duration, TokenLine, list_to_binary (TokenChars) } } .
 
 -compile({inline,yyaction_9/2}).
 -file("src/dfs_lexer.xrl", 34).
