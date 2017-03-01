@@ -128,7 +128,7 @@ param({identifier, Ident}) ->
 %%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
           nil -> {identifier,Ident};
-          {connect, _} -> {identifier, Ident};
+          {connect, _} = C -> C;
           {Type, _LN, Val} -> {Type, Val}
    end;
 param({pfunc, {_N, {params, _Ps}}}=L) ->

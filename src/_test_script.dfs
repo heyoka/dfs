@@ -1,0 +1,16 @@
+
+   %% Definitions
+   def in1 =
+    |esp_value_emitter()
+    .every(1m)
+
+   def in2 =
+    |esp_value_emitter()
+    .every(5m)
+
+   in1
+      |join(in2)
+      .on('val')
+      .tolerance(30s)
+
+
