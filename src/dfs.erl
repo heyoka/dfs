@@ -156,8 +156,8 @@ param({lambda, LambdaList}) ->
    %% unique params
    BRefs = sets:to_list(sets:from_list(BinRefs)),
    Refs = lists:map(fun(E) -> param_from_ref(E) end, BRefs),
-%%   io:format("LAMBDA References ~p (~p)~n",[Refs, BinRefs]),
-   {lambda, make_lambda_fun(lists:concat(Lambda), Refs), BRefs}
+   io:format("LAMBDA References ~p (~p)~n",[Refs, BinRefs]),
+   {lambda, lists:concat(Lambda), BRefs, Refs}
 ;
 param({regex, Regex}) ->
    {regex, Regex};
@@ -195,19 +195,6 @@ param_from_ref(Ref) when is_binary(Ref) ->
    [Hd|RefString] = binary_to_list(Ref0),
    NewFirst = string:to_upper(Hd),
    [NewFirst|RefString].
-
-make_lambda_fun(LambdaString, FunParams) ->
-   Params = l_params(FunParams, []),
-   F =  "fun(" ++ Params ++ ") -> " ++ LambdaString ++ " end.",
-   Fun = parse_fun(F),
-   Fun
-.
-
-parse_fun(S) ->
-   {ok, Ts, _} = erl_scan:string(S),
-   {ok, Exprs} = erl_parse:parse_exprs(Ts),
-   {value, Fun, _} = erl_eval:exprs(Exprs, []),
-   Fun.
 
 l_params([], Acc) ->
    Acc;
