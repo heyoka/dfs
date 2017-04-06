@@ -312,12 +312,12 @@ pfunction(FName, PCount) when is_list(FName) ->
    [{lfunc, Modules}] = ets:lookup(?MODULE, lfunc),
    NN0 = lists:foldl(
      fun
+        (_E, {done, Module}) -> Module;
         (E, Module) ->
            case erlang:function_exported(E, NameAtom, PCount) of
               true -> {done, atom_to_list(E) ++ ":" ++ FName};
               false -> Module
-           end;
-        (_E, {done, Module}) -> Module
+           end
      end,
       nil,
       Modules
