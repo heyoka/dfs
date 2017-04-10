@@ -1,12 +1,13 @@
 {application, dfs,
  [
-  {description, "DataFlow DSL"},
-  {vsn, "1"},
+  {description, "DataFlow DSL for Analytics"},
+  {vsn, "0.7"},
   {registered, []},
   {applications, [
                   kernel,
                   stdlib,
-                  crypto
+                  crypto,
+                  estr
                  ]},
   {mod, { dfs_app, []}},
   {env, []}

@@ -1,5 +1,5 @@
 %% Date: 23.02.17 - 19:27
-%% Ⓒ 2017 LineMetrics GmbH
+%% Ⓒ 2017 heyoka
 -module(dfs_sup).
 -author("Alexander Minichmair").
 

@@ -10,26 +10,26 @@
    float/1,
    string/1]).
 
--export([
-   str_contains/2,
-   str_contains_any/2,
-   str_pefix/2,
-   str_suffix/2,
-   str_length/1,
-   str_index/2,
-   str_last_index/2,
-   str_replace/3,
-   str_replace_all/3,
-   str_substr/3,
-   str_to_lower/1,
-   str_to_upper/1,
-   str_trim/1,
-   str_ltrim/1,
-   str_rtrim/1,
-   str_strip/2,
-   str_lstrip/2,
-   str_rstrip/2,
-   regex_replace/3]).
+%%-export([
+%%   str_contains/2,
+%%%%   str_contains_any/2,
+%%   str_pefix/2,
+%%   str_suffix/2,
+%%   str_length/1,
+%%   str_index/2,
+%%   str_last_index/2,
+%%   str_replace/3,
+%%   str_replace_all/3,
+%%   str_substr/3,
+%%   str_to_lower/1,
+%%   str_to_upper/1,
+%%   str_trim/1,
+%%   str_ltrim/1,
+%%   str_rtrim/1,
+%%   str_strip/2,
+%%   str_lstrip/2,
+%%   str_rstrip/2,
+%%   regex_replace/3]).
 
 -export([
    abs/1,
@@ -83,15 +83,15 @@ float(V) ->
    V.
 
 string(V) when is_integer(V) ->
-   integer_to_list(V);
+   integer_to_binary(V);
 string(V) when is_float(V) ->
-   float_to_list(V);
-string(V) when is_list(V) ->
+   float_to_binary(V);
+string(V) when is_binary(V) ->
    V;
 string(true) ->
-   "true";
+   <<"true">>;
 string(false) ->
-   "false";
+   <<"false">>;
 string(V) ->
    V.
 
@@ -100,52 +100,7 @@ string(V) ->
 %% String Manipulations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-str_contains(String, Search) when is_list(String) andalso is_list(Search) ->
-   case string:str(String, Search) of
-      0 -> false;
-      _ -> true
-   end.
-
-str_contains_any(String, Search) ->
-   lists:any(fun(E) -> str_contains(String, E) end, Search).
-
-str_pefix(Prefix, String) -> lists:prefix(Prefix, String).
-
-str_suffix(Suffix, String) -> lists:suffix(Suffix, String).
-
-str_length(String) -> string:len(String).
-
-str_index(String, SubString) -> string:str(String, SubString).
-
-str_last_index(String, SubString) -> string:rstr(String, SubString).
-
-str_replace(String, Search, Replace) when is_list(String) ->
-   RBin = binary:replace(list_to_binary(String), list_to_binary(Search), list_to_binary(Replace)),
-   binary_to_list(RBin).
-str_replace_all(String, Search, Replace) when is_list(String) ->
-   RBin = binary:replace(list_to_binary(String), list_to_binary(Search), list_to_binary(Replace), [global]),
-   binary_to_list(RBin).
-
-str_substr(String, From, To) ->
-   string:sub_string(String, From, To).
-
-str_to_lower(String) ->
-   string:to_lower(String).
-
-str_to_upper(String) ->
-   string:to_upper(String).
-
-%% remove whitespace
-str_trim(String) -> string:strip(String).
-str_ltrim(String) -> string:strip(String, left).
-str_rtrim(String) -> string:strip(String, right).
-%% remove other character
-str_strip(String, Character) -> string:strip(String, both, Character).
-str_lstrip(String, Character) -> string:strip(String, left, Character).
-str_rstrip(String, Character) -> string:strip(String, right, Character).
-
-regex_replace(String, Pattern, Replacement) ->
-   re:replace(String, Pattern, Replacement, [{return, list}]).
+%% see estr module
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% other number handling or math functions
@@ -164,10 +119,10 @@ max(Val1, Val2) ->
 
 %%%%%%%%%%%%%%% Internal %%%%%%%%%%%%%%%%%%%%%%%%
 string_to_number(L) when is_list(L) ->
-   Float = (catch erlang:list_to_float(L)),
+   Float = (catch erlang:binary_to_float(L)),
    case is_number(Float) of
       true -> Float;
-      false -> Int = (catch erlang:list_to_integer(L)),
+      false -> Int = (catch erlang:binary_to_integer(L)),
          case is_number(Int) of
             true -> Int;
             false -> false
