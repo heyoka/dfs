@@ -10,27 +10,6 @@
    float/1,
    string/1]).
 
-%%-export([
-%%   str_contains/2,
-%%%%   str_contains_any/2,
-%%   str_pefix/2,
-%%   str_suffix/2,
-%%   str_length/1,
-%%   str_index/2,
-%%   str_last_index/2,
-%%   str_replace/3,
-%%   str_replace_all/3,
-%%   str_substr/3,
-%%   str_to_lower/1,
-%%   str_to_upper/1,
-%%   str_trim/1,
-%%   str_ltrim/1,
-%%   str_rtrim/1,
-%%   str_strip/2,
-%%   str_lstrip/2,
-%%   str_rstrip/2,
-%%   regex_replace/3]).
-
 -export([
    abs/1,
    round/1,

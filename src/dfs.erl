@@ -13,11 +13,12 @@ test() ->
 parse(FileName) when is_list(FileName) ->
    parse(FileName, []).
 parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
-   LambdaLibs = [dfs_std_lib|Libs],
+   LambdaLibs = [dfs_std_lib, estr] ++ [Libs],
+   FLibs = lists:flatten(LambdaLibs),
    %% ensure libs are there for us
-   lists:foreach(fun(E) -> code:ensure_loaded(E) end, LambdaLibs),
+   lists:foreach(fun(E) -> code:ensure_loaded(E) end, FLibs),
    ets:new(?MODULE, [set, public, named_table]),
-   ets:insert(?MODULE, {lfunc, LambdaLibs}),
+   ets:insert(?MODULE, {lfunc, FLibs}),
 
    Res =
    case parse_file(FileName) of
@@ -310,12 +311,13 @@ unwrap(V) ->
 pfunction(FName, PCount) when is_list(FName) ->
    NameAtom = list_to_atom(FName),
    [{lfunc, Modules}] = ets:lookup(?MODULE, lfunc),
+   io:format("models are ~p~n",[Modules]),
    NN0 = lists:foldl(
      fun
-        (_E, {done, Module}) -> Module;
+        (_E, {done, _Module}=M) -> M;
         (E, Module) ->
            case erlang:function_exported(E, NameAtom, PCount) of
-              true -> {done, atom_to_list(E) ++ ":" ++ FName};
+              true -> F0 = {done, atom_to_list(E) ++ ":" ++ FName}, io:format("~p :: ~p ~n",[FName, F0]), F0;
               false -> Module
            end
      end,
@@ -330,5 +332,5 @@ pfunction(FName, PCount) when is_list(FName) ->
              end;
       {done, Else} -> Else
    end,
-%%   io:format("convert function name: ~p ==> ~p~n",[FName, NN]),
+   io:format("convert function name: ~p ==> ~p~n",[FName, NN]),
    NN.

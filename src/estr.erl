@@ -68,7 +68,7 @@ new(String = [C1|_]) when is_list(String), is_integer(C1) ->
 
 %% @doc Compares strings case insensitively
 str_eqi(String, Other) when is_binary(String), is_binary(Other) ->
-    downcase(String) =:= downcase(Other).
+    str_downcase(String) =:= str_downcase(Other).
 
 %% PRIVATE HELPER FUNS
 
@@ -79,12 +79,12 @@ nil(V)   -> V.
 
 %% @doc Returns the grapheme in the position of the given utf8 string. If position is greater than string length, then it returns undefined
 %%      Negative offsets count back from the end of the string.
--spec at(estr(), integer()) -> grapheme() | undefined.
+-spec str_at(estr(), integer()) -> grapheme() | undefined.
 str_at(String, Position) when is_binary(String) ->
     nil('Elixir.String':at(String, Position)).
 
 %% @doc Converts the first character in the given string to uppercase and the remaining to lowercase
--spec capitalize(estr()) -> estr().
+-spec str_capitalize(estr()) -> estr().
 str_capitalize(String) when is_binary(String) ->
     'Elixir.String':capitalize(String).
 
@@ -95,27 +95,27 @@ str_capitalize(String) when is_binary(String) ->
 %%         combining characters are arranged in a specific order.
 %%   nfc - Normalization Form Canonical Composition.
 %%         Characters are decomposed and then recomposed by canonical equivalence.
--spec normalize(estr(), nfd | nfc) -> estr().
+-spec str_normalize(estr(), nfd | nfc) -> estr().
 str_normalize(String, Form) when is_binary(String) andalso (Form =:= nfd orelse Form =:= nfc) ->
     'Elixir.String':normalize(String, Form).
 
 %% @doc Splits the string into chunks of characters that share a common trait
--spec chunk(estr(), trait()) -> [estr()].
+-spec str_chunk(estr(), trait()) -> [estr()].
 str_chunk(String, Trait) when is_binary(String) ->
     'Elixir.String':chunk(String, Trait).
 
 %% @doc Returns all codepoints in the string
--spec codepoints(estr()) -> [codepoint()].
+-spec str_codepoints(estr()) -> [codepoint()].
 str_codepoints(String) when is_binary(String) ->
     'Elixir.String':codepoints(String).
 
 %% @doc Check if string contains any of the given contents
--spec contains(estr(), estr()) -> boolean().
+-spec str_contains(estr(), estr()) -> boolean().
 str_contains(String, Contents) when is_binary(String), is_binary(Contents) ->
     'Elixir.String':'contains?'(String, Contents).
 
 %% @doc Convert all characters on the given string to lowercase
--spec downcase(estr()) -> estr().
+-spec str_downcase(estr()) -> estr().
 str_downcase(String) when is_binary(String) ->
     'Elixir.String':downcase(String).
 
@@ -125,17 +125,17 @@ duplicate(Subject, N) when is_binary(Subject), is_integer(N), N >= 0 ->
     'Elixir.String':duplicate(Subject, N).
 
 %% @doc Returns true if string ends with any of the suffixes given, otherwise false. suffixes can be either a single suffix or a list of suffixes
--spec ends_with(estr(), estr()) -> boolean().
+-spec str_ends_with(estr(), estr()) -> boolean().
 str_ends_with(String, Suffix) when is_binary(String), is_binary(Suffix) ->
     'Elixir.String':'ends_with?'(String, Suffix).
 
 %% @doc Returns true if string ends with any of the suffixes given, otherwise false. suffixes can be either a single suffix or a list of suffixes
--spec ends_with_any(estr(), [estr()]) -> boolean().
+-spec str_ends_with_any(estr(), [estr()]) -> boolean().
 str_ends_with_any(String, Suffixes = [S1|_]) when is_binary(String), is_binary(S1) ->
     'Elixir.String':'ends_with?'(String, Suffixes).
 
 %% @doc Returns the first grapheme from an utf8 string, undefined if the string is empty
--spec first(estr()) -> grapheme() | undefined.
+-spec str_first(estr()) -> grapheme() | undefined.
 str_first(String) when is_binary(String) ->
     nil('Elixir.String':first(String)).
 
@@ -145,31 +145,31 @@ graphemes(String) when is_binary(String) ->
     'Elixir.String':graphemes(String).
 
 %% @doc Returns the last grapheme from an utf8 string, undefined if the string is empty
--spec last(estr()) -> grapheme() | undefined.
+-spec str_last(estr()) -> grapheme() | undefined.
 str_last(String) when is_binary(String) ->
     nil('Elixir.String':last(String)).
 
 %% @doc Returns the number of unicode graphemes in an utf8 string
--spec length(estr()) -> non_neg_integer().
+-spec str_length(estr()) -> non_neg_integer().
 str_length(String) when is_binary(String) ->
     'Elixir.String':length(String).
 
 %% @doc Returns a new string of length len with subject left justified and padded with padding. If padding is not present, it defaults to whitespace. When len is less than the length of subject, subject is returned
--spec pad_leading(estr(), non_neg_integer()) -> estr().
+-spec str_pad_leading(estr(), non_neg_integer()) -> estr().
 str_pad_leading(Subject, Len) when is_binary(Subject), is_integer(Len), Len >= 0 ->
     'Elixir.String':pad_leading(Subject, Len).
 
--spec pad_leading(estr(), non_neg_integer(), binary()) -> estr().
+-spec str_pad_leading(estr(), non_neg_integer(), binary()) -> estr().
 str_pad_leading(Subject, Len, Padding) when is_binary(Subject), is_integer(Len), is_binary(Padding), Len >= 0 ->
     'Elixir.String':pad_leading(Subject, Len, Padding).
 
 %% @doc Returns a string where leading Unicode whitespace has been removed
--spec lstrip(estr()) -> estr().
+-spec str_lstrip(estr()) -> estr().
 str_lstrip(String) when is_binary(String) ->
     'Elixir.String':lstrip(String).
 
 %% @doc Returns a string where leading char have been removed
--spec lstrip(estr(), non_neg_integer()) -> estr().
+-spec str_lstrip(estr(), non_neg_integer()) -> estr().
 str_lstrip(Other, Char) when is_binary(Other), is_integer(Char), Char >= 0 ->
     'Elixir.String':lstrip(Other, Char).
 
@@ -178,7 +178,7 @@ str_lstrip(Other, Char) when is_binary(Other), is_integer(Char), Char >= 0 ->
 %%    'Elixir.String':'match?'(String, Regex).
 
 %% @doc Returns the next codepoint in a String
--spec next_codepoint(estr()) -> {codepoint(), estr()}.
+-spec str_next_codepoint(estr()) -> {codepoint(), estr()}.
 str_next_codepoint(String) when is_binary(String) ->
     'Elixir.String':next_codepoint(String).
 
@@ -193,56 +193,56 @@ is_printable(String) when is_binary(String) ->
     'Elixir.String':'printable?'(String).
 
 %% @doc Returns a new binary based on subject by replacing the parts matching pattern by replacement.
--spec replace(estr(), estr(), estr()) -> estr().
+-spec str_replace(estr(), estr(), estr()) -> estr().
 str_replace(Subject, Pattern, Replacement) when is_binary(Subject), is_binary(Pattern), is_binary(Replacement) ->
     binary:replace(Subject, Pattern, Replacement, [global]).
 
 %% @doc Replaces all leading occurrences of match by replacement of match in string.
--spec replace_leading(estr(), estr(), estr()) -> estr().
+-spec str_replace_leading(estr(), estr(), estr()) -> estr().
 str_replace_leading(String, Match, Replacement) when is_binary(String), is_binary(Match), is_binary(Replacement), Match =/= <<>> ->
     'Elixir.String':replace_leading(String, Match, Replacement).
 
 %% @doc Replaces all trailing occurrences of match by replacement of match in string.
--spec replace_trailing(estr(), estr(), estr()) -> estr().
+-spec str_replace_trailing(estr(), estr(), estr()) -> estr().
 str_replace_trailing(String, Match, Replacement) when is_binary(String), is_binary(Match), is_binary(Replacement), Match =/= <<>> ->
     'Elixir.String':replace_trailing(String, Match, Replacement).
 
 %% @doc Replaces prefix in string by replacement if it matches match.
 %% Returns the string untouched if there is no match.
 %% If match is an empty string (""), replacement is just prepended to string.
--spec replace_prefix(estr(), estr(), estr()) -> estr().
+-spec str_replace_prefix(estr(), estr(), estr()) -> estr().
 str_replace_prefix(String, Match, Replacement) when is_binary(String), is_binary(Match), is_binary(Replacement) ->
     'Elixir.String':replace_prefix(String, Match, Replacement).
 
 %% @doc Replaces suffix in string by replacement if it matches match.
 %% Returns the string untouched if there is no match.
 %% If match is an empty string (""), replacement is just appended to string.
--spec replace_suffix(estr(), estr(), estr()) -> estr().
+-spec str_replace_suffix(estr(), estr(), estr()) -> estr().
 str_replace_suffix(String, Match, Replacement) when is_binary(String), is_binary(Match), is_binary(Replacement) ->
     'Elixir.String':replace_suffix(String, Match, Replacement).
 
 
 %% @doc Reverses the given string. Works on graphemes
--spec reverse(estr()) -> estr().
+-spec str_reverse(estr()) -> estr().
 str_reverse(String) when is_binary(String) ->
     'Elixir.String':reverse(String).
 
 %% @doc Returns a new string of length len with subject right justified and padded with padding. If padding is not present, it defaults to whitespace. When len is less than the length of subject, subject is returned
--spec pad_trailing(estr(), non_neg_integer()) -> estr().
+-spec str_pad_trailing(estr(), non_neg_integer()) -> estr().
 str_pad_trailing(Subject, Len) when is_binary(Subject), is_integer(Len), Len >= 0 ->
     'Elixir.String':pad_trailing(Subject, Len).
 
--spec pad_trailing(estr(), non_neg_integer(), binary()) -> estr().
+-spec str_pad_trailing(estr(), non_neg_integer(), binary()) -> estr().
 str_pad_trailing(Subject, Len, Padding) when is_binary(Subject), is_integer(Len), is_binary(Padding), Len >= 0 ->
     'Elixir.String':pad_trailing(Subject, Len, Padding).
 
 %% @doc Returns a string where trailing Unicode whitespace has been removed
--spec rstrip(estr()) -> estr().
+-spec str_rstrip(estr()) -> estr().
 str_rstrip(String) when is_binary(String) ->
     'Elixir.String':rstrip(String).
 
 %% @doc Returns a string where trailing char have been removed
--spec rstrip(estr(), non_neg_integer()) -> estr().
+-spec str_rstrip(estr(), non_neg_integer()) -> estr().
 str_rstrip(String, Char) when is_binary(String), is_integer(Char), Char >= 0 ->
     'Elixir.String':rstrip(String, Char).
 
@@ -253,7 +253,7 @@ str_rstrip(String, Char) when is_binary(String), is_integer(Char), Char >= 0 ->
 
 %% @doc Returns a substring starting at the offset given by the first, and a length given by the second
 %%      if offset is negative, count back from end of string.
--spec slice(estr(), integer(), non_neg_integer()) -> estr().
+-spec str_slice(estr(), integer(), non_neg_integer()) -> estr().
 str_slice(String, Start, Len) when is_binary(String) andalso
                                is_integer(Start) andalso
                                is_integer(Len) andalso
@@ -264,54 +264,54 @@ str_slice(String, Start, Len) when is_binary(String) andalso
     'Elixir.String':slice(String, Start, Len).
 
 %% @doc Divides a string into substrings at each Unicode whitespace occurrence with leading and trailing whitespace ignored
--spec split(estr()) -> [estr()].
+-spec str_split(estr()) -> [estr()].
 str_split(String) when is_binary(String) ->
     'Elixir.String':split(String).
 
 %% @doc Divides a string into substrings based on an estr pattern
--spec split(estr(), estr()) -> [estr()].
+-spec str_split(estr(), estr()) -> [estr()].
 str_split(String, Pattern) ->
-    split(String, Pattern, []).
+    str_split(String, Pattern, []).
 str_split(String, Pattern, Options) when is_binary(String), is_binary(Pattern), is_list(Options) ->
     'Elixir.String':split(String, Pattern, Options).
 
 %% @doc Divides a string into substrings based on a list of estr patterns
--spec split_by_any(estr(), [estr()]) -> [estr()].
+-spec str_split_by_any(estr(), [estr()]) -> [estr()].
 str_split_by_any(String, Patterns) ->
-    split_by_any(String, Patterns, []).
+    str_split_by_any(String, Patterns, []).
 str_split_by_any(String, Patterns = [P1|_], Options) when is_binary(String), is_binary(P1), is_list(Options) ->
     'Elixir.String':split(String, Patterns, Options).
 
 %% @doc Divides a string into substrings based on a regex (compiles using re)
--spec split_by_re(estr(), binary()) -> [estr()].
+-spec str_split_by_re(estr(), binary()) -> [estr()].
 str_split_by_re(String, Pattern) ->
-    split_by_re(String, Pattern, []).
+    str_split_by_re(String, Pattern, []).
 str_split_by_re(String, Pattern, Options) when is_binary(String), is_list(Options) ->
     {ok, Re} = 'Elixir.Regex':compile(estr:new(Pattern)),
     'Elixir.String':split(String, Re, Options).
 
 %% @doc Splits a string into two at the specified offset. When the offset given is negative, location is counted from the end of the string
--spec split_at(estr(), integer()) -> {estr(), estr()}.
+-spec str_split_at(estr(), integer()) -> {estr(), estr()}.
 str_split_at(String, Offset) when is_binary(String), is_integer(Offset) ->
     'Elixir.String':split_at(String, Offset).
 
 %% @doc Returns true if string starts with Prefix
--spec starts_with(estr(), estr()) -> boolean().
+-spec str_starts_with(estr(), estr()) -> boolean().
 str_starts_with(String, Prefix) when is_binary(String), is_binary(Prefix) ->
     'Elixir.String':'starts_with?'(String, Prefix).
 
 %% @doc Returns true if string starts with any of the prefixes given, otherwise false.
--spec starts_with_any(estr(), [estr()]) -> boolean().
+-spec str_starts_with_any(estr(), [estr()]) -> boolean().
 str_starts_with_any(String, Prefixes = [P1|_]) when is_binary(String), is_binary(P1) ->
     'Elixir.String':'starts_with?'(String, Prefixes).
 
 %% @doc Returns a string where leading/trailing Unicode whitespace has been removed
--spec strip(estr()) -> estr().
+-spec str_strip(estr()) -> estr().
 str_strip(String) when is_binary(String) ->
     'Elixir.String':strip(String).
 
 %% @doc Returns a string where leading/trailing char have been removed
--spec strip(estr(), non_neg_integer()) -> estr().
+-spec str_strip(estr(), non_neg_integer()) -> estr().
 str_strip(String, Char) when is_binary(String), is_integer(Char), Char >= 0 ->
     'Elixir.String':strip(String, Char).
 
@@ -321,7 +321,7 @@ to_char_list(String) when is_binary(String) ->
     'Elixir.String':to_char_list(String).
 
 %% @doc Convert all characters on the given string to uppercase
--spec upcase(estr()) -> estr().
+-spec str_upcase(estr()) -> estr().
 str_upcase(String) when is_binary(String) ->
     'Elixir.String':upcase(String).
 

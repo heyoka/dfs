@@ -1,4 +1,4 @@
--file("/opt/erlang/17.4/lib/parsetools-2.0.12/include/leexinc.hrl", 0).
+-file("/opt/erlang/18.3/lib/parsetools-2.1.1/include/leexinc.hrl", 0).
 %% The source of this file is part of leex distribution, as such it
 %% has the same Copyright as the other files in the leex
 %% distribution. The Copyright is defined in the accompanying file
@@ -22,7 +22,7 @@ strip(TokenChars,TokenLen) -> lists:sublist(TokenChars, 2, TokenLen - 2).
 strip_ref(TokenChars,TokenLen) -> lists:sublist(TokenChars, 3, TokenLen - 3).
 unquote(TokenChars) -> binary:replace(list_to_binary(TokenChars),<<"\"">>, <<>>, [global]).
 prep_regex(TokenChars) -> binary:replace(list_to_binary(TokenChars),<<"?">>, <<>>, [global]).
--file("/opt/erlang/17.4/lib/parsetools-2.0.12/include/leexinc.hrl", 14).
+-file("/opt/erlang/18.3/lib/parsetools-2.1.1/include/leexinc.hrl", 14).
 
 format_error({illegal,S}) -> ["illegal characters ",io_lib:write_string(S)];
 format_error({user,S}) -> S.
@@ -54,6 +54,8 @@ string(Ics0, L0, Tcs, Ts) ->
 %% string_cont(RestChars, Line, Token, Tokens)
 %% Test for and remove the end token wrapper. Push back characters
 %% are prepended to RestChars.
+
+-dialyzer({nowarn_function, string_cont/4}).
 
 string_cont(Rest, Line, {token,T}, Ts) ->
     string(Rest, Line, Rest, [T|Ts]);
@@ -123,6 +125,8 @@ token(S0, Ics0, L0, Tcs, Tlen0, Tline, A0, Alen0) ->
 %% token_cont(RestChars, Line, Token)
 %% If we have a token or error then return done, else if we have a
 %% skip_token then continue.
+
+-dialyzer({nowarn_function, token_cont/3}).
 
 token_cont(Rest, Line, {token,T}) ->
     {done,{ok,T,Line},Rest};
@@ -198,6 +202,8 @@ tokens(S0, Ics0, L0, Tcs, Tlen0, Tline, Ts, A0, Alen0) ->
 %% a token then save it and continue, else if we have a skip_token
 %% just continue.
 
+-dialyzer({nowarn_function, tokens_cont/4}).
+
 tokens_cont(Rest, Line, {token,T}, Ts) ->
     tokens(yystate(), Rest, Line, Rest, 0, Line, [T|Ts], reject, 0);
 tokens_cont(Rest, Line, {token,T,Push}, Ts) ->
@@ -249,6 +255,8 @@ skip_tokens(S0, Ics0, L0, Tcs, Tlen0, Tline, Error, A0, Alen0) ->
 %% Skip tokens until we have an end_token or error then return done
 %% with the original rror.
 
+-dialyzer({nowarn_function, skip_cont/4}).
+
 skip_cont(Rest, Line, {token,_T}, Error) ->
     skip_tokens(yystate(), Rest, Line, Rest, 0, Line, Error, reject, 0);
 skip_cont(Rest, Line, {token,_T,Push}, Error) ->
@@ -282,7 +290,7 @@ yysuf(List, N) -> lists:nthtail(N, List).
 %% return signal either an unrecognised character or end of current
 %% input.
 
--file("src/dfs_lexer.erl", 285).
+-file("src/dfs_lexer.erl", 293).
 yystate() -> 68.
 
 yystate(75, [32|Ics], Line, Tlen, _, _) ->
@@ -1509,4 +1517,4 @@ yyaction_20() ->
 yyaction_21() ->
      skip_token .
 
--file("/opt/erlang/17.4/lib/parsetools-2.0.12/include/leexinc.hrl", 282).
+-file("/opt/erlang/18.3/lib/parsetools-2.1.1/include/leexinc.hrl", 290).

@@ -6,8 +6,7 @@
   {applications, [
                   kernel,
                   stdlib,
-                  crypto,
-                  estr
+                  crypto
                  ]},
   {mod, { dfs_app, []}},
   {env, []}

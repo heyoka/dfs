@@ -34,4 +34,4 @@ test: $(TARGETS) \
 clean:
 	rm -f $(SOURCE_DIR)/$(LEXER_NAME).erl
 	rm -f $(SOURCE_DIR)/$(PARSER_NAME).erl
-	rm -fr $(EBIN_DIR)
+#rm -fr $(EBIN_DIR)
