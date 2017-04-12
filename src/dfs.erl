@@ -4,7 +4,7 @@
 -author("Alexander Minichmair").
 
 %% API
--export([parse/1]).
+-export([parse/1, parse/2]).
 
 -export([test/0]).
 
