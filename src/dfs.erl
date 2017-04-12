@@ -10,8 +10,12 @@
 
 test() ->
    parse("src/test_script.dfs").
+
+-spec parse(list()) -> list().
 parse(FileName) when is_list(FileName) ->
    parse(FileName, []).
+
+-spec parse(list(), list()) -> list().
 parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
    LambdaLibs = [dfs_std_lib, estr] ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
@@ -226,8 +230,7 @@ param_pfunc({reference, Ref}) ->
 param_pfunc({string, _LN, Ref}) ->
    param_pfunc({string, Ref});
 param_pfunc({string, Ref}) ->
-%%   io:format("~n(param_func) string: ~p~n",[Ref]),
-   "\"" ++ binary_to_list(Ref) ++ "\"";
+   "<<\"" ++ binary_to_list(Ref) ++ "\">>";
 param_pfunc({pexp, Elements}) ->
    [param_pfunc(E) || E <- Elements ];
 param_pfunc(Other) ->
@@ -271,9 +274,9 @@ lexp({operator, _LN, Op}) ->
       _ -> " " ++ atom_to_list(Op) ++ " "
    end;
 lexp({string, _LN, S}) ->
-   "\"" ++ binary_to_list(S) ++ "\"";
+   lexp({string, S});
 lexp({string, S}) ->
-   "\"" ++ binary_to_list(S) ++ "\"";
+   "<<\"" ++ binary_to_list(S) ++ "\">>";
 lexp({pexp, Elements}) when is_list(Elements) ->
    lists:concat([lexp(E) || E <- Elements]);
 lexp({pexp, {pexp, Elements}}) when is_list(Elements) ->

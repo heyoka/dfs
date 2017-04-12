@@ -34,7 +34,9 @@
         ?_chair?, %% 'red_chair', red_desk
         lambda: "opmean.val" + 2 * max("val1", "val2")/3,
         myNextParam,
-        lambda: ("max" - "min") /2
+        lambda: ("max" - "min") /2,
+        lambda: string("max") == '5',
+        lambda: str_ends_with("muxolo", 'olo')
         )
 
       |lambda(
