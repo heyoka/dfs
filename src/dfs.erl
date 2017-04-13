@@ -27,7 +27,7 @@ parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
    Res =
    case parse_file(FileName) of
       {ok, Tokens, _EndLine} ->
-         io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
+%%         io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
          case dfs_parser:parse(Tokens) of
             {ok, Data} -> io:format("~nDATA: ~n~p~n",[Data]),
                eval(Data);
@@ -161,7 +161,7 @@ param({lambda, LambdaList}) ->
    %% unique params
    BRefs = sets:to_list(sets:from_list(BinRefs)),
    Refs = lists:map(fun(E) -> param_from_ref(E) end, BRefs),
-   io:format("LAMBDA References ~p (~p)~n",[Refs, BinRefs]),
+%%   io:format("LAMBDA References ~p (~p)~n",[Refs, BinRefs]),
    {lambda, lists:concat(Lambda), BRefs, Refs}
 ;
 param({regex, Regex}) ->
@@ -221,7 +221,9 @@ param_pfunc({identifier, Ident}) ->
    case get_declaration(Ident) of
       nil -> binary_to_list(Ident);
       {connect, _} -> binary_to_list(Ident);
-      {string, _LN, String} -> "\"" ++ binary_to_list(String) ++ "\"";
+      {string, _LN, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
+      {duration, _LN, Dur} -> "<<\"" ++ binary_to_list(Dur) ++ "\">>";
+      {bool, _LN, Bool} -> atom_to_list(Bool);
       Other -> binary_to_list(unwrap(Other))
    end;
 param_pfunc({reference, Ref}) ->
@@ -314,13 +316,14 @@ unwrap(V) ->
 pfunction(FName, PCount) when is_list(FName) ->
    NameAtom = list_to_atom(FName),
    [{lfunc, Modules}] = ets:lookup(?MODULE, lfunc),
-   io:format("models are ~p~n",[Modules]),
+%%   io:format("models are ~p~n",[Modules]),
    NN0 = lists:foldl(
      fun
         (_E, {done, _Module}=M) -> M;
         (E, Module) ->
            case erlang:function_exported(E, NameAtom, PCount) of
-              true -> F0 = {done, atom_to_list(E) ++ ":" ++ FName}, io:format("~p :: ~p ~n",[FName, F0]), F0;
+              true -> F0 = {done, atom_to_list(E) ++ ":" ++ FName};
+                 %io:format("~p :: ~p ~n",[FName, F0]), F0;
               false -> Module
            end
      end,
@@ -335,5 +338,5 @@ pfunction(FName, PCount) when is_list(FName) ->
              end;
       {done, Else} -> Else
    end,
-   io:format("convert function name: ~p ==> ~p~n",[FName, NN]),
+%%   io:format("convert function name: ~p ==> ~p~n",[FName, NN]),
    NN.

@@ -7,6 +7,7 @@
    def dead_message = 'LOW on CARBONIDE !!!'
    def deadman_period = 15m
    def bool = TRUE
+   def number = 33.4434
 
    def in1 =
       |stream_in(bool)
@@ -36,7 +37,10 @@
         myNextParam,
         lambda: ("max" - "min") /2,
         lambda: string("max") == '5',
-        lambda: str_ends_with("muxolo", 'olo')
+        lambda: str_ends_with(inStreamId, 'fwef'),
+        lambda: str_ends_with("muxolo", 'olo'),
+        lambda: lookup(deadman_period) + number,
+        lambda: string(bool)
         )
 
       |lambda(
