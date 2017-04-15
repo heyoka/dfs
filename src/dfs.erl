@@ -27,7 +27,7 @@ parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
    Res =
    case parse_file(FileName) of
       {ok, Tokens, _EndLine} ->
-%%         io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
+         io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
          case dfs_parser:parse(Tokens) of
             {ok, Data} -> io:format("~nDATA: ~n~p~n",[Data]),
                eval(Data);
@@ -37,10 +37,10 @@ parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
 %%                             Error1 -> Error1
 %%                          end;
 
-            {error, {LN, dfs_parser, Message}} -> {{error, line, LN}, Message};
+            {error, {LN, dfs_parser, Message}} -> {{parser_error, line, LN}, Message};
             Error -> Error
          end;
-      {error, {LN, dfs_lexer, Message}, _LN} -> {{error, line, LN}, Message};
+      {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
       Err -> Err
    end,
 
@@ -141,7 +141,8 @@ param({pfunc, {_N, {params, _Ps}}}=L) ->
 param({pfunc, N}) ->
    param({lambda, [{pfunc, {N,{params,[]}}}]});
 param({lambda, LambdaList}) ->
-{Lambda, BinRefs} =
+%%   io:format("param: lambda ~p~n",[LambdaList]),
+   {Lambda, BinRefs} =
       lists:foldl(
          fun(E, {L, Rs}) ->
             Refs0 =
@@ -156,12 +157,13 @@ param({lambda, LambdaList}) ->
                   NewPs++Rs;
                _ -> Rs
             end,
+%%            io:format("param lexp(~p ++ ~p~n): n",[lexp(E)]),
             {L++[lexp(E)], Refs0}
          end,{[], []},LambdaList), %% foldl
    %% unique params
    BRefs = sets:to_list(sets:from_list(BinRefs)),
    Refs = lists:map(fun(E) -> param_from_ref(E) end, BRefs),
-%%   io:format("LAMBDA References ~p (~p)~n",[Refs, BinRefs]),
+%%   io:format("LAMBDA ~p (~p)~n",[lists:concat(Lambda), BRefs]),
    {lambda, lists:concat(Lambda), BRefs, Refs}
 ;
 param({regex, Regex}) ->
@@ -214,16 +216,24 @@ params_pfunc(Params) when is_list(Params) ->
       Params
    ),
    P1 = l_params(P, []),
-lists:flatten(P1)
+   lists:flatten(P1)
 .
+param_pfunc({identifier, _LN, Ident}) ->
+   %io:format("identifier lookup for: ~p", [Ident]),
+   param_pfunc({identifier, Ident});
+%%param_pfunc({identifier, {identifier, 0, Ident}}) ->
+%%   param_pfunc({identifier, Ident});
 param_pfunc({identifier, Ident}) ->
-%%   io:format("~n(param_func) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
+   %io:format("~n(param_func) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
       nil -> binary_to_list(Ident);
       {connect, _} -> binary_to_list(Ident);
       {string, _LN, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
+      {string, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
       {duration, _LN, Dur} -> "<<\"" ++ binary_to_list(Dur) ++ "\">>";
       {bool, _LN, Bool} -> atom_to_list(Bool);
+      {int, _LN, Int} -> integer_to_list(Int);
+      {float, _LN, F} -> float_to_list(F);
       Other -> binary_to_list(unwrap(Other))
    end;
 param_pfunc({reference, Ref}) ->
@@ -236,7 +246,7 @@ param_pfunc({string, Ref}) ->
 param_pfunc({pexp, Elements}) ->
    [param_pfunc(E) || E <- Elements ];
 param_pfunc(Other) ->
-%%   io:format("[param_pfunc] ~p~n",[Other]),
+   %io:format("[param_pfunc] ~p~n",[Other]),
       lexp(Other).
 
 
@@ -252,17 +262,16 @@ lexp({int, Int}) ->
 lexp({int, _LN, Int}) ->
    integer_to_list(Int);
 lexp({float, _LN, Float}) ->
+   lexp({float, Float});
+lexp({float, Float}) ->
    float_to_list(Float);
 lexp({bool, _LN, Bool}) ->
    atom_to_list(Bool);
 lexp({bool, Bool}) ->
    atom_to_list(Bool);
 lexp({identifier, _LN, Id}) ->
-%%   io:format("~n(lexp)identifier lookup for: ~p found: ~p~n",[Id, get_declaration(Id)]),
-   case get_declaration(Id) of
-      nil -> binary_to_list(Id);
-      Other -> unwrap(Other)
-   end;
+   %io:format("[lexp({identifier] ~p~n",[Id]),
+   param_pfunc({identifier, Id});
 lexp({reference, _LN, Ref}) ->
    param_from_ref(Ref);
 lexp({operator, _LN, Op}) ->
@@ -275,15 +284,31 @@ lexp({operator, _LN, Op}) ->
       '!'   -> " not ";
       _ -> " " ++ atom_to_list(Op) ++ " "
    end;
+lexp({duration, _LN, S}) ->
+   lexp({duration, S});
+lexp({duration, S}) ->
+   lexp({string, S});
 lexp({string, _LN, S}) ->
    lexp({string, S});
 lexp({string, S}) ->
+   %io:format("~nlexp string ~p~n",[S]),
    "<<\"" ++ binary_to_list(S) ++ "\">>";
 lexp({pexp, Elements}) when is_list(Elements) ->
    lists:concat([lexp(E) || E <- Elements]);
 lexp({pexp, {pexp, Elements}}) when is_list(Elements) ->
    lists:concat([lexp(E) || E <- Elements]);
+lexp({pfunc, {<<"if">>, {params, Params}}}) ->
+   P = lists:map(
+      fun(E) -> P0 = param_pfunc(E), %io:format("param_pfunc: ~p, ~p ~n",[E, P0]),
+                P0 end,
+      Params
+   ),
+   [Expr, PTrue, PFalse] = P,% f = l_params(P, []),
+   F0 = "case " ++ lists:flatten(Expr) ++ " of true -> " ++ PTrue ++ "; false -> " ++ PFalse ++ " end",
+%%   io:format("Lambda IF fun : ~p~n",[lists:flatten(F0)]),
+   F0;
 lexp({pfunc, {FName, {params, Params}}}) ->
+   %io:format("Lambda fun name is : ~p ~n",[FName]),
    Ps = params_pfunc(Params),
    FuncName = pfunction(binary_to_list(FName), length(Params)),
    FuncName ++ "(" ++ Ps ++ ")";
@@ -322,8 +347,9 @@ pfunction(FName, PCount) when is_list(FName) ->
         (_E, {done, _Module}=M) -> M;
         (E, Module) ->
            case erlang:function_exported(E, NameAtom, PCount) of
-              true -> F0 = {done, atom_to_list(E) ++ ":" ++ FName};
-                 %io:format("~p :: ~p ~n",[FName, F0]), F0;
+              true -> F0 = {done, atom_to_list(E) ++ ":" ++ FName},
+                 %io:format("~p :: ~p ~n",[FName, F0]),
+              F0;
               false -> Module
            end
      end,

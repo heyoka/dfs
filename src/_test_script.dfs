@@ -1,16 +1,10 @@
-
+    def threshold = 333
    %% Definitions
    def in1 =
-    |esp_value_emitter()
-    .every(1m)
+    |eval(lambda: if(("ts" > max(threshold) + 2), 'true', 'false'))
+        .as('ts_greater')
 
-   def in2 =
-    |esp_value_emitter()
-    .every(5m)
-
-   in1
-      |join(in2)
-      .on('val')
-      .tolerance(30s)
+    in1
+    |eval(lambda: threshold > 444)
 
 

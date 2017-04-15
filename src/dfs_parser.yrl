@@ -7,7 +7,7 @@ primaryExpr function parameters parameter  .
 Terminals
 '=' '(' ')' ',' '[' ']' '.' '-' '!'
 var def node user_node string text identifier number bool
-duration regex int stream_id float operator lambda reference if.
+duration regex int stream_id float operator lambda reference.
 
 
 Rootsymbol dfscript.
@@ -36,21 +36,20 @@ chain             -> '.' identifier chain : ['$2'] ++ '$3'.
 chain             -> '.' function : ['$2'].
 chain             -> node function : [unwrap_node_func({node, unwrap1('$2')})].
 
-%primaryExpr      -> 'if' '(' primaryExpr ',' primary ',' primary ')' : [{'if', unwrap('$3'), unwrap('$5'), unwrap('$7')}].
 primaryExpr      -> primaryExpr primaryExpr: ['$1']++['$2'].
 primaryExpr      -> operator primary : {pexp, ['$1', '$2']}.
 primaryExpr      -> operator function : ['$1'] ++ [{pfunc, unwrap1('$2')}].
 primaryExpr      -> function primaryExpr: [{pfunc, unwrap1('$1')}, unwrap('$2')].
-%primaryExpr      -> operator primary operator: {pexp, ['$1', '$2', '$3']}.
 primaryExpr      -> operator primary primaryExpr: {pexp, ['$1', '$2', '$3']}.
 primaryExpr      -> primary operator primary : {pexp, ['$1', '$2', '$3']}.
 primaryExpr      -> function : [{pfunc,unwrap1('$1')}].
 %primaryExpr      -> identifier '(' primaryExpr ')' : {function, unwrap($1), {params, '$3'}}.
+%primaryExpr      -> '(' primaryExpr ')' : {paren,'$2'}.
+primaryExpr      -> '(' primary ')' : {paren,'$2'}.
 
 function         -> identifier '(' parameters ')' : {func, unwrap('$1'), {params, unwrapParams('$3')}}.
 function         -> identifier '(' ')' : {func, unwrap('$1')}.
 primary          -> '(' primaryExpr ')' : {paren,'$2'}.
-primary          -> '(' primary ')' : {paren, '$2'}.
 primary          -> duration : '$1'.
 primary          -> number : '$1'.
 primary          -> float : '$1'.
@@ -60,7 +59,6 @@ primary          -> string : '$1'.
 primary          -> text : '$1'.
 primary          -> regex : '$1'.
 primary          -> bool : '$1'.
-%primary          -> primary_function : '$1'.
 primary          -> identifier : '$1'.
 primary          -> identifier '.' identifier: {'$1', '$3'}.
 primary          -> reference : '$1'.
@@ -71,7 +69,6 @@ parameters       -> parameter : ['$1'] .
 parameters       -> parameter ',' parameters : ['$1'] ++ '$3'.
 parameter        -> primaryExpr : '$1'.
 parameter        -> primary : '$1'.
-parameter        -> lambda 'if' '(' primaryExpr ',' primary ',' primary ')' : [{'if', unwrap('$4'), unwrap('$6'), unwrap('$8')}].
 parameter        -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
 string_list       -> '[' string_list_items ']' : '$2'.
 string_list_items -> string_list_item : ['$1'] .

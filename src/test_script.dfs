@@ -76,3 +76,14 @@
 
       |shift(-6h)
 
+  def threshold = 333
+  def boolTrue = true
+  def boolFalse = false
+   %% Definitions
+   def in12 =
+    |eval(lambda: if(( "ts" > (max(threshold,23.55) + 2)), boolTrue, boolFalse) )
+        .as('ts_greater')
+
+    in12
+    |eval(lambda: threshold > 444)
+

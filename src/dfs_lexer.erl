@@ -12,7 +12,7 @@
 -export([format_error/1]).
 
 %% User code. This is placed here to allow extra attributes.
--file("src/dfs_lexer.xrl", 52).
+-file("src/dfs_lexer.xrl", 50).
 
 -export([reserved_word/1]).
 
@@ -291,1054 +291,1022 @@ yysuf(List, N) -> lists:nthtail(N, List).
 %% input.
 
 -file("src/dfs_lexer.erl", 293).
-yystate() -> 68.
+yystate() -> 66.
 
-yystate(75, [32|Ics], Line, Tlen, _, _) ->
-    yystate(75, Ics, Line, Tlen+1, 5, Tlen);
-yystate(75, [9|Ics], Line, Tlen, _, _) ->
-    yystate(75, Ics, Line, Tlen+1, 5, Tlen);
-yystate(75, Ics, Line, Tlen, _, _) ->
-    {5,Tlen,Ics,Line,75};
-yystate(74, Ics, Line, Tlen, _, _) ->
-    {17,Tlen,Ics,Line};
 yystate(73, [126|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [96|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [95|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [63|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [64|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [58|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [59|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(73, [46|Ics], Line, Tlen, Action, Alen) ->
-    yystate(71, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(7, Ics, Line, Tlen+1, Action, Alen);
+    yystate(9, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(73, [C|Ics], Line, Tlen, Action, Alen) when C >= 48, C =< 57 ->
+    yystate(65, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 94 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, [C|Ics], Line, Tlen, Action, Alen) when C >= 123, C =< 125 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(73, Ics, Line, Tlen, Action, Alen) ->
     {Action,Alen,Tlen,Ics,Line,73};
-yystate(72, [37|Ics], Line, Tlen, _, _) ->
-    yystate(72, Ics, Line, Tlen+1, 20, Tlen);
-yystate(72, [10|Ics], Line, Tlen, _, _) ->
-    yystate(64, Ics, Line+1, Tlen+1, 20, Tlen);
-yystate(72, [C|Ics], Line, Tlen, _, _) when C >= 0, C =< 9 ->
-    yystate(72, Ics, Line, Tlen+1, 20, Tlen);
-yystate(72, [C|Ics], Line, Tlen, _, _) when C >= 11, C =< 32 ->
-    yystate(72, Ics, Line, Tlen+1, 20, Tlen);
-yystate(72, [C|Ics], Line, Tlen, _, _) when C >= 33, C =< 36 ->
-    yystate(72, Ics, Line, Tlen+1, 20, Tlen);
-yystate(72, [C|Ics], Line, Tlen, _, _) when C >= 38 ->
-    yystate(72, Ics, Line, Tlen+1, 20, Tlen);
 yystate(72, Ics, Line, Tlen, _, _) ->
-    {20,Tlen,Ics,Line,72};
-yystate(71, [126|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [96|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [95|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [63|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [64|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [58|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [59|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(7, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [C|Ics], Line, Tlen, Action, Alen) when C >= 48, C =< 57 ->
-    yystate(63, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 94 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, [C|Ics], Line, Tlen, Action, Alen) when C >= 123, C =< 125 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(71, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,71};
-yystate(70, [101|Ics], Line, Tlen, Action, Alen) ->
-    yystate(74, Ics, Line, Tlen+1, Action, Alen);
-yystate(70, [69|Ics], Line, Tlen, Action, Alen) ->
-    yystate(74, Ics, Line, Tlen+1, Action, Alen);
-yystate(70, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,70};
-yystate(69, [102|Ics], Line, Tlen, _, _) ->
-    yystate(61, Ics, Line, Tlen+1, 9, Tlen);
+    {16,Tlen,Ics,Line};
+yystate(71, [32|Ics], Line, Tlen, _, _) ->
+    yystate(71, Ics, Line, Tlen+1, 4, Tlen);
+yystate(71, [9|Ics], Line, Tlen, _, _) ->
+    yystate(71, Ics, Line, Tlen+1, 4, Tlen);
+yystate(71, Ics, Line, Tlen, _, _) ->
+    {4,Tlen,Ics,Line,71};
+yystate(70, [37|Ics], Line, Tlen, _, _) ->
+    yystate(70, Ics, Line, Tlen+1, 19, Tlen);
+yystate(70, [10|Ics], Line, Tlen, _, _) ->
+    yystate(62, Ics, Line+1, Tlen+1, 19, Tlen);
+yystate(70, [C|Ics], Line, Tlen, _, _) when C >= 0, C =< 9 ->
+    yystate(70, Ics, Line, Tlen+1, 19, Tlen);
+yystate(70, [C|Ics], Line, Tlen, _, _) when C >= 11, C =< 32 ->
+    yystate(70, Ics, Line, Tlen+1, 19, Tlen);
+yystate(70, [C|Ics], Line, Tlen, _, _) when C >= 33, C =< 36 ->
+    yystate(70, Ics, Line, Tlen+1, 19, Tlen);
+yystate(70, [C|Ics], Line, Tlen, _, _) when C >= 38 ->
+    yystate(70, Ics, Line, Tlen+1, 19, Tlen);
+yystate(70, Ics, Line, Tlen, _, _) ->
+    {19,Tlen,Ics,Line,70};
 yystate(69, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(69, [58|Ics], Line, Tlen, _, _) ->
+    yystate(71, Ics, Line, Tlen+1, 8, Tlen);
 yystate(69, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(69, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(69, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(69, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 101 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(69, [C|Ics], Line, Tlen, _, _) when C >= 103, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(69, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(69, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,69};
-yystate(68, [124|Ics], Line, Tlen, Action, Alen) ->
+    {8,Tlen,Ics,Line,69};
+yystate(68, [78|Ics], Line, Tlen, Action, Alen) ->
     yystate(60, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [118|Ics], Line, Tlen, Action, Alen) ->
-    yystate(52, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [117|Ics], Line, Tlen, Action, Alen) ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [116|Ics], Line, Tlen, Action, Alen) ->
-    yystate(20, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [115|Ics], Line, Tlen, Action, Alen) ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [114|Ics], Line, Tlen, Action, Alen) ->
-    yystate(3, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [108|Ics], Line, Tlen, Action, Alen) ->
-    yystate(27, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [106|Ics], Line, Tlen, Action, Alen) ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [107|Ics], Line, Tlen, Action, Alen) ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [105|Ics], Line, Tlen, Action, Alen) ->
-    yystate(69, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [103|Ics], Line, Tlen, Action, Alen) ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [104|Ics], Line, Tlen, Action, Alen) ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [102|Ics], Line, Tlen, Action, Alen) ->
-    yystate(53, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [101|Ics], Line, Tlen, Action, Alen) ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [100|Ics], Line, Tlen, Action, Alen) ->
-    yystate(25, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [95|Ics], Line, Tlen, Action, Alen) ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [92|Ics], Line, Tlen, Action, Alen) ->
-    yystate(6, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [84|Ics], Line, Tlen, Action, Alen) ->
-    yystate(10, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [79|Ics], Line, Tlen, Action, Alen) ->
-    yystate(42, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [70|Ics], Line, Tlen, Action, Alen) ->
-    yystate(50, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [65|Ics], Line, Tlen, Action, Alen) ->
-    yystate(62, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [64|Ics], Line, Tlen, Action, Alen) ->
-    yystate(46, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [63|Ics], Line, Tlen, Action, Alen) ->
-    yystate(38, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [62|Ics], Line, Tlen, Action, Alen) ->
-    yystate(22, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [61|Ics], Line, Tlen, Action, Alen) ->
-    yystate(14, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [60|Ics], Line, Tlen, Action, Alen) ->
-    yystate(22, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [58|Ics], Line, Tlen, Action, Alen) ->
-    yystate(57, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [48|Ics], Line, Tlen, Action, Alen) ->
-    yystate(41, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [47|Ics], Line, Tlen, Action, Alen) ->
-    yystate(56, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [46|Ics], Line, Tlen, Action, Alen) ->
-    yystate(57, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [45|Ics], Line, Tlen, Action, Alen) ->
-    yystate(49, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [44|Ics], Line, Tlen, Action, Alen) ->
-    yystate(57, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [43|Ics], Line, Tlen, Action, Alen) ->
-    yystate(49, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [42|Ics], Line, Tlen, Action, Alen) ->
-    yystate(56, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [40|Ics], Line, Tlen, Action, Alen) ->
-    yystate(57, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [41|Ics], Line, Tlen, Action, Alen) ->
-    yystate(57, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(65, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(16, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [34|Ics], Line, Tlen, Action, Alen) ->
-    yystate(24, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(48, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [10|Ics], Line, Tlen, Action, Alen) ->
-    yystate(64, Ics, Line+1, Tlen+1, Action, Alen);
-yystate(68, [C|Ics], Line, Tlen, Action, Alen) when C >= 0, C =< 9 ->
-    yystate(64, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [C|Ics], Line, Tlen, Action, Alen) when C >= 11, C =< 32 ->
-    yystate(64, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [C|Ics], Line, Tlen, Action, Alen) when C >= 49, C =< 57 ->
-    yystate(13, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 99 ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [C|Ics], Line, Tlen, Action, Alen) when C >= 109, C =< 113 ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
-yystate(68, [C|Ics], Line, Tlen, Action, Alen) when C >= 119, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, Action, Alen);
 yystate(68, Ics, Line, Tlen, Action, Alen) ->
     {Action,Alen,Tlen,Ics,Line,68};
-yystate(67, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(67, [58|Ics], Line, Tlen, _, _) ->
-    yystate(75, Ics, Line, Tlen+1, 9, Tlen);
-yystate(67, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(67, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(67, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(67, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(67, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,67};
+yystate(67, [126|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [96|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [95|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [63|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [64|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [58|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [59|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [46|Ics], Line, Tlen, Action, Alen) ->
+    yystate(73, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [39|Ics], Line, Tlen, Action, Alen) ->
+    yystate(9, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [37|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [38|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [35|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [33|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [32|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 94 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, [C|Ics], Line, Tlen, Action, Alen) when C >= 123, C =< 125 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(67, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,67};
+yystate(66, [124|Ics], Line, Tlen, Action, Alen) ->
+    yystate(58, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [118|Ics], Line, Tlen, Action, Alen) ->
+    yystate(50, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [117|Ics], Line, Tlen, Action, Alen) ->
+    yystate(26, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [116|Ics], Line, Tlen, Action, Alen) ->
+    yystate(18, Ics, Line, Tlen+1, Action, Alen);
 yystate(66, [115|Ics], Line, Tlen, Action, Alen) ->
-    yystate(70, Ics, Line, Tlen+1, Action, Alen);
-yystate(66, [83|Ics], Line, Tlen, Action, Alen) ->
-    yystate(70, Ics, Line, Tlen+1, Action, Alen);
+    yystate(26, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [114|Ics], Line, Tlen, Action, Alen) ->
+    yystate(5, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [108|Ics], Line, Tlen, Action, Alen) ->
+    yystate(29, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [102|Ics], Line, Tlen, Action, Alen) ->
+    yystate(63, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [101|Ics], Line, Tlen, Action, Alen) ->
+    yystate(26, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [100|Ics], Line, Tlen, Action, Alen) ->
+    yystate(35, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [95|Ics], Line, Tlen, Action, Alen) ->
+    yystate(26, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [92|Ics], Line, Tlen, Action, Alen) ->
+    yystate(3, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [84|Ics], Line, Tlen, Action, Alen) ->
+    yystate(4, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [79|Ics], Line, Tlen, Action, Alen) ->
+    yystate(32, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [70|Ics], Line, Tlen, Action, Alen) ->
+    yystate(40, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [65|Ics], Line, Tlen, Action, Alen) ->
+    yystate(68, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [64|Ics], Line, Tlen, Action, Alen) ->
+    yystate(52, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [63|Ics], Line, Tlen, Action, Alen) ->
+    yystate(44, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [62|Ics], Line, Tlen, Action, Alen) ->
+    yystate(28, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [61|Ics], Line, Tlen, Action, Alen) ->
+    yystate(20, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [60|Ics], Line, Tlen, Action, Alen) ->
+    yystate(28, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [58|Ics], Line, Tlen, Action, Alen) ->
+    yystate(51, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [48|Ics], Line, Tlen, Action, Alen) ->
+    yystate(39, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [47|Ics], Line, Tlen, Action, Alen) ->
+    yystate(54, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [46|Ics], Line, Tlen, Action, Alen) ->
+    yystate(51, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [45|Ics], Line, Tlen, Action, Alen) ->
+    yystate(43, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [44|Ics], Line, Tlen, Action, Alen) ->
+    yystate(51, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [43|Ics], Line, Tlen, Action, Alen) ->
+    yystate(43, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [42|Ics], Line, Tlen, Action, Alen) ->
+    yystate(54, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [40|Ics], Line, Tlen, Action, Alen) ->
+    yystate(51, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [41|Ics], Line, Tlen, Action, Alen) ->
+    yystate(51, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [39|Ics], Line, Tlen, Action, Alen) ->
+    yystate(59, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [37|Ics], Line, Tlen, Action, Alen) ->
+    yystate(14, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [34|Ics], Line, Tlen, Action, Alen) ->
+    yystate(22, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [33|Ics], Line, Tlen, Action, Alen) ->
+    yystate(46, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [10|Ics], Line, Tlen, Action, Alen) ->
+    yystate(62, Ics, Line+1, Tlen+1, Action, Alen);
+yystate(66, [C|Ics], Line, Tlen, Action, Alen) when C >= 0, C =< 9 ->
+    yystate(62, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [C|Ics], Line, Tlen, Action, Alen) when C >= 11, C =< 32 ->
+    yystate(62, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [C|Ics], Line, Tlen, Action, Alen) when C >= 49, C =< 57 ->
+    yystate(7, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 99 ->
+    yystate(26, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [C|Ics], Line, Tlen, Action, Alen) when C >= 103, C =< 107 ->
+    yystate(26, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [C|Ics], Line, Tlen, Action, Alen) when C >= 109, C =< 113 ->
+    yystate(26, Ics, Line, Tlen+1, Action, Alen);
+yystate(66, [C|Ics], Line, Tlen, Action, Alen) when C >= 119, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, Action, Alen);
 yystate(66, Ics, Line, Tlen, Action, Alen) ->
     {Action,Alen,Tlen,Ics,Line,66};
 yystate(65, [126|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(65, [124|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(65, [125|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(65, [123|Ics], Line, Tlen, Action, Alen) ->
+    yystate(57, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [96|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [95|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [63|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [64|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [58|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [59|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(7, Ics, Line, Tlen+1, Action, Alen);
+    yystate(9, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(65, [C|Ics], Line, Tlen, Action, Alen) when C >= 48, C =< 57 ->
-    yystate(73, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 94 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(65, [C|Ics], Line, Tlen, Action, Alen) when C >= 123, C =< 125 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
 yystate(65, Ics, Line, Tlen, Action, Alen) ->
     {Action,Alen,Tlen,Ics,Line,65};
-yystate(64, [37|Ics], Line, Tlen, _, _) ->
-    yystate(72, Ics, Line, Tlen+1, 20, Tlen);
-yystate(64, [10|Ics], Line, Tlen, _, _) ->
-    yystate(64, Ics, Line+1, Tlen+1, 20, Tlen);
-yystate(64, [C|Ics], Line, Tlen, _, _) when C >= 0, C =< 9 ->
-    yystate(64, Ics, Line, Tlen+1, 20, Tlen);
-yystate(64, [C|Ics], Line, Tlen, _, _) when C >= 11, C =< 32 ->
-    yystate(64, Ics, Line, Tlen+1, 20, Tlen);
-yystate(64, Ics, Line, Tlen, _, _) ->
-    {20,Tlen,Ics,Line,64};
-yystate(63, [126|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [124|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [125|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [123|Ics], Line, Tlen, Action, Alen) ->
-    yystate(55, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [96|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [95|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [63|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [64|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [58|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [59|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(7, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 94 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(63, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,63};
-yystate(62, [78|Ics], Line, Tlen, Action, Alen) ->
-    yystate(54, Ics, Line, Tlen+1, Action, Alen);
-yystate(62, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,62};
+yystate(64, [101|Ics], Line, Tlen, Action, Alen) ->
+    yystate(72, Ics, Line, Tlen+1, Action, Alen);
+yystate(64, [69|Ics], Line, Tlen, Action, Alen) ->
+    yystate(72, Ics, Line, Tlen+1, Action, Alen);
+yystate(64, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,64};
+yystate(63, [97|Ics], Line, Tlen, _, _) ->
+    yystate(55, Ics, Line, Tlen+1, 8, Tlen);
+yystate(63, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(63, [65|Ics], Line, Tlen, _, _) ->
+    yystate(55, Ics, Line, Tlen+1, 8, Tlen);
+yystate(63, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(63, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(63, [C|Ics], Line, Tlen, _, _) when C >= 66, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(63, [C|Ics], Line, Tlen, _, _) when C >= 98, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(63, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,63};
+yystate(62, [37|Ics], Line, Tlen, _, _) ->
+    yystate(70, Ics, Line, Tlen+1, 19, Tlen);
+yystate(62, [10|Ics], Line, Tlen, _, _) ->
+    yystate(62, Ics, Line+1, Tlen+1, 19, Tlen);
+yystate(62, [C|Ics], Line, Tlen, _, _) when C >= 0, C =< 9 ->
+    yystate(62, Ics, Line, Tlen+1, 19, Tlen);
+yystate(62, [C|Ics], Line, Tlen, _, _) when C >= 11, C =< 32 ->
+    yystate(62, Ics, Line, Tlen+1, 19, Tlen);
+yystate(62, Ics, Line, Tlen, _, _) ->
+    {19,Tlen,Ics,Line,62};
+yystate(61, [97|Ics], Line, Tlen, _, _) ->
+    yystate(69, Ics, Line, Tlen+1, 8, Tlen);
 yystate(61, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 0, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(61, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 0, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(61, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 0, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(61, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 0, Tlen);
-yystate(61, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 0, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(61, [C|Ics], Line, Tlen, _, _) when C >= 98, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(61, Ics, Line, Tlen, _, _) ->
-    {0,Tlen,Ics,Line,61};
-yystate(60, Ics, Line, Tlen, _, _) ->
-    {7,Tlen,Ics,Line};
-yystate(59, [97|Ics], Line, Tlen, _, _) ->
-    yystate(67, Ics, Line, Tlen+1, 9, Tlen);
-yystate(59, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(59, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(59, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(59, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(59, [C|Ics], Line, Tlen, _, _) when C >= 98, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(59, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,59};
-yystate(58, [108|Ics], Line, Tlen, Action, Alen) ->
-    yystate(66, Ics, Line, Tlen+1, Action, Alen);
-yystate(58, [76|Ics], Line, Tlen, Action, Alen) ->
-    yystate(66, Ics, Line, Tlen+1, Action, Alen);
-yystate(58, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,58};
-yystate(57, Ics, Line, Tlen, _, _) ->
-    {18,Tlen,Ics,Line};
-yystate(56, Ics, Line, Tlen, _, _) ->
-    {3,Tlen,Ics,Line};
-yystate(55, [51|Ics], Line, Tlen, Action, Alen) ->
-    yystate(47, Ics, Line, Tlen+1, Action, Alen);
-yystate(55, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(15, Ics, Line, Tlen+1, Action, Alen);
-yystate(55, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(55, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(55, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(55, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(55, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(55, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 50 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(55, [C|Ics], Line, Tlen, Action, Alen) when C >= 52, C =< 126 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(55, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,55};
-yystate(54, [68|Ics], Line, Tlen, Action, Alen) ->
-    yystate(56, Ics, Line, Tlen+1, Action, Alen);
-yystate(54, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,54};
-yystate(53, [97|Ics], Line, Tlen, _, _) ->
-    yystate(45, Ics, Line, Tlen+1, 9, Tlen);
-yystate(53, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(53, [65|Ics], Line, Tlen, _, _) ->
-    yystate(45, Ics, Line, Tlen+1, 9, Tlen);
-yystate(53, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(53, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(53, [C|Ics], Line, Tlen, _, _) when C >= 66, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(53, [C|Ics], Line, Tlen, _, _) when C >= 98, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(53, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,53};
-yystate(52, [97|Ics], Line, Tlen, _, _) ->
-    yystate(44, Ics, Line, Tlen+1, 9, Tlen);
-yystate(52, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(52, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(52, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(52, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(52, [C|Ics], Line, Tlen, _, _) when C >= 98, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(52, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,52};
-yystate(51, [100|Ics], Line, Tlen, _, _) ->
-    yystate(59, Ics, Line, Tlen+1, 9, Tlen);
-yystate(51, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(51, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(51, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(51, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(51, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 99 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(51, [C|Ics], Line, Tlen, _, _) when C >= 101, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(51, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,51};
-yystate(50, [97|Ics], Line, Tlen, Action, Alen) ->
-    yystate(58, Ics, Line, Tlen+1, Action, Alen);
-yystate(50, [65|Ics], Line, Tlen, Action, Alen) ->
-    yystate(58, Ics, Line, Tlen+1, Action, Alen);
-yystate(50, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,50};
-yystate(49, [48|Ics], Line, Tlen, _, _) ->
-    yystate(41, Ics, Line, Tlen+1, 3, Tlen);
-yystate(49, [C|Ics], Line, Tlen, _, _) when C >= 49, C =< 57 ->
-    yystate(13, Ics, Line, Tlen+1, 3, Tlen);
-yystate(49, Ics, Line, Tlen, _, _) ->
-    {3,Tlen,Ics,Line,49};
-yystate(48, [126|Ics], Line, Tlen, _, _) ->
-    yystate(56, Ics, Line, Tlen+1, 3, Tlen);
-yystate(48, [61|Ics], Line, Tlen, _, _) ->
-    yystate(56, Ics, Line, Tlen+1, 3, Tlen);
-yystate(48, Ics, Line, Tlen, _, _) ->
-    {3,Tlen,Ics,Line,48};
-yystate(47, [126|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(47, [125|Ics], Line, Tlen, Action, Alen) ->
-    yystate(39, Ics, Line, Tlen+1, Action, Alen);
-yystate(47, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(15, Ics, Line, Tlen+1, Action, Alen);
-yystate(47, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(47, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(47, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(47, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(47, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(47, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 124 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(47, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,47};
-yystate(46, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,61};
+yystate(60, [68|Ics], Line, Tlen, Action, Alen) ->
+    yystate(54, Ics, Line, Tlen+1, Action, Alen);
+yystate(60, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,60};
+yystate(59, [126|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [96|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [95|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [63|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [64|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [58|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [59|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [39|Ics], Line, Tlen, Action, Alen) ->
+    yystate(9, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [37|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [38|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [35|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [33|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [32|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [C|Ics], Line, Tlen, Action, Alen) when C >= 48, C =< 57 ->
+    yystate(67, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 94 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, [C|Ics], Line, Tlen, Action, Alen) when C >= 123, C =< 125 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(59, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,59};
+yystate(58, Ics, Line, Tlen, _, _) ->
     {6,Tlen,Ics,Line};
-yystate(45, [108|Ics], Line, Tlen, _, _) ->
-    yystate(37, Ics, Line, Tlen+1, 9, Tlen);
-yystate(45, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(45, [76|Ics], Line, Tlen, _, _) ->
-    yystate(37, Ics, Line, Tlen+1, 9, Tlen);
-yystate(45, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(45, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(45, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 75 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(45, [C|Ics], Line, Tlen, _, _) when C >= 77, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(45, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 107 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(45, [C|Ics], Line, Tlen, _, _) when C >= 109, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(45, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,45};
-yystate(44, [114|Ics], Line, Tlen, _, _) ->
-    yystate(36, Ics, Line, Tlen+1, 9, Tlen);
-yystate(44, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(44, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(44, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(44, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(44, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 113 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(44, [C|Ics], Line, Tlen, _, _) when C >= 115, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(44, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,44};
-yystate(43, [98|Ics], Line, Tlen, _, _) ->
-    yystate(51, Ics, Line, Tlen+1, 9, Tlen);
-yystate(43, [97|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(43, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(43, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(43, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(43, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(43, [C|Ics], Line, Tlen, _, _) when C >= 99, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(43, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,43};
-yystate(42, [82|Ics], Line, Tlen, Action, Alen) ->
-    yystate(56, Ics, Line, Tlen+1, Action, Alen);
-yystate(42, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,42};
-yystate(41, [46|Ics], Line, Tlen, Action, Alen) ->
-    yystate(29, Ics, Line, Tlen+1, Action, Alen);
-yystate(41, [C|Ics], Line, Tlen, Action, Alen) when C >= 48, C =< 57 ->
+yystate(57, [51|Ics], Line, Tlen, Action, Alen) ->
+    yystate(49, Ics, Line, Tlen+1, Action, Alen);
+yystate(57, [39|Ics], Line, Tlen, Action, Alen) ->
+    yystate(17, Ics, Line, Tlen+1, Action, Alen);
+yystate(57, [37|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(57, [38|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(57, [35|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(57, [32|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(57, [33|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(57, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 50 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(57, [C|Ics], Line, Tlen, Action, Alen) when C >= 52, C =< 126 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(57, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,57};
+yystate(56, [115|Ics], Line, Tlen, Action, Alen) ->
+    yystate(64, Ics, Line, Tlen+1, Action, Alen);
+yystate(56, [83|Ics], Line, Tlen, Action, Alen) ->
+    yystate(64, Ics, Line, Tlen+1, Action, Alen);
+yystate(56, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,56};
+yystate(55, [108|Ics], Line, Tlen, _, _) ->
+    yystate(47, Ics, Line, Tlen+1, 8, Tlen);
+yystate(55, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(55, [76|Ics], Line, Tlen, _, _) ->
+    yystate(47, Ics, Line, Tlen+1, 8, Tlen);
+yystate(55, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(55, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(55, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 75 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(55, [C|Ics], Line, Tlen, _, _) when C >= 77, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(55, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 107 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(55, [C|Ics], Line, Tlen, _, _) when C >= 109, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(55, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,55};
+yystate(54, Ics, Line, Tlen, _, _) ->
+    {2,Tlen,Ics,Line};
+yystate(53, [100|Ics], Line, Tlen, _, _) ->
+    yystate(61, Ics, Line, Tlen+1, 8, Tlen);
+yystate(53, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(53, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(53, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(53, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(53, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 99 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(53, [C|Ics], Line, Tlen, _, _) when C >= 101, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(53, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,53};
+yystate(52, Ics, Line, Tlen, _, _) ->
+    {5,Tlen,Ics,Line};
+yystate(51, Ics, Line, Tlen, _, _) ->
+    {17,Tlen,Ics,Line};
+yystate(50, [97|Ics], Line, Tlen, _, _) ->
+    yystate(42, Ics, Line, Tlen+1, 8, Tlen);
+yystate(50, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(50, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(50, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(50, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(50, [C|Ics], Line, Tlen, _, _) when C >= 98, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(50, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,50};
+yystate(49, [126|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(49, [125|Ics], Line, Tlen, Action, Alen) ->
     yystate(41, Ics, Line, Tlen+1, Action, Alen);
+yystate(49, [39|Ics], Line, Tlen, Action, Alen) ->
+    yystate(17, Ics, Line, Tlen+1, Action, Alen);
+yystate(49, [37|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(49, [38|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(49, [35|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(49, [32|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(49, [33|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(49, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 124 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(49, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,49};
+yystate(48, [108|Ics], Line, Tlen, Action, Alen) ->
+    yystate(56, Ics, Line, Tlen+1, Action, Alen);
+yystate(48, [76|Ics], Line, Tlen, Action, Alen) ->
+    yystate(56, Ics, Line, Tlen+1, Action, Alen);
+yystate(48, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,48};
+yystate(47, [115|Ics], Line, Tlen, _, _) ->
+    yystate(2, Ics, Line, Tlen+1, 8, Tlen);
+yystate(47, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(47, [83|Ics], Line, Tlen, _, _) ->
+    yystate(2, Ics, Line, Tlen+1, 8, Tlen);
+yystate(47, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(47, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(47, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 82 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(47, [C|Ics], Line, Tlen, _, _) when C >= 84, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(47, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 114 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(47, [C|Ics], Line, Tlen, _, _) when C >= 116, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(47, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,47};
+yystate(46, [126|Ics], Line, Tlen, _, _) ->
+    yystate(54, Ics, Line, Tlen+1, 2, Tlen);
+yystate(46, [61|Ics], Line, Tlen, _, _) ->
+    yystate(54, Ics, Line, Tlen+1, 2, Tlen);
+yystate(46, Ics, Line, Tlen, _, _) ->
+    {2,Tlen,Ics,Line,46};
+yystate(45, [98|Ics], Line, Tlen, _, _) ->
+    yystate(53, Ics, Line, Tlen+1, 8, Tlen);
+yystate(45, [97|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(45, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(45, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(45, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(45, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(45, [C|Ics], Line, Tlen, _, _) when C >= 99, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(45, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,45};
+yystate(44, [95|Ics], Line, Tlen, Action, Alen) ->
+    yystate(44, Ics, Line, Tlen+1, Action, Alen);
+yystate(44, [63|Ics], Line, Tlen, Action, Alen) ->
+    yystate(36, Ics, Line, Tlen+1, Action, Alen);
+yystate(44, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
+    yystate(44, Ics, Line, Tlen+1, Action, Alen);
+yystate(44, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
+    yystate(44, Ics, Line, Tlen+1, Action, Alen);
+yystate(44, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,44};
+yystate(43, [48|Ics], Line, Tlen, _, _) ->
+    yystate(39, Ics, Line, Tlen+1, 2, Tlen);
+yystate(43, [C|Ics], Line, Tlen, _, _) when C >= 49, C =< 57 ->
+    yystate(7, Ics, Line, Tlen+1, 2, Tlen);
+yystate(43, Ics, Line, Tlen, _, _) ->
+    {2,Tlen,Ics,Line,43};
+yystate(42, [114|Ics], Line, Tlen, _, _) ->
+    yystate(34, Ics, Line, Tlen+1, 8, Tlen);
+yystate(42, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(42, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(42, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(42, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(42, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 113 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(42, [C|Ics], Line, Tlen, _, _) when C >= 115, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(42, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,42};
+yystate(41, [46|Ics], Line, Tlen, Action, Alen) ->
+    yystate(33, Ics, Line, Tlen+1, Action, Alen);
+yystate(41, [39|Ics], Line, Tlen, Action, Alen) ->
+    yystate(17, Ics, Line, Tlen+1, Action, Alen);
+yystate(41, [37|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(41, [38|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(41, [35|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(41, [32|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(41, [33|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(41, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 45 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(41, [C|Ics], Line, Tlen, Action, Alen) when C >= 47, C =< 126 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(41, Ics, Line, Tlen, Action, Alen) ->
     {Action,Alen,Tlen,Ics,Line,41};
-yystate(40, [46|Ics], Line, Tlen, Action, Alen) ->
-    yystate(40, Ics, Line, Tlen+1, Action, Alen);
-yystate(40, [34|Ics], Line, Tlen, Action, Alen) ->
-    yystate(32, Ics, Line, Tlen+1, Action, Alen);
-yystate(40, [C|Ics], Line, Tlen, Action, Alen) when C >= 0, C =< 9 ->
-    yystate(40, Ics, Line, Tlen+1, Action, Alen);
-yystate(40, [C|Ics], Line, Tlen, Action, Alen) when C >= 11, C =< 33 ->
-    yystate(40, Ics, Line, Tlen+1, Action, Alen);
-yystate(40, [C|Ics], Line, Tlen, Action, Alen) when C >= 35, C =< 45 ->
-    yystate(40, Ics, Line, Tlen+1, Action, Alen);
-yystate(40, [C|Ics], Line, Tlen, Action, Alen) when C >= 47 ->
-    yystate(40, Ics, Line, Tlen+1, Action, Alen);
+yystate(40, [97|Ics], Line, Tlen, Action, Alen) ->
+    yystate(48, Ics, Line, Tlen+1, Action, Alen);
+yystate(40, [65|Ics], Line, Tlen, Action, Alen) ->
+    yystate(48, Ics, Line, Tlen+1, Action, Alen);
 yystate(40, Ics, Line, Tlen, Action, Alen) ->
     {Action,Alen,Tlen,Ics,Line,40};
-yystate(39, [46|Ics], Line, Tlen, Action, Alen) ->
-    yystate(31, Ics, Line, Tlen+1, Action, Alen);
-yystate(39, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(15, Ics, Line, Tlen+1, Action, Alen);
-yystate(39, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(39, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(39, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(39, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(39, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(39, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 45 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(39, [C|Ics], Line, Tlen, Action, Alen) when C >= 47, C =< 126 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(39, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,39};
-yystate(38, [95|Ics], Line, Tlen, Action, Alen) ->
+yystate(39, [48|Ics], Line, Tlen, _, _) ->
+    yystate(39, Ics, Line, Tlen+1, 11, Tlen);
+yystate(39, [46|Ics], Line, Tlen, _, _) ->
+    yystate(23, Ics, Line, Tlen+1, 11, Tlen);
+yystate(39, [C|Ics], Line, Tlen, _, _) when C >= 49, C =< 57 ->
+    yystate(39, Ics, Line, Tlen+1, 11, Tlen);
+yystate(39, Ics, Line, Tlen, _, _) ->
+    {11,Tlen,Ics,Line,39};
+yystate(38, [46|Ics], Line, Tlen, Action, Alen) ->
     yystate(38, Ics, Line, Tlen+1, Action, Alen);
-yystate(38, [63|Ics], Line, Tlen, Action, Alen) ->
+yystate(38, [34|Ics], Line, Tlen, Action, Alen) ->
     yystate(30, Ics, Line, Tlen+1, Action, Alen);
-yystate(38, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
+yystate(38, [C|Ics], Line, Tlen, Action, Alen) when C >= 0, C =< 9 ->
     yystate(38, Ics, Line, Tlen+1, Action, Alen);
-yystate(38, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
+yystate(38, [C|Ics], Line, Tlen, Action, Alen) when C >= 11, C =< 33 ->
+    yystate(38, Ics, Line, Tlen+1, Action, Alen);
+yystate(38, [C|Ics], Line, Tlen, Action, Alen) when C >= 35, C =< 45 ->
+    yystate(38, Ics, Line, Tlen+1, Action, Alen);
+yystate(38, [C|Ics], Line, Tlen, Action, Alen) when C >= 47 ->
     yystate(38, Ics, Line, Tlen+1, Action, Alen);
 yystate(38, Ics, Line, Tlen, Action, Alen) ->
     {Action,Alen,Tlen,Ics,Line,38};
-yystate(37, [115|Ics], Line, Tlen, _, _) ->
-    yystate(4, Ics, Line, Tlen+1, 9, Tlen);
+yystate(37, [109|Ics], Line, Tlen, _, _) ->
+    yystate(45, Ics, Line, Tlen+1, 8, Tlen);
 yystate(37, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(37, [83|Ics], Line, Tlen, _, _) ->
-    yystate(4, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(37, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(37, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(37, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 82 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(37, [C|Ics], Line, Tlen, _, _) when C >= 84, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(37, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 114 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(37, [C|Ics], Line, Tlen, _, _) when C >= 116, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(37, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(37, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 108 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(37, [C|Ics], Line, Tlen, _, _) when C >= 110, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(37, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,37};
-yystate(36, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 1, Tlen);
-yystate(36, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 1, Tlen);
-yystate(36, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 1, Tlen);
-yystate(36, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 1, Tlen);
-yystate(36, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 1, Tlen);
+    {8,Tlen,Ics,Line,37};
 yystate(36, Ics, Line, Tlen, _, _) ->
-    {1,Tlen,Ics,Line,36};
-yystate(35, [109|Ics], Line, Tlen, _, _) ->
-    yystate(43, Ics, Line, Tlen+1, 9, Tlen);
-yystate(35, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(35, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(35, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(35, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(35, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 108 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(35, [C|Ics], Line, Tlen, _, _) when C >= 110, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(35, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,35};
-yystate(34, Ics, Line, Tlen, _, _) ->
-    {16,Tlen,Ics,Line};
-yystate(33, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(33, Ics, Line, Tlen+1, 11, Tlen);
-yystate(33, Ics, Line, Tlen, _, _) ->
-    {11,Tlen,Ics,Line,33};
-yystate(32, [34|Ics], Line, Tlen, _, _) ->
-    yystate(40, Ics, Line, Tlen+1, 10, Tlen);
-yystate(32, Ics, Line, Tlen, _, _) ->
-    {10,Tlen,Ics,Line,32};
-yystate(31, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(23, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 47 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [C|Ics], Line, Tlen, Action, Alen) when C >= 48, C =< 57 ->
-    yystate(31, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [C|Ics], Line, Tlen, Action, Alen) when C >= 58, C =< 64 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
-    yystate(31, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 96 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
-    yystate(31, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, [C|Ics], Line, Tlen, Action, Alen) when C >= 123, C =< 126 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(31, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,31};
-yystate(30, Ics, Line, Tlen, _, _) ->
-    {15,Tlen,Ics,Line};
-yystate(29, [46|Ics], Line, Tlen, Action, Alen) ->
-    yystate(29, Ics, Line, Tlen+1, Action, Alen);
-yystate(29, [C|Ics], Line, Tlen, Action, Alen) when C >= 48, C =< 57 ->
-    yystate(33, Ics, Line, Tlen+1, Action, Alen);
-yystate(29, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,29};
-yystate(28, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(28, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(28, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(28, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(28, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(28, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,28};
-yystate(27, [97|Ics], Line, Tlen, _, _) ->
-    yystate(35, Ics, Line, Tlen+1, 9, Tlen);
-yystate(27, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(27, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(27, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(27, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(27, [C|Ics], Line, Tlen, _, _) when C >= 98, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(27, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,27};
-yystate(26, [101|Ics], Line, Tlen, Action, Alen) ->
-    yystate(34, Ics, Line, Tlen+1, Action, Alen);
-yystate(26, [69|Ics], Line, Tlen, Action, Alen) ->
-    yystate(34, Ics, Line, Tlen+1, Action, Alen);
-yystate(26, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,26};
-yystate(25, [105|Ics], Line, Tlen, _, _) ->
-    yystate(17, Ics, Line, Tlen+1, 9, Tlen);
-yystate(25, [101|Ics], Line, Tlen, _, _) ->
-    yystate(9, Ics, Line, Tlen+1, 9, Tlen);
-yystate(25, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(25, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(25, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(25, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(25, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 100 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(25, [C|Ics], Line, Tlen, _, _) when C >= 102, C =< 104 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(25, [C|Ics], Line, Tlen, _, _) when C >= 106, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(25, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,25};
-yystate(24, [46|Ics], Line, Tlen, _, _) ->
-    yystate(40, Ics, Line, Tlen+1, 21, Tlen);
-yystate(24, [34|Ics], Line, Tlen, _, _) ->
-    yystate(32, Ics, Line, Tlen+1, 21, Tlen);
-yystate(24, [C|Ics], Line, Tlen, _, _) when C >= 0, C =< 9 ->
-    yystate(40, Ics, Line, Tlen+1, 21, Tlen);
-yystate(24, [C|Ics], Line, Tlen, _, _) when C >= 11, C =< 33 ->
-    yystate(40, Ics, Line, Tlen+1, 21, Tlen);
-yystate(24, [C|Ics], Line, Tlen, _, _) when C >= 35, C =< 45 ->
-    yystate(40, Ics, Line, Tlen+1, 21, Tlen);
-yystate(24, [C|Ics], Line, Tlen, _, _) when C >= 47 ->
-    yystate(40, Ics, Line, Tlen+1, 21, Tlen);
-yystate(24, Ics, Line, Tlen, _, _) ->
-    {21,Tlen,Ics,Line,24};
-yystate(23, Ics, Line, Tlen, _, _) ->
-    {4,Tlen,Ics,Line};
-yystate(22, [61|Ics], Line, Tlen, _, _) ->
-    yystate(56, Ics, Line, Tlen+1, 3, Tlen);
-yystate(22, Ics, Line, Tlen, _, _) ->
-    {3,Tlen,Ics,Line,22};
-yystate(21, [119|Ics], Line, Tlen, _, _) ->
-    yystate(5, Ics, Line, Tlen+1, 12, Tlen);
-yystate(21, [115|Ics], Line, Tlen, _, _) ->
-    yystate(5, Ics, Line, Tlen+1, 12, Tlen);
-yystate(21, [109|Ics], Line, Tlen, _, _) ->
-    yystate(2, Ics, Line, Tlen+1, 12, Tlen);
-yystate(21, [104|Ics], Line, Tlen, _, _) ->
-    yystate(5, Ics, Line, Tlen+1, 12, Tlen);
-yystate(21, [100|Ics], Line, Tlen, _, _) ->
-    yystate(5, Ics, Line, Tlen+1, 12, Tlen);
-yystate(21, [46|Ics], Line, Tlen, _, _) ->
-    yystate(29, Ics, Line, Tlen+1, 12, Tlen);
-yystate(21, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(21, Ics, Line, Tlen+1, 12, Tlen);
-yystate(21, Ics, Line, Tlen, _, _) ->
-    {12,Tlen,Ics,Line,21};
-yystate(20, [114|Ics], Line, Tlen, _, _) ->
-    yystate(12, Ics, Line, Tlen+1, 9, Tlen);
-yystate(20, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(20, [82|Ics], Line, Tlen, _, _) ->
-    yystate(12, Ics, Line, Tlen+1, 9, Tlen);
-yystate(20, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(20, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(20, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 81 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(20, [C|Ics], Line, Tlen, _, _) when C >= 83, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(20, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 113 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(20, [C|Ics], Line, Tlen, _, _) when C >= 115, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(20, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,20};
-yystate(19, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 3, Tlen);
-yystate(19, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 3, Tlen);
-yystate(19, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 3, Tlen);
-yystate(19, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 3, Tlen);
-yystate(19, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 3, Tlen);
-yystate(19, Ics, Line, Tlen, _, _) ->
-    {3,Tlen,Ics,Line,19};
-yystate(18, [117|Ics], Line, Tlen, Action, Alen) ->
-    yystate(26, Ics, Line, Tlen+1, Action, Alen);
-yystate(18, [85|Ics], Line, Tlen, Action, Alen) ->
-    yystate(26, Ics, Line, Tlen+1, Action, Alen);
-yystate(18, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,18};
-yystate(17, [118|Ics], Line, Tlen, _, _) ->
-    yystate(19, Ics, Line, Tlen+1, 9, Tlen);
-yystate(17, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(17, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(17, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(17, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(17, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 117 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(17, [C|Ics], Line, Tlen, _, _) when C >= 119, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(17, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,17};
-yystate(16, [37|Ics], Line, Tlen, _, _) ->
-    yystate(16, Ics, Line, Tlen+1, 19, Tlen);
-yystate(16, [10|Ics], Line, Tlen, _, _) ->
-    yystate(64, Ics, Line+1, Tlen+1, 19, Tlen);
-yystate(16, [C|Ics], Line, Tlen, _, _) when C >= 0, C =< 9 ->
-    yystate(16, Ics, Line, Tlen+1, 19, Tlen);
-yystate(16, [C|Ics], Line, Tlen, _, _) when C >= 11, C =< 32 ->
-    yystate(16, Ics, Line, Tlen+1, 19, Tlen);
-yystate(16, [C|Ics], Line, Tlen, _, _) when C >= 33, C =< 36 ->
-    yystate(16, Ics, Line, Tlen+1, 19, Tlen);
-yystate(16, [C|Ics], Line, Tlen, _, _) when C >= 38 ->
-    yystate(16, Ics, Line, Tlen+1, 19, Tlen);
-yystate(16, Ics, Line, Tlen, _, _) ->
-    {19,Tlen,Ics,Line,16};
-yystate(15, Ics, Line, Tlen, _, _) ->
     {14,Tlen,Ics,Line};
-yystate(14, [126|Ics], Line, Tlen, _, _) ->
-    yystate(56, Ics, Line, Tlen+1, 18, Tlen);
-yystate(14, [61|Ics], Line, Tlen, _, _) ->
-    yystate(56, Ics, Line, Tlen+1, 18, Tlen);
+yystate(35, [105|Ics], Line, Tlen, _, _) ->
+    yystate(27, Ics, Line, Tlen+1, 8, Tlen);
+yystate(35, [101|Ics], Line, Tlen, _, _) ->
+    yystate(19, Ics, Line, Tlen+1, 8, Tlen);
+yystate(35, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(35, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(35, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(35, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(35, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 100 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(35, [C|Ics], Line, Tlen, _, _) when C >= 102, C =< 104 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(35, [C|Ics], Line, Tlen, _, _) when C >= 106, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(35, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,35};
+yystate(34, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 0, Tlen);
+yystate(34, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 0, Tlen);
+yystate(34, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 0, Tlen);
+yystate(34, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 0, Tlen);
+yystate(34, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 0, Tlen);
+yystate(34, Ics, Line, Tlen, _, _) ->
+    {0,Tlen,Ics,Line,34};
+yystate(33, [39|Ics], Line, Tlen, Action, Alen) ->
+    yystate(25, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [37|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [38|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [35|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [32|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [33|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 47 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [C|Ics], Line, Tlen, Action, Alen) when C >= 48, C =< 57 ->
+    yystate(33, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [C|Ics], Line, Tlen, Action, Alen) when C >= 58, C =< 64 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
+    yystate(33, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 96 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
+    yystate(33, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, [C|Ics], Line, Tlen, Action, Alen) when C >= 123, C =< 126 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(33, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,33};
+yystate(32, [82|Ics], Line, Tlen, Action, Alen) ->
+    yystate(54, Ics, Line, Tlen+1, Action, Alen);
+yystate(32, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,32};
+yystate(31, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(31, Ics, Line, Tlen+1, 10, Tlen);
+yystate(31, Ics, Line, Tlen, _, _) ->
+    {10,Tlen,Ics,Line,31};
+yystate(30, [34|Ics], Line, Tlen, _, _) ->
+    yystate(38, Ics, Line, Tlen+1, 9, Tlen);
+yystate(30, Ics, Line, Tlen, _, _) ->
+    {9,Tlen,Ics,Line,30};
+yystate(29, [97|Ics], Line, Tlen, _, _) ->
+    yystate(37, Ics, Line, Tlen+1, 8, Tlen);
+yystate(29, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(29, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(29, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(29, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(29, [C|Ics], Line, Tlen, _, _) when C >= 98, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(29, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,29};
+yystate(28, [61|Ics], Line, Tlen, _, _) ->
+    yystate(54, Ics, Line, Tlen+1, 2, Tlen);
+yystate(28, Ics, Line, Tlen, _, _) ->
+    {2,Tlen,Ics,Line,28};
+yystate(27, [118|Ics], Line, Tlen, _, _) ->
+    yystate(21, Ics, Line, Tlen+1, 8, Tlen);
+yystate(27, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(27, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(27, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(27, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(27, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 117 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(27, [C|Ics], Line, Tlen, _, _) when C >= 119, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(27, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,27};
+yystate(26, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(26, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(26, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(26, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(26, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(26, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,26};
+yystate(25, Ics, Line, Tlen, _, _) ->
+    {3,Tlen,Ics,Line};
+yystate(24, Ics, Line, Tlen, _, _) ->
+    {15,Tlen,Ics,Line};
+yystate(23, [46|Ics], Line, Tlen, Action, Alen) ->
+    yystate(23, Ics, Line, Tlen+1, Action, Alen);
+yystate(23, [C|Ics], Line, Tlen, Action, Alen) when C >= 48, C =< 57 ->
+    yystate(31, Ics, Line, Tlen+1, Action, Alen);
+yystate(23, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,23};
+yystate(22, [46|Ics], Line, Tlen, _, _) ->
+    yystate(38, Ics, Line, Tlen+1, 20, Tlen);
+yystate(22, [34|Ics], Line, Tlen, _, _) ->
+    yystate(30, Ics, Line, Tlen+1, 20, Tlen);
+yystate(22, [C|Ics], Line, Tlen, _, _) when C >= 0, C =< 9 ->
+    yystate(38, Ics, Line, Tlen+1, 20, Tlen);
+yystate(22, [C|Ics], Line, Tlen, _, _) when C >= 11, C =< 33 ->
+    yystate(38, Ics, Line, Tlen+1, 20, Tlen);
+yystate(22, [C|Ics], Line, Tlen, _, _) when C >= 35, C =< 45 ->
+    yystate(38, Ics, Line, Tlen+1, 20, Tlen);
+yystate(22, [C|Ics], Line, Tlen, _, _) when C >= 47 ->
+    yystate(38, Ics, Line, Tlen+1, 20, Tlen);
+yystate(22, Ics, Line, Tlen, _, _) ->
+    {20,Tlen,Ics,Line,22};
+yystate(21, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 2, Tlen);
+yystate(21, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 2, Tlen);
+yystate(21, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 2, Tlen);
+yystate(21, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 2, Tlen);
+yystate(21, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 2, Tlen);
+yystate(21, Ics, Line, Tlen, _, _) ->
+    {2,Tlen,Ics,Line,21};
+yystate(20, [126|Ics], Line, Tlen, _, _) ->
+    yystate(54, Ics, Line, Tlen+1, 17, Tlen);
+yystate(20, [61|Ics], Line, Tlen, _, _) ->
+    yystate(54, Ics, Line, Tlen+1, 17, Tlen);
+yystate(20, Ics, Line, Tlen, _, _) ->
+    {17,Tlen,Ics,Line,20};
+yystate(19, [102|Ics], Line, Tlen, _, _) ->
+    yystate(11, Ics, Line, Tlen+1, 8, Tlen);
+yystate(19, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(19, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(19, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(19, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(19, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 101 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(19, [C|Ics], Line, Tlen, _, _) when C >= 103, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(19, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,19};
+yystate(18, [114|Ics], Line, Tlen, _, _) ->
+    yystate(10, Ics, Line, Tlen+1, 8, Tlen);
+yystate(18, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(18, [82|Ics], Line, Tlen, _, _) ->
+    yystate(10, Ics, Line, Tlen+1, 8, Tlen);
+yystate(18, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(18, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(18, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 81 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(18, [C|Ics], Line, Tlen, _, _) when C >= 83, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(18, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 113 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(18, [C|Ics], Line, Tlen, _, _) when C >= 115, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(18, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,18};
+yystate(17, Ics, Line, Tlen, _, _) ->
+    {13,Tlen,Ics,Line};
+yystate(16, [101|Ics], Line, Tlen, Action, Alen) ->
+    yystate(24, Ics, Line, Tlen+1, Action, Alen);
+yystate(16, [69|Ics], Line, Tlen, Action, Alen) ->
+    yystate(24, Ics, Line, Tlen+1, Action, Alen);
+yystate(16, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,16};
+yystate(15, [119|Ics], Line, Tlen, _, _) ->
+    yystate(0, Ics, Line, Tlen+1, 11, Tlen);
+yystate(15, [115|Ics], Line, Tlen, _, _) ->
+    yystate(0, Ics, Line, Tlen+1, 11, Tlen);
+yystate(15, [109|Ics], Line, Tlen, _, _) ->
+    yystate(8, Ics, Line, Tlen+1, 11, Tlen);
+yystate(15, [104|Ics], Line, Tlen, _, _) ->
+    yystate(0, Ics, Line, Tlen+1, 11, Tlen);
+yystate(15, [100|Ics], Line, Tlen, _, _) ->
+    yystate(0, Ics, Line, Tlen+1, 11, Tlen);
+yystate(15, [48|Ics], Line, Tlen, _, _) ->
+    yystate(15, Ics, Line, Tlen+1, 11, Tlen);
+yystate(15, [46|Ics], Line, Tlen, _, _) ->
+    yystate(23, Ics, Line, Tlen+1, 11, Tlen);
+yystate(15, [C|Ics], Line, Tlen, _, _) when C >= 49, C =< 57 ->
+    yystate(15, Ics, Line, Tlen+1, 11, Tlen);
+yystate(15, Ics, Line, Tlen, _, _) ->
+    {11,Tlen,Ics,Line,15};
+yystate(14, [37|Ics], Line, Tlen, _, _) ->
+    yystate(14, Ics, Line, Tlen+1, 18, Tlen);
+yystate(14, [10|Ics], Line, Tlen, _, _) ->
+    yystate(62, Ics, Line+1, Tlen+1, 18, Tlen);
+yystate(14, [C|Ics], Line, Tlen, _, _) when C >= 0, C =< 9 ->
+    yystate(14, Ics, Line, Tlen+1, 18, Tlen);
+yystate(14, [C|Ics], Line, Tlen, _, _) when C >= 11, C =< 32 ->
+    yystate(14, Ics, Line, Tlen+1, 18, Tlen);
+yystate(14, [C|Ics], Line, Tlen, _, _) when C >= 33, C =< 36 ->
+    yystate(14, Ics, Line, Tlen+1, 18, Tlen);
+yystate(14, [C|Ics], Line, Tlen, _, _) when C >= 38 ->
+    yystate(14, Ics, Line, Tlen+1, 18, Tlen);
 yystate(14, Ics, Line, Tlen, _, _) ->
     {18,Tlen,Ics,Line,14};
-yystate(13, [119|Ics], Line, Tlen, _, _) ->
-    yystate(5, Ics, Line, Tlen+1, 12, Tlen);
-yystate(13, [115|Ics], Line, Tlen, _, _) ->
-    yystate(5, Ics, Line, Tlen+1, 12, Tlen);
 yystate(13, [109|Ics], Line, Tlen, _, _) ->
-    yystate(2, Ics, Line, Tlen+1, 12, Tlen);
-yystate(13, [104|Ics], Line, Tlen, _, _) ->
-    yystate(5, Ics, Line, Tlen+1, 12, Tlen);
-yystate(13, [100|Ics], Line, Tlen, _, _) ->
-    yystate(5, Ics, Line, Tlen+1, 12, Tlen);
-yystate(13, [48|Ics], Line, Tlen, _, _) ->
-    yystate(21, Ics, Line, Tlen+1, 12, Tlen);
+    yystate(21, Ics, Line, Tlen+1, 8, Tlen);
+yystate(13, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(13, [46|Ics], Line, Tlen, _, _) ->
-    yystate(29, Ics, Line, Tlen+1, 12, Tlen);
-yystate(13, [C|Ics], Line, Tlen, _, _) when C >= 49, C =< 57 ->
-    yystate(13, Ics, Line, Tlen+1, 12, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(13, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(13, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(13, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 108 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(13, [C|Ics], Line, Tlen, _, _) when C >= 110, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(13, Ics, Line, Tlen, _, _) ->
-    {12,Tlen,Ics,Line,13};
-yystate(12, [117|Ics], Line, Tlen, _, _) ->
-    yystate(4, Ics, Line, Tlen+1, 9, Tlen);
-yystate(12, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(12, [85|Ics], Line, Tlen, _, _) ->
-    yystate(4, Ics, Line, Tlen+1, 9, Tlen);
-yystate(12, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(12, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(12, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 84 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(12, [C|Ics], Line, Tlen, _, _) when C >= 86, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(12, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 116 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(12, [C|Ics], Line, Tlen, _, _) when C >= 118, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(12, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,12};
-yystate(11, [109|Ics], Line, Tlen, _, _) ->
-    yystate(19, Ics, Line, Tlen+1, 9, Tlen);
+    {8,Tlen,Ics,Line,13};
+yystate(12, [117|Ics], Line, Tlen, Action, Alen) ->
+    yystate(16, Ics, Line, Tlen+1, Action, Alen);
+yystate(12, [85|Ics], Line, Tlen, Action, Alen) ->
+    yystate(16, Ics, Line, Tlen+1, Action, Alen);
+yystate(12, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,12};
 yystate(11, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 1, Tlen);
 yystate(11, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 1, Tlen);
 yystate(11, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 1, Tlen);
 yystate(11, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(11, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 108 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(11, [C|Ics], Line, Tlen, _, _) when C >= 110, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    yystate(26, Ics, Line, Tlen+1, 1, Tlen);
+yystate(11, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 1, Tlen);
 yystate(11, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,11};
-yystate(10, [114|Ics], Line, Tlen, Action, Alen) ->
-    yystate(18, Ics, Line, Tlen+1, Action, Alen);
-yystate(10, [82|Ics], Line, Tlen, Action, Alen) ->
-    yystate(18, Ics, Line, Tlen+1, Action, Alen);
-yystate(10, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,10};
-yystate(9, [102|Ics], Line, Tlen, _, _) ->
-    yystate(1, Ics, Line, Tlen+1, 9, Tlen);
-yystate(9, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(9, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(9, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(9, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(9, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 101 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(9, [C|Ics], Line, Tlen, _, _) when C >= 103, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    {1,Tlen,Ics,Line,11};
+yystate(10, [117|Ics], Line, Tlen, _, _) ->
+    yystate(2, Ics, Line, Tlen+1, 8, Tlen);
+yystate(10, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(10, [85|Ics], Line, Tlen, _, _) ->
+    yystate(2, Ics, Line, Tlen+1, 8, Tlen);
+yystate(10, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(10, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(10, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 84 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(10, [C|Ics], Line, Tlen, _, _) when C >= 86, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(10, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 116 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(10, [C|Ics], Line, Tlen, _, _) when C >= 118, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(10, Ics, Line, Tlen, _, _) ->
+    {8,Tlen,Ics,Line,10};
 yystate(9, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,9};
-yystate(8, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(15, Ics, Line, Tlen+1, Action, Alen);
-yystate(8, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(8, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(8, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(8, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(8, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(8, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 126 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(8, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,8};
+    {12,Tlen,Ics,Line};
+yystate(8, [115|Ics], Line, Tlen, _, _) ->
+    yystate(0, Ics, Line, Tlen+1, 7, Tlen);
+yystate(8, Ics, Line, Tlen, _, _) ->
+    {7,Tlen,Ics,Line,8};
+yystate(7, [119|Ics], Line, Tlen, _, _) ->
+    yystate(0, Ics, Line, Tlen+1, 11, Tlen);
+yystate(7, [115|Ics], Line, Tlen, _, _) ->
+    yystate(0, Ics, Line, Tlen+1, 11, Tlen);
+yystate(7, [109|Ics], Line, Tlen, _, _) ->
+    yystate(8, Ics, Line, Tlen+1, 11, Tlen);
+yystate(7, [104|Ics], Line, Tlen, _, _) ->
+    yystate(0, Ics, Line, Tlen+1, 11, Tlen);
+yystate(7, [100|Ics], Line, Tlen, _, _) ->
+    yystate(0, Ics, Line, Tlen+1, 11, Tlen);
+yystate(7, [48|Ics], Line, Tlen, _, _) ->
+    yystate(15, Ics, Line, Tlen+1, 11, Tlen);
+yystate(7, [46|Ics], Line, Tlen, _, _) ->
+    yystate(23, Ics, Line, Tlen+1, 11, Tlen);
+yystate(7, [C|Ics], Line, Tlen, _, _) when C >= 49, C =< 57 ->
+    yystate(7, Ics, Line, Tlen+1, 11, Tlen);
 yystate(7, Ics, Line, Tlen, _, _) ->
-    {13,Tlen,Ics,Line};
-yystate(6, Ics, Line, Tlen, _, _) ->
-    {21,Tlen,Ics,Line};
+    {11,Tlen,Ics,Line,7};
+yystate(6, [39|Ics], Line, Tlen, Action, Alen) ->
+    yystate(17, Ics, Line, Tlen+1, Action, Alen);
+yystate(6, [37|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(6, [38|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(6, [35|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(6, [32|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(6, [33|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(6, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 126 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(6, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,6};
+yystate(5, [101|Ics], Line, Tlen, _, _) ->
+    yystate(13, Ics, Line, Tlen+1, 8, Tlen);
+yystate(5, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(5, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(5, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(5, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(5, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 100 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(5, [C|Ics], Line, Tlen, _, _) when C >= 102, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(5, Ics, Line, Tlen, _, _) ->
-    {8,Tlen,Ics,Line};
-yystate(4, [101|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(4, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(4, [69|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(4, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(4, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(4, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 68 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(4, [C|Ics], Line, Tlen, _, _) when C >= 70, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(4, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 100 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(4, [C|Ics], Line, Tlen, _, _) when C >= 102, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(4, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,4};
-yystate(3, [101|Ics], Line, Tlen, _, _) ->
-    yystate(11, Ics, Line, Tlen+1, 9, Tlen);
-yystate(3, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(3, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(3, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(3, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(3, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 100 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
-yystate(3, [C|Ics], Line, Tlen, _, _) when C >= 102, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 9, Tlen);
+    {8,Tlen,Ics,Line,5};
+yystate(4, [114|Ics], Line, Tlen, Action, Alen) ->
+    yystate(12, Ics, Line, Tlen+1, Action, Alen);
+yystate(4, [82|Ics], Line, Tlen, Action, Alen) ->
+    yystate(12, Ics, Line, Tlen+1, Action, Alen);
+yystate(4, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,4};
 yystate(3, Ics, Line, Tlen, _, _) ->
-    {9,Tlen,Ics,Line,3};
-yystate(2, [115|Ics], Line, Tlen, _, _) ->
-    yystate(5, Ics, Line, Tlen+1, 8, Tlen);
+    {20,Tlen,Ics,Line};
+yystate(2, [101|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(2, [95|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(2, [69|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(2, [46|Ics], Line, Tlen, _, _) ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(2, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(2, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 68 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(2, [C|Ics], Line, Tlen, _, _) when C >= 70, C =< 90 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(2, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 100 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
+yystate(2, [C|Ics], Line, Tlen, _, _) when C >= 102, C =< 122 ->
+    yystate(26, Ics, Line, Tlen+1, 8, Tlen);
 yystate(2, Ics, Line, Tlen, _, _) ->
     {8,Tlen,Ics,Line,2};
-yystate(1, [95|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 2, Tlen);
-yystate(1, [46|Ics], Line, Tlen, _, _) ->
-    yystate(28, Ics, Line, Tlen+1, 2, Tlen);
-yystate(1, [C|Ics], Line, Tlen, _, _) when C >= 48, C =< 57 ->
-    yystate(28, Ics, Line, Tlen+1, 2, Tlen);
-yystate(1, [C|Ics], Line, Tlen, _, _) when C >= 65, C =< 90 ->
-    yystate(28, Ics, Line, Tlen+1, 2, Tlen);
-yystate(1, [C|Ics], Line, Tlen, _, _) when C >= 97, C =< 122 ->
-    yystate(28, Ics, Line, Tlen+1, 2, Tlen);
-yystate(1, Ics, Line, Tlen, _, _) ->
-    {2,Tlen,Ics,Line,1};
-yystate(0, [126|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [96|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [95|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [63|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [64|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [58|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [59|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [39|Ics], Line, Tlen, Action, Alen) ->
-    yystate(7, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [37|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [38|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [35|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [33|Ics], Line, Tlen, Action, Alen) ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [32|Ics], Line, Tlen, Action, Alen) ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 94 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
-    yystate(0, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, [C|Ics], Line, Tlen, Action, Alen) when C >= 123, C =< 125 ->
-    yystate(8, Ics, Line, Tlen+1, Action, Alen);
-yystate(0, Ics, Line, Tlen, Action, Alen) ->
-    {Action,Alen,Tlen,Ics,Line,0};
+yystate(1, [126|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [96|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [95|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [63|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [64|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [58|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [59|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [39|Ics], Line, Tlen, Action, Alen) ->
+    yystate(9, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [37|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [38|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [35|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [33|Ics], Line, Tlen, Action, Alen) ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [32|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [C|Ics], Line, Tlen, Action, Alen) when C >= 65, C =< 90 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [C|Ics], Line, Tlen, Action, Alen) when C >= 91, C =< 94 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [C|Ics], Line, Tlen, Action, Alen) when C >= 97, C =< 122 ->
+    yystate(1, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, [C|Ics], Line, Tlen, Action, Alen) when C >= 123, C =< 125 ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
+yystate(1, Ics, Line, Tlen, Action, Alen) ->
+    {Action,Alen,Tlen,Ics,Line,1};
+yystate(0, Ics, Line, Tlen, _, _) ->
+    {7,Tlen,Ics,Line};
 yystate(S, Ics, Line, Tlen, Action, Alen) ->
     {Action,Alen,Tlen,Ics,Line,S}.
 
@@ -1361,13 +1329,13 @@ yyaction(3, TokenLen, YYtcs, TokenLine) ->
 yyaction(4, TokenLen, YYtcs, TokenLine) ->
     TokenChars = yypre(YYtcs, TokenLen),
     yyaction_4(TokenChars, TokenLine);
-yyaction(5, TokenLen, YYtcs, TokenLine) ->
-    TokenChars = yypre(YYtcs, TokenLen),
-    yyaction_5(TokenChars, TokenLine);
+yyaction(5, _, _, TokenLine) ->
+    yyaction_5(TokenLine);
 yyaction(6, _, _, TokenLine) ->
     yyaction_6(TokenLine);
-yyaction(7, _, _, TokenLine) ->
-    yyaction_7(TokenLine);
+yyaction(7, TokenLen, YYtcs, TokenLine) ->
+    TokenChars = yypre(YYtcs, TokenLen),
+    yyaction_7(TokenChars, TokenLine);
 yyaction(8, TokenLen, YYtcs, TokenLine) ->
     TokenChars = yypre(YYtcs, TokenLen),
     yyaction_8(TokenChars, TokenLine);
@@ -1389,132 +1357,124 @@ yyaction(13, TokenLen, YYtcs, TokenLine) ->
 yyaction(14, TokenLen, YYtcs, TokenLine) ->
     TokenChars = yypre(YYtcs, TokenLen),
     yyaction_14(TokenChars, TokenLine);
-yyaction(15, TokenLen, YYtcs, TokenLine) ->
-    TokenChars = yypre(YYtcs, TokenLen),
-    yyaction_15(TokenChars, TokenLine);
+yyaction(15, _, _, TokenLine) ->
+    yyaction_15(TokenLine);
 yyaction(16, _, _, TokenLine) ->
     yyaction_16(TokenLine);
-yyaction(17, _, _, TokenLine) ->
-    yyaction_17(TokenLine);
-yyaction(18, TokenLen, YYtcs, TokenLine) ->
+yyaction(17, TokenLen, YYtcs, TokenLine) ->
     TokenChars = yypre(YYtcs, TokenLen),
-    yyaction_18(TokenChars, TokenLine);
+    yyaction_17(TokenChars, TokenLine);
+yyaction(18, _, _, _) ->
+    yyaction_18();
 yyaction(19, _, _, _) ->
     yyaction_19();
 yyaction(20, _, _, _) ->
     yyaction_20();
-yyaction(21, _, _, _) ->
-    yyaction_21();
 yyaction(_, _, _, _) -> error.
 
 -compile({inline,yyaction_0/2}).
--file("src/dfs_lexer.xrl", 25).
+-file("src/dfs_lexer.xrl", 24).
 yyaction_0(TokenChars, TokenLine) ->
-     { token, { 'if', TokenLine, list_to_atom (TokenChars) } } .
-
--compile({inline,yyaction_1/2}).
--file("src/dfs_lexer.xrl", 26).
-yyaction_1(TokenChars, TokenLine) ->
      { token, { var, TokenLine, list_to_atom (TokenChars) } } .
 
--compile({inline,yyaction_2/2}).
--file("src/dfs_lexer.xrl", 27).
-yyaction_2(TokenChars, TokenLine) ->
+-compile({inline,yyaction_1/2}).
+-file("src/dfs_lexer.xrl", 25).
+yyaction_1(TokenChars, TokenLine) ->
      { token, { def, TokenLine, list_to_atom (TokenChars) } } .
 
--compile({inline,yyaction_3/2}).
--file("src/dfs_lexer.xrl", 28).
-yyaction_3(TokenChars, TokenLine) ->
+-compile({inline,yyaction_2/2}).
+-file("src/dfs_lexer.xrl", 26).
+yyaction_2(TokenChars, TokenLine) ->
      { token, { operator, TokenLine, list_to_atom (TokenChars) } } .
 
--compile({inline,yyaction_4/2}).
--file("src/dfs_lexer.xrl", 29).
-yyaction_4(TokenChars, TokenLine) ->
+-compile({inline,yyaction_3/2}).
+-file("src/dfs_lexer.xrl", 27).
+yyaction_3(TokenChars, TokenLine) ->
      { token, { stream_id, TokenLine, list_to_binary (TokenChars) } } .
 
--compile({inline,yyaction_5/2}).
--file("src/dfs_lexer.xrl", 30).
-yyaction_5(TokenChars, TokenLine) ->
+-compile({inline,yyaction_4/2}).
+-file("src/dfs_lexer.xrl", 28).
+yyaction_4(TokenChars, TokenLine) ->
      { token, { lambda, TokenLine, list_to_binary (lists : sublist (TokenChars, 9, length (TokenChars))) } } .
 
--compile({inline,yyaction_6/1}).
--file("src/dfs_lexer.xrl", 31).
-yyaction_6(TokenLine) ->
+-compile({inline,yyaction_5/1}).
+-file("src/dfs_lexer.xrl", 29).
+yyaction_5(TokenLine) ->
      { token, { user_node, TokenLine, user_node } } .
 
--compile({inline,yyaction_7/1}).
--file("src/dfs_lexer.xrl", 32).
-yyaction_7(TokenLine) ->
+-compile({inline,yyaction_6/1}).
+-file("src/dfs_lexer.xrl", 30).
+yyaction_6(TokenLine) ->
      { token, { node, TokenLine, node } } .
 
--compile({inline,yyaction_8/2}).
--file("src/dfs_lexer.xrl", 33).
-yyaction_8(TokenChars, TokenLine) ->
+-compile({inline,yyaction_7/2}).
+-file("src/dfs_lexer.xrl", 31).
+yyaction_7(TokenChars, TokenLine) ->
      { token, { duration, TokenLine, list_to_binary (TokenChars) } } .
 
--compile({inline,yyaction_9/2}).
--file("src/dfs_lexer.xrl", 34).
-yyaction_9(TokenChars, TokenLine) ->
+-compile({inline,yyaction_8/2}).
+-file("src/dfs_lexer.xrl", 32).
+yyaction_8(TokenChars, TokenLine) ->
      { token, { identifier, TokenLine, list_to_binary (TokenChars) } } .
+
+-compile({inline,yyaction_9/2}).
+-file("src/dfs_lexer.xrl", 33).
+yyaction_9(TokenChars, TokenLine) ->
+     { token, { reference, TokenLine, unquote (TokenChars) } } .
 
 -compile({inline,yyaction_10/2}).
 -file("src/dfs_lexer.xrl", 35).
 yyaction_10(TokenChars, TokenLine) ->
-     { token, { reference, TokenLine, unquote (TokenChars) } } .
-
--compile({inline,yyaction_11/2}).
--file("src/dfs_lexer.xrl", 37).
-yyaction_11(TokenChars, TokenLine) ->
      { token, { float, TokenLine, list_to_float (TokenChars) } } .
 
--compile({inline,yyaction_12/2}).
--file("src/dfs_lexer.xrl", 38).
-yyaction_12(TokenChars, TokenLine) ->
+-compile({inline,yyaction_11/2}).
+-file("src/dfs_lexer.xrl", 36).
+yyaction_11(TokenChars, TokenLine) ->
      { token, { int, TokenLine, list_to_integer (TokenChars) } } .
 
--compile({inline,yyaction_13/2}).
--file("src/dfs_lexer.xrl", 39).
-yyaction_13(TokenChars, TokenLine) ->
+-compile({inline,yyaction_12/2}).
+-file("src/dfs_lexer.xrl", 37).
+yyaction_12(TokenChars, TokenLine) ->
      { token, { string, TokenLine, list_to_binary (strip (TokenChars, length (TokenChars))) } } .
 
--compile({inline,yyaction_14/2}).
--file("src/dfs_lexer.xrl", 40).
-yyaction_14(TokenChars, TokenLine) ->
+-compile({inline,yyaction_13/2}).
+-file("src/dfs_lexer.xrl", 38).
+yyaction_13(TokenChars, TokenLine) ->
      { token, { text, TokenLine, list_to_binary (strip (TokenChars, length (TokenChars))) } } .
 
--compile({inline,yyaction_15/2}).
--file("src/dfs_lexer.xrl", 41).
-yyaction_15(TokenChars, TokenLine) ->
+-compile({inline,yyaction_14/2}).
+-file("src/dfs_lexer.xrl", 39).
+yyaction_14(TokenChars, TokenLine) ->
      { token, { regex, TokenLine, prep_regex (TokenChars) } } .
 
--compile({inline,yyaction_16/1}).
--file("src/dfs_lexer.xrl", 42).
-yyaction_16(TokenLine) ->
+-compile({inline,yyaction_15/1}).
+-file("src/dfs_lexer.xrl", 40).
+yyaction_15(TokenLine) ->
      { token, { bool, TokenLine, true } } .
 
--compile({inline,yyaction_17/1}).
--file("src/dfs_lexer.xrl", 43).
-yyaction_17(TokenLine) ->
+-compile({inline,yyaction_16/1}).
+-file("src/dfs_lexer.xrl", 41).
+yyaction_16(TokenLine) ->
      { token, { bool, TokenLine, false } } .
 
--compile({inline,yyaction_18/2}).
--file("src/dfs_lexer.xrl", 45).
-yyaction_18(TokenChars, TokenLine) ->
+-compile({inline,yyaction_17/2}).
+-file("src/dfs_lexer.xrl", 43).
+yyaction_17(TokenChars, TokenLine) ->
      { token, { list_to_atom (TokenChars), TokenLine } } .
 
+-compile({inline,yyaction_18/0}).
+-file("src/dfs_lexer.xrl", 44).
+yyaction_18() ->
+     skip_token .
+
 -compile({inline,yyaction_19/0}).
--file("src/dfs_lexer.xrl", 46).
+-file("src/dfs_lexer.xrl", 45).
 yyaction_19() ->
      skip_token .
 
 -compile({inline,yyaction_20/0}).
--file("src/dfs_lexer.xrl", 47).
+-file("src/dfs_lexer.xrl", 46).
 yyaction_20() ->
-     skip_token .
-
--compile({inline,yyaction_21/0}).
--file("src/dfs_lexer.xrl", 48).
-yyaction_21() ->
      skip_token .
 
 -file("/opt/erlang/18.3/lib/parsetools-2.1.1/include/leexinc.hrl", 290).

@@ -1,14 +1,13 @@
 % Lexer for Dataflow framework
 Definitions.
 
-If              = (if)
 Lambda          = lambda:(\s|\t)*
 StreamId        = [\'][0-9]\.[0-9]{3}\.[0-9a-zA-Z]*[\']
 Reference       = \"(\"\"|[^\"\n]|[\.])*\"
 Operator        = (\+|-|\*|\/|==|!=|<|<=|>|>=|=~|!~|!|AND|OR|div|rem)
 Duration        = (\+|-)?[1-9]+[0-9]*(m|ms|s|h|d|w)
 Identifier      = [a-z_][0-9a-zA-Z_\.]*
-Int             = (\+|-)?[1-9]+[0-9]*
+Int             = (\+|-)?(0|[1-9])+[0-9]*
 Float           = (\+|-)?[0-9]+[\.]+[0-9]+
 %Float           = (\+|-)?[0-9]+\.[0-9]+((E|e)(\+|-)?[0-9]+)?
 Digit           = [0-9]+
@@ -24,7 +23,6 @@ Slash           = [\\\"]
 
 Rules.
 
-{If}            :   {token, {'if', TokenLine, list_to_atom(TokenChars)}}.
 var             :   {token, {var, TokenLine, list_to_atom(TokenChars)}}.
 def             :   {token, {def, TokenLine, list_to_atom(TokenChars)}}.
 {Operator}      :   {token, {operator,TokenLine,list_to_atom(TokenChars)}}.
