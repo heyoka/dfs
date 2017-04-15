@@ -10,12 +10,11 @@ This DSL will be used along with [dataflow](https://github.com/heyoka/dataflow) 
 an Analytics Framework on top of dataflow computations powered by erlang style message passing.
 
 # Status
-In Progress
+Feature Complete, still more test to add
 
 # Notable Differences from TICKscript
  * For Declarations the keyword 'def' is used instead of 'var'
- * Erlang-Style comments with '%'
- * There is no if statement in Lambda-Expressions, yet
+ * Erlang-Style comments with '%' 
  * Regular Expressions start and end with '?'
  * Built-In Functions (math, erlang and custom modules)
 
