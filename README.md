@@ -47,6 +47,16 @@ Lambda Expressions Parameter
 
     in1
       |where(lambda: "host" == 'server001.example.com'))
+      
+Complex Lambda Expression with if Statement
+
+    def threshold = 333
+    def boolTrue = true
+    def boolFalse = false
+    
+    def in12 =
+        |eval(lambda: if(( "ts" > (max(threshold,23.55) + 2)), boolTrue, boolFalse) )
+        .as('ts_greater')
 
 Long Chain Statement with multiple Nodes
 
