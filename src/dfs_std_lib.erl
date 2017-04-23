@@ -23,18 +23,35 @@
 %% Data Type Conversions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% @doc type conversion to a boolean value
+%%
+%% any number less than zero : 'false',
+%% any empty binary or binary-string : 'false',
+%% the atom false: 'false',
+%% anything else : 'true' 
+%%
+-spec bool(any()) -> true|false.
 bool(V) when is_integer(V) orelse is_float(V) ->
    V > 0;
-bool(V) when is_list(V) ->
-   case string_to_number(V) of
-      false -> false;
+bool(<<"">>) -> false;
+bool(<<>>) -> false;
+bool(V) when is_binary(V) ->
+   case binary_to_number(V) of
+      false -> byte_size(V) /= 0;
       V1    -> bool(V1)
    end;
-bool(V) ->
-   V.
+bool(false) -> false;
+bool(V) when is_atom(V) ->
+   true.
 
-int(V) when is_list(V) ->
-   case string_to_number(V) of
+%% @doc type conversion to an integer value
+%%
+%% the atom true : 1,
+%% the atom false: 0,
+%% any binary that can not be converted to a number value : 0
+-spec int(any()) -> integer().
+int(V) when is_binary(V) ->
+   case binary_to_number(V) of
       false -> 0;
       Value -> erlang:trunc(Value)
    end;
@@ -47,10 +64,16 @@ int(true) ->
 int(false) ->
    0.
 
-float(V) when is_list(V) ->
-   case string_to_number(V) of
+%% @doc type conversion to a float value
+%%
+%% the atom true : 1.0,
+%% the atom false: 0.0,
+%% any binary that can not be converted to a number value : 0
+-spec float(any()) -> float().
+float(V) when is_binary(V) ->
+   case binary_to_number(V) of
       false -> 0.0;
-      Value -> Value
+      Value -> erlang:float(Value)
    end;
 float(true) ->
    1.0;
@@ -61,18 +84,21 @@ float(V) when is_number(V) ->
 float(V) ->
    V.
 
+%% @doc type conversion to a binary-string value
+%%
+-spec string(any()) -> binary().
 string(V) when is_integer(V) ->
    integer_to_binary(V);
 string(V) when is_float(V) ->
    float_to_binary(V);
 string(V) when is_binary(V) ->
    V;
+string(V) when is_atom(V) ->
+   list_to_binary(atom_to_list(V));
 string(true) ->
    <<"true">>;
 string(false) ->
-   <<"false">>;
-string(V) ->
-   V.
+   <<"false">>.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,7 +123,7 @@ max(Val1, Val2) ->
 
 
 %%%%%%%%%%%%%%% Internal %%%%%%%%%%%%%%%%%%%%%%%%
-string_to_number(L) when is_list(L) ->
+binary_to_number(L) when is_binary(L) ->
    Float = (catch erlang:binary_to_float(L)),
    case is_number(Float) of
       true -> Float;

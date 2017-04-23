@@ -173,7 +173,7 @@ str_lstrip(String) when is_binary(String) ->
 str_lstrip(Other, Char) when is_binary(Other), is_integer(Char), Char >= 0 ->
     'Elixir.String':lstrip(Other, Char).
 
-%% @doc Check if string matches the given regular expression
+%% Check if string matches the given regular expression
 %% match(String, Regex) when is_binary(String) ->
 %%    'Elixir.String':'match?'(String, Regex).
 
@@ -246,7 +246,7 @@ str_rstrip(String) when is_binary(String) ->
 str_rstrip(String, Char) when is_binary(String), is_integer(Char), Char >= 0 ->
     'Elixir.String':rstrip(String, Char).
 
-%% @doc Returns a substring from the offset given by the start of the range to the offset given by the end of the range
+%%  Returns a substring from the offset given by the start of the range to the offset given by the end of the range
 %%slice(String, Start, End) when is_binary(String), is_integer(Start), is_integer(End) ->
 %%    ElixirRange = {todo, Start, End},
 %%    'Elixir.String':slice(String, ElixirRange).
