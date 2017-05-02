@@ -68,7 +68,9 @@ parse_file(FileName, Libs) ->
 parse(StringData) ->
    parse(StringData, []).
 
--spec parse(list(), list()) -> list().
+-spec parse(binary()|list(), list()) -> list().
+parse(Binary, Libs) when is_binary(Binary) ->
+   parse(binary_to_list(Binary), Libs);
 parse(String, Libs) when is_list(String) andalso is_list(Libs) ->
    LambdaLibs = [dfs_std_lib, estr] ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
