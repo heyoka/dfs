@@ -4,19 +4,72 @@
 -author("Alexander Minichmair").
 
 %% API
--export([parse/1, parse/2]).
+-export([parse/1, parse/2, parse_file/1, parse_file/2]).
 
--export([test/0]).
+-export([test/0
+   , string_test/0
+]).
 
 test() ->
-   parse("src/test_script.dfs").
+   parse_file("src/test_script.dfs"),
+   string_test().
+
+string_test() ->
+   parse(
+
+     "
+      def m = 'pm'
+      def inStreamId = '1.004.987349f9e87fwef'
+      def outStreamId = '2.404.5dfgs555sa5df5a'
+      % false lambda: must be speicifed before primary-expr
+      def host = 'de.example.com'
+      def dead_message = 'LOW on CARBONIDE !!!'
+      def deadman_period = 15m
+      def bool = TRUE
+      def number = 33.4434
+      def in1 =
+         |stream_in(bool)
+         .from(inStreamId)
+
+      def in2 =
+         |stream_in()
+         .from('1.004.987349f9e87fwef')
+
+      in2
+         |join(in1)
+         .on('val')
+         .translate(
+            ?_chair?, %% 'red_chair', red_desk
+            lambda: \"opmean.val\" + 2 * max(\"val1\", \"val2\")/3,
+            myNextParam,
+            lambda: (\"max\" - \"min\") /2,
+            lambda: string(\"max\") == '5',
+            lambda: str_ends_with(inStreamId, 'fwef'),
+            lambda: str_ends_with(\"muxolo\", 'olo'),
+            lambda: lookup(deadman_period) + number,
+            lambda: string(bool)
+           )
+
+         |lambda(
+            lambda: str_trim(\"host\") == 'server001.example.com',
+            mode,
+            '12354688978' %% numberstring here
+         )"
+   ).
 
 -spec parse(list()) -> list().
-parse(FileName) when is_list(FileName) ->
-   parse(FileName, []).
+parse_file(FileName) when is_list(FileName) ->
+   parse_file(FileName, []).
+parse_file(FileName, Libs) ->
+   {ok, Data} = file:read_file(FileName),
+   StringData = binary_to_list(binary:replace(Data, <<"\\">>, <<>>, [global])),
+   parse(StringData, Libs).
+
+parse(StringData) ->
+   parse(StringData, []).
 
 -spec parse(list(), list()) -> list().
-parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
+parse(String, Libs) when is_list(String) andalso is_list(Libs) ->
    LambdaLibs = [dfs_std_lib, estr] ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
    %% ensure libs are there for us
@@ -25,7 +78,7 @@ parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
    ets:insert(?MODULE, {lfunc, FLibs}),
 
    Res =
-   case parse_file(FileName) of
+   case dfs_lexer:string(String) of
       {ok, Tokens, _EndLine} ->
          %io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
          case dfs_parser:parse(Tokens) of
@@ -48,10 +101,6 @@ parse(FileName, Libs) when is_list(FileName) andalso is_list(Libs) ->
    Res.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-parse_file(FileName) ->
-   {ok, Data} = file:read_file(FileName),
-   StringData = binary_to_list(binary:replace(Data, <<"\\">>, <<>>)),
-   dfs_lexer:string(StringData).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
