@@ -11,9 +11,10 @@
 ]).
 
 test() ->
-   parse_file("src/test_script.dfs"),
-   string_test().
-
+   parse_file("src/_test_script.dfs")
+%%   ,
+%%   string_test().
+.
 string_test() ->
    parse(
 
@@ -107,6 +108,7 @@ parse(String, Libs) when is_list(String) andalso is_list(Libs) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 eval(Tree) when is_list(Tree) ->
+%%   io:format("Tree: ~p~n",[Tree]),
    Data = lists:foldl(
       fun(E, {Ns, Cs}=A) ->
          case eval(E) of
@@ -127,6 +129,20 @@ eval({statement, {declarate, DecName, {chain, Chain}}}) ->
 %%   {LastNodeName, _LNP, _NP} = lists:last(ChainNodes),
 %%   io:format("stmt CHAIN DECLARATION: ~p  ~n" ,[{DecName, ChainNodes}]),
    C;
+eval({statement, {declarate, DecName, {ident_expr, Identifier, {chain, Chain}}}}) ->
+%%   io:format("~n(param) DECLARATE ~p identifier  CHAIN lookup for: ~p found: ~p~n",[DecName, Identifier, get_declaration(Identifier)]),
+   {{nodes, ChainNodes}, {connections, Connections}} = Cs = chain(Chain),
+   save_chain_declaration(DecName, ChainNodes),
+%%   io:format("NodesANDConnections: ~p~n",[Cs]),
+   {Node,_,_} = hd(ChainNodes),
+   NewConns =
+      case get_declaration(Identifier) of
+         nil -> erlang:error("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
+         {connect, Name} -> %io:format("~n<identifier exp> connect node ~p to node ~p~n",[Name, Node]),
+            [{Node,Name}|Connections]
+      end,
+%%   io:format("stmt IDENTIFIER EXPR: ~p ~n" ,[{Identifier, {{nodes, ChainNodes}, {connections, NewConns}}}]),
+   {{nodes, ChainNodes}, {connections, NewConns}};
 eval({statement, {declarate, DecName, DecValue}}) ->
    save_declaration(DecName, DecValue);
 eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->

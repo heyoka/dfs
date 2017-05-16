@@ -7,4 +7,10 @@
     in1
     |eval(lambda: threshold > 444)
 
+  def in2 = in1
+  |eval(lambda: "val" / 2)
+
+  in2
+    |top(3)
+
 

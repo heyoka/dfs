@@ -1,3 +1,5 @@
+%% Disclaimer : This script does not reflect any real application of the dfs script-language,
+%% simply, it does not make sense at all ;)
 
    %% Definitions
    def inStreamId = '1.004.987349f9e87fwef'
@@ -80,6 +82,10 @@
   def boolTrue = true
   def boolFalse = false
   def in12 =
+    in1
     |eval(lambda: if(( "ts" > (max(threshold,23.55) + 2)), boolTrue, boolFalse) )
     .as('ts_greater')
+
+    in12
+    |push(13)
 
