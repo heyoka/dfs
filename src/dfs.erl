@@ -4,14 +4,17 @@
 -author("Alexander Minichmair").
 
 %% API
--export([parse/1, parse/2, parse_file/1, parse_file/2]).
+-export([parse/1, parse/2, parse/3, parse_file/1, parse_file/2, parse_file/3]).
 
 -export([test/0
    , string_test/0
 ]).
 
+%% testing value overriding, here 'threhold' from the example script will be
+%% replaced with a value of 111
+%% the replacement value must match exactly the original values datatpye (int, float, string, ...)
 test() ->
-   parse_file("src/_test_script.dfs")
+   parse_file("src/_test_script.dfs", [], [{<<"threshold">>, 111}])
 %%   ,
 %%   string_test().
 .
@@ -60,26 +63,31 @@ string_test() ->
 
 -spec parse(list()) -> list().
 parse_file(FileName) when is_list(FileName) ->
-   parse_file(FileName, []).
+   parse_file(FileName, [], []).
 parse_file(FileName, Libs) ->
+   parse_file(FileName, Libs, []).
+parse_file(FileName, Libs, Replacements) ->
    {ok, Data} = file:read_file(FileName),
    StringData = binary_to_list(binary:replace(Data, <<"\\">>, <<>>, [global])),
-   parse(StringData, Libs).
+   parse(StringData, Libs, Replacements).
 
 parse(StringData) ->
-   parse(StringData, []).
+   parse(StringData, [], []).
 
--spec parse(binary()|list(), list()) -> list().
-parse(Binary, Libs) when is_binary(Binary) ->
-   parse(binary_to_list(Binary), Libs);
-parse(String, Libs) when is_list(String) andalso is_list(Libs) ->
+parse(D, Libs) ->
+   parse(D, Libs, []).
+
+-spec parse(binary()|list(), list(), list()) -> list().
+parse(Binary, Libs, Replacements) when is_binary(Binary) ->
+   parse(binary_to_list(Binary), Libs, Replacements);
+parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    LambdaLibs = [dfs_std_lib, estr] ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
    %% ensure libs are there for us
    lists:foreach(fun(E) -> code:ensure_loaded(E) end, FLibs),
    ets:new(?MODULE, [set, public, named_table]),
    ets:insert(?MODULE, {lfunc, FLibs}),
-
+   ets:insert(?MODULE, {replace_def, Replacements} ),
    Res =
    case dfs_lexer:string(String) of
       {ok, Tokens, _EndLine} ->
@@ -87,13 +95,8 @@ parse(String, Libs) when is_list(String) andalso is_list(Libs) ->
          case dfs_parser:parse(Tokens) of
             {ok, Data} -> %io:format("~nDATA: ~n~p~n",[Data]),
                eval(Data);
-%%               case (catch parse(Data)) of
-%%                             Statements when is_list(Statements) -> Statements;
-%%                             {'EXIT', {Message, _Trace}} -> {error, Message};
-%%                             Error1 -> Error1
-%%                          end;
-
-            {error, {LN, dfs_parser, Message}} -> {{parser_error, line, LN}, Message};
+            {error, {LN, dfs_parser, Message}} ->
+               {{parser_error, line, LN}, Message};
             Error -> Error
          end;
       {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
@@ -382,9 +385,20 @@ lexp({pfunc, {FName, {params, Params}}}) ->
 lexp({pfunc, FName}) ->
    pfunction(binary_to_list(FName), 0) ++ "()".
 
-
-save_declaration(Ident, Value) ->
-   ets:insert(?MODULE, {Ident, Value}).
+%% save a simple declaration,
+%% here is where declaration - overwriting happens,
+%% you know for templates: every declaration (def keyword) which is not a chain-declaration
+%% can be overwritten with a custom value
+save_declaration(Ident, {VType, VLine, _Val}=Value) ->
+   [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
+   RVal = proplists:get_value(Ident, Replacements, norepl),
+   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
+   NewValue =
+   case RVal of
+      norepl -> Value;
+      NVal  -> {VType, VLine, NVal}
+   end,
+   ets:insert(?MODULE, {Ident, NewValue}).
 save_chain_declaration(Ident, Nodes) when is_list(Nodes) ->
    LastNode = lists:last(Nodes),
    {NodeName, _Np, _NCP} = LastNode,
