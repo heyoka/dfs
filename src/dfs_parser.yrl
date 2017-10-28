@@ -29,12 +29,14 @@ expression        -> primary  : '$1'.
 expression        -> primaryExpr : '$1'.
 expression        -> string_list : '$1'.
 
-chain             -> user_node function chain : [{unwrap('$1'), unwrap1('$2')}] ++ '$3'.
+%chain             -> user_node function chain : [{unwrap('$1'), unwrap1('$2')}] ++ '$3'.
+chain             -> user_node function chain : [unwrap_node_func({user_node, unwrap1('$2')})] ++ '$3'.
 chain             -> node function chain : [unwrap_node_func({node, unwrap1('$2')})] ++ '$3'.
 chain             -> '.' function chain : ['$2'] ++ '$3'.
 chain             -> '.' identifier chain : ['$2'] ++ '$3'.
 chain             -> '.' function : ['$2'].
 chain             -> node function : [unwrap_node_func({node, unwrap1('$2')})].
+chain             -> user_node function : [unwrap_node_func({user_node, unwrap1('$2')})].
 
 primaryExpr      -> primaryExpr primaryExpr: ['$1']++['$2'].
 primaryExpr      -> operator primary : {pexp, ['$1', '$2']}.
@@ -94,4 +96,5 @@ unwrap({pexp,_V}=P) -> P;
 unwrap({_,_,V}) -> V;
 unwrap(V) when is_list(V) -> lists:flatten(V).
 unwrap_node_func({node, {N, P}}) -> {node, N, P};
+unwrap_node_func({user_node, {N, P}}) -> {user_node, N, P};
 unwrap_node_func(V) -> V.

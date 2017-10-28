@@ -8,13 +8,13 @@
 
 -export([test/0
    , string_test/0
-]).
+   , user_node/1]).
 
 %% testing value overriding, here 'threhold' from the example script will be
 %% replaced with a value of 111
 %% the replacement value must match exactly the original values datatpye (int, float, string, ...)
 test() ->
-   parse_file("src/_test_script.dfs", [], [{<<"threshold">>, 111}])
+   parse_file("src/test_script.dfs", [], [{<<"threshold">>, 111}])
 %%   ,
 %%   string_test().
 .
@@ -170,17 +170,40 @@ chain(ChainElements) when is_list(ChainElements) ->
          ({node, NodeName, {params, Params}}, #{nodes := [], current := {}}=Acc) ->
             Id = node_id(),
             Acc#{nodes => [], current => {{NodeName, Id}, params(Params), []}};
-         ({node, NodeName, {params, Params}}, #{nodes := Ns, current := {Node, _NodePars, _Pas}=NP,conns := Cs}=Acc) ->
+         ({node, NodeName, {params, Params}}, #{nodes := Ns, current := {Node, _NodePars, _Pas}=NP,
+            conns := Cs}=Acc) ->
             %io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
             Id = node_id(),
-            Acc#{nodes => (Ns ++ [NP]), current => {{NodeName, Id}, params(Params), []}, conns => [{{NodeName, Id}, Node}|Cs]};
+            Acc#{nodes => (Ns ++ [NP]), current => {{NodeName, Id}, params(Params), []},
+               conns => [{{NodeName, Id}, Node}|Cs]};
          ({node, NodeName}, #{nodes := [], current := {}}=Acc) ->
             Id = node_id(),
             Acc#{nodes => [], current => {{NodeName,Id}, [], []}};
-         ({node, NodeName}, #{nodes := Ns, current := {Node, _NodeParams, _Params}=CN, conns := Cs}=Acc) ->
+         ({node, NodeName}, #{nodes := Ns, current := {Node, _NodeParams, _Params}=CN,
+            conns := Cs}=Acc) ->
             Id = node_id(),
 %%            io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
-            Acc#{nodes => Ns++[CN], current => {{NodeName, Id}, [], []}, conns => [{{NodeName,Id}, Node}|Cs]};
+            Acc#{nodes => Ns++[CN], current => {{NodeName, Id}, [], []},
+               conns => [{{NodeName,Id}, Node}|Cs]};
+         ({user_node, NodeName, {params, Params}}, #{nodes := [], current := {}}=Acc) ->
+            Id = node_id(),
+            Acc#{nodes => [], current => {{user_node(NodeName), Id}, params(Params), []}};
+         ({user_node, NodeName, {params, Params}}, #{nodes := Ns, current := {Node, _NodePars, _Pas}=NP,
+            conns := Cs}=Acc) ->
+            %io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
+            Id = node_id(),
+            io:format("user_node_name: ~p~n",[NodeName]),
+            Acc#{nodes => (Ns ++ [NP]), current => {{user_node(NodeName), Id},
+               params(Params), []}, conns => [{{user_node(NodeName), Id}, Node}|Cs]};
+         ({user_node, NodeName}, #{nodes := [], current := {}}=Acc) ->
+            Id = node_id(),
+            Acc#{nodes => [], current => {{user_node(NodeName),Id}, [], []}};
+         ({user_node, NodeName}, #{nodes := Ns, current := {Node, _NodeParams, _Params}=CN,
+            conns := Cs}=Acc) ->
+            Id = node_id(),
+%%            io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
+            Acc#{nodes => Ns++[CN], current => {{user_node(NodeName), Id}, [], []},
+               conns => [{{user_node(NodeName),Id}, Node}|Cs]};
          ({func, Name, {params, Params}}, #{current := {Node, NodeParams, Ps}}=Acc) ->
             Acc#{current := {Node, NodeParams, Ps++[{Name, params(Params)}]}};
          ({func, Name}, #{current := {Node, NodeParams, Ps}}=Acc) ->
@@ -417,6 +440,9 @@ unwrap({_T, Cotents}) ->
    Cotents;
 unwrap(V) ->
    V.
+
+user_node(Name) ->
+   << <<"@">>/binary, Name/binary>>.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA FUNCTIONS %%%%%%%%%%%%%%%%%%%
 pfunction(FName, PCount) when is_list(FName) ->

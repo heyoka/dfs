@@ -57,8 +57,8 @@
       .field('val')
       .as('mean', 'diff')
       .align(lambda: (hour("ts")) > 3 AND (hour("ts") < 9))
-   %   @outlier()
-    %   .tolerance(sigma())
+      @outlier()
+       .tolerance(sigma())
 
       %% write to outstream
       |stream_out(outStreamId)
@@ -88,4 +88,7 @@
 
     in12
     |push(13)
+
+    @moving_avg("gold")
+    .step_size(14)
 

@@ -1,6 +1,6 @@
 -module(dfs_parser).
 -export([parse/1, parse_and_scan/1, format_error/1]).
--file("src/dfs_parser.yrl", 80).
+-file("src/dfs_parser.yrl", 82).
 
 unwrapParams(L) -> unwrapParams(L, []).
 unwrapParams([], Acc) -> lists:flatten(lists:reverse(Acc));
@@ -17,6 +17,7 @@ unwrap({pexp,_V}=P) -> P;
 unwrap({_,_,V}) -> V;
 unwrap(V) when is_list(V) -> lists:flatten(V).
 unwrap_node_func({node, {N, P}}) -> {node, N, P};
+unwrap_node_func({user_node, {N, P}}) -> {user_node, N, P};
 unwrap_node_func(V) -> V.
 -file("/opt/erlang/18.3/lib/parsetools-2.1.1/include/yeccpre.hrl", 0).
 %%
@@ -192,7 +193,7 @@ yecctoken2string(Other) ->
 
 
 
--file("src/dfs_parser.erl", 195).
+-file("src/dfs_parser.erl", 196).
 
 -dialyzer({nowarn_function, yeccpars2/7}).
 yeccpars2(0=S, Cat, Ss, Stack, T, Ts, Tzr) ->
@@ -733,15 +734,16 @@ yeccpars2_34(_S, Cat, Ss, Stack, T, Ts, Tzr) ->
  NewStack = yeccpars2_34_(Stack),
  yeccgoto_declaration(hd(Nss), Cat, Nss, NewStack, T, Ts, Tzr).
 
--dialyzer({nowarn_function, yeccpars2_35/7}).
 yeccpars2_35(S, '.', Ss, Stack, T, Ts, Tzr) ->
  yeccpars1(S, 14, Ss, Stack, T, Ts, Tzr);
 yeccpars2_35(S, node, Ss, Stack, T, Ts, Tzr) ->
  yeccpars1(S, 22, Ss, Stack, T, Ts, Tzr);
 yeccpars2_35(S, user_node, Ss, Stack, T, Ts, Tzr) ->
  yeccpars1(S, 30, Ss, Stack, T, Ts, Tzr);
-yeccpars2_35(_, _, _, _, T, _, _) ->
- yeccerror(T).
+yeccpars2_35(_S, Cat, Ss, Stack, T, Ts, Tzr) ->
+ [_|Nss] = Ss,
+ NewStack = yeccpars2_35_(Stack),
+ yeccgoto_chain(hd(Nss), Cat, Nss, NewStack, T, Ts, Tzr).
 
 -dialyzer({nowarn_function, yeccpars2_36/7}).
 yeccpars2_36(S, '(', Ss, Stack, T, Ts, Tzr) ->
@@ -1222,10 +1224,17 @@ yeccpars2_83(_S, Cat, Ss, Stack, T, Ts, Tzr) ->
  NewStack = yeccpars2_83_(Stack),
  yeccgoto_string_list(hd(Nss), Cat, Nss, NewStack, T, Ts, Tzr).
 
+-dialyzer({nowarn_function, yeccpars2_84/7}).
 yeccpars2_84(S, '(', Ss, Stack, T, Ts, Tzr) ->
  yeccpars1(S, 37, Ss, Stack, T, Ts, Tzr);
-yeccpars2_84(S, Cat, Ss, Stack, T, Ts, Tzr) ->
- yeccpars2_35(S, Cat, Ss, Stack, T, Ts, Tzr).
+yeccpars2_84(S, '.', Ss, Stack, T, Ts, Tzr) ->
+ yeccpars1(S, 14, Ss, Stack, T, Ts, Tzr);
+yeccpars2_84(S, node, Ss, Stack, T, Ts, Tzr) ->
+ yeccpars1(S, 22, Ss, Stack, T, Ts, Tzr);
+yeccpars2_84(S, user_node, Ss, Stack, T, Ts, Tzr) ->
+ yeccpars1(S, 30, Ss, Stack, T, Ts, Tzr);
+yeccpars2_84(_, _, _, _, T, _, _) ->
+ yeccerror(T).
 
 yeccpars2_85(_S, Cat, Ss, Stack, T, Ts, Tzr) ->
  [_|Nss] = Ss,
@@ -1483,7 +1492,7 @@ yeccpars2_3_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_6_/1}).
--file("src/dfs_parser.yrl", 41).
+-file("src/dfs_parser.yrl", 43).
 yeccpars2_6_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1522,8 +1531,16 @@ yeccpars2_34_(__Stack0) ->
    { declarate , unwrap ( __2 ) , __4 }
   end | __Stack].
 
+-compile({inline,yeccpars2_35_/1}).
+-file("src/dfs_parser.yrl", 35).
+yeccpars2_35_(__Stack0) ->
+ [__2,__1 | __Stack] = __Stack0,
+ [begin
+   [ unwrap_node_func ( { user_node , unwrap1 ( __2 ) } ) ]
+  end | __Stack].
+
 -compile({inline,yeccpars2_41_/1}).
--file("src/dfs_parser.yrl", 64).
+-file("src/dfs_parser.yrl", 66).
 yeccpars2_41_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1531,7 +1548,7 @@ yeccpars2_41_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_42_/1}).
--file("src/dfs_parser.yrl", 41).
+-file("src/dfs_parser.yrl", 43).
 yeccpars2_42_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1539,7 +1556,7 @@ yeccpars2_42_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_43_/1}).
--file("src/dfs_parser.yrl", 47).
+-file("src/dfs_parser.yrl", 49).
 yeccpars2_43_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1547,7 +1564,7 @@ yeccpars2_43_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_46_/1}).
--file("src/dfs_parser.yrl", 68).
+-file("src/dfs_parser.yrl", 70).
 yeccpars2_46_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1555,7 +1572,7 @@ yeccpars2_46_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_49_/1}).
--file("src/dfs_parser.yrl", 40).
+-file("src/dfs_parser.yrl", 42).
 yeccpars2_49_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1563,7 +1580,7 @@ yeccpars2_49_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_54_/1}).
--file("src/dfs_parser.yrl", 59).
+-file("src/dfs_parser.yrl", 61).
 yeccpars2_54_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1571,7 +1588,7 @@ yeccpars2_54_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_56_/1}).
--file("src/dfs_parser.yrl", 35).
+-file("src/dfs_parser.yrl", 37).
 yeccpars2_56_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1579,7 +1596,7 @@ yeccpars2_56_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_57_/1}).
--file("src/dfs_parser.yrl", 48).
+-file("src/dfs_parser.yrl", 50).
 yeccpars2_57_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1587,7 +1604,7 @@ yeccpars2_57_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_58_/1}).
--file("src/dfs_parser.yrl", 38).
+-file("src/dfs_parser.yrl", 40).
 yeccpars2_58_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1595,7 +1612,7 @@ yeccpars2_58_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_60_/1}).
--file("src/dfs_parser.yrl", 65).
+-file("src/dfs_parser.yrl", 67).
 yeccpars2_60_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1603,7 +1620,7 @@ yeccpars2_60_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_61_/1}).
--file("src/dfs_parser.yrl", 46).
+-file("src/dfs_parser.yrl", 48).
 yeccpars2_61_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1611,15 +1628,15 @@ yeccpars2_61_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_62_/1}).
--file("src/dfs_parser.yrl", 28).
+-file("src/dfs_parser.yrl", 29).
 yeccpars2_62_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
-   [ { unwrap ( __1 ) , unwrap1 ( __2 ) } ] ++ __3
+   [ unwrap_node_func ( { user_node , unwrap1 ( __2 ) } ) ] ++ __3
   end | __Stack].
 
 -compile({inline,yeccpars2_63_/1}).
--file("src/dfs_parser.yrl", 36).
+-file("src/dfs_parser.yrl", 38).
 yeccpars2_63_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1627,7 +1644,7 @@ yeccpars2_63_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_64_/1}).
--file("src/dfs_parser.yrl", 37).
+-file("src/dfs_parser.yrl", 39).
 yeccpars2_64_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1635,7 +1652,7 @@ yeccpars2_64_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_65_/1}).
--file("src/dfs_parser.yrl", 39).
+-file("src/dfs_parser.yrl", 41).
 yeccpars2_65_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1643,7 +1660,7 @@ yeccpars2_65_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_66_/1}).
--file("src/dfs_parser.yrl", 33).
+-file("src/dfs_parser.yrl", 34).
 yeccpars2_66_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1651,7 +1668,7 @@ yeccpars2_66_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_67_/1}).
--file("src/dfs_parser.yrl", 29).
+-file("src/dfs_parser.yrl", 30).
 yeccpars2_67_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1667,7 +1684,7 @@ yeccpars2_68_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_70_/1}).
--file("src/dfs_parser.yrl", 32).
+-file("src/dfs_parser.yrl", 33).
 yeccpars2_70_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1675,7 +1692,7 @@ yeccpars2_70_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_71_/1}).
--file("src/dfs_parser.yrl", 59).
+-file("src/dfs_parser.yrl", 61).
 yeccpars2_71_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1683,7 +1700,7 @@ yeccpars2_71_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_72_/1}).
--file("src/dfs_parser.yrl", 31).
+-file("src/dfs_parser.yrl", 32).
 yeccpars2_72_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1691,7 +1708,7 @@ yeccpars2_72_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_73_/1}).
--file("src/dfs_parser.yrl", 30).
+-file("src/dfs_parser.yrl", 31).
 yeccpars2_73_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1707,7 +1724,7 @@ yeccpars2_76_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_78_/1}).
--file("src/dfs_parser.yrl", 70).
+-file("src/dfs_parser.yrl", 72).
 yeccpars2_78_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1715,7 +1732,7 @@ yeccpars2_78_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_79_/1}).
--file("src/dfs_parser.yrl", 73).
+-file("src/dfs_parser.yrl", 75).
 yeccpars2_79_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1723,7 +1740,7 @@ yeccpars2_79_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_80_/1}).
--file("src/dfs_parser.yrl", 72).
+-file("src/dfs_parser.yrl", 74).
 yeccpars2_80_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1731,7 +1748,7 @@ yeccpars2_80_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_82_/1}).
--file("src/dfs_parser.yrl", 71).
+-file("src/dfs_parser.yrl", 73).
 yeccpars2_82_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1739,7 +1756,7 @@ yeccpars2_82_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_83_/1}).
--file("src/dfs_parser.yrl", 69).
+-file("src/dfs_parser.yrl", 71).
 yeccpars2_83_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1747,7 +1764,7 @@ yeccpars2_83_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_85_/1}).
--file("src/dfs_parser.yrl", 61).
+-file("src/dfs_parser.yrl", 63).
 yeccpars2_85_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1755,7 +1772,7 @@ yeccpars2_85_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_87_/1}).
--file("src/dfs_parser.yrl", 44).
+-file("src/dfs_parser.yrl", 46).
 yeccpars2_87_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1763,7 +1780,7 @@ yeccpars2_87_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_88_/1}).
--file("src/dfs_parser.yrl", 62).
+-file("src/dfs_parser.yrl", 64).
 yeccpars2_88_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1787,4 +1804,4 @@ yeccpars2_90_(__Stack0) ->
   end | __Stack].
 
 
--file("src/dfs_parser.yrl", 97).
+-file("src/dfs_parser.yrl", 100).
