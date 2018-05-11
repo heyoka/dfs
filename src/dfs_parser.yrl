@@ -6,7 +6,7 @@ primaryExpr function parameters parameter  .
 
 Terminals
 '=' '(' ')' ',' '[' ']' '.' '-' '!'
-var def node user_node string text identifier number bool
+def node user_node string text identifier number bool
 duration regex int stream_id float operator lambda reference.
 
 
@@ -89,12 +89,15 @@ unwrapParams([{primary_exp, _F, _S, _L}=P|R], Acc) -> unwrapParams(R, [P|Acc]);
 unwrapParams([_Exp=P|R], Acc) -> unwrapParams(R, [P|Acc]);
 unwrapParams([{lamdba, S}=P|R], Acc) -> {lambda, S};
 unwrapParams([V|R], Acc) when is_list(V) -> unwrapParams(R, [lists:flatten(V)|Acc]).
+
 unwrap1({_,Name}) -> Name;
 unwrap1({_,Name,{params,Params}}) -> {Name, {params, Params}}.
+
 unwrap({primary_exp,V}) -> V;
 unwrap({pexp,_V}=P) -> P;
 unwrap({_,_,V}) -> V;
 unwrap(V) when is_list(V) -> lists:flatten(V).
+
 unwrap_node_func({node, {N, P}}) -> {node, N, P};
 unwrap_node_func({user_node, {N, P}}) -> {user_node, N, P};
 unwrap_node_func(V) -> V.

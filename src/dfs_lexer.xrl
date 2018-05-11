@@ -51,7 +51,7 @@ Erlang code.
 
 -export([reserved_word/1]).
 
-reserved_word('var') -> true.
+reserved_word('def') -> true.
 
 strip(TokenChars,TokenLen) -> lists:sublist(TokenChars, 2, TokenLen - 2).
 strip_ref(TokenChars,TokenLen) -> lists:sublist(TokenChars, 3, TokenLen - 3).
