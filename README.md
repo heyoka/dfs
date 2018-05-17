@@ -1,6 +1,6 @@
 # DFS
 
-This is essentially InfluxData's [TICKscript](https://docs.influxdata.com/kapacitor/v1.2/tick/) for Erlang.
+This is essentially InfluxData's [TICKscript](https://docs.influxdata.com/kapacitor/v1.4/tick/) for Erlang.
 Done using leex and yecc.
 
 # Why ?
