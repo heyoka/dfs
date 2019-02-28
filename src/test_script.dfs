@@ -1,5 +1,5 @@
 %% Disclaimer : This script does not reflect any real application of the dfs script-language,
-%% it only makes sense in a syntactically ;)
+%% it just makes sense syntactically ;)
 
    %% Definitions
    def inStreamId = '1.004.987349f9e87fwef'
