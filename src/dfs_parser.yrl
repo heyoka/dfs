@@ -1,7 +1,6 @@
 %% v2
 Nonterminals
-dfscript statement statements declaration expression chain string_list
-string_list_items string_list_item primary
+dfscript statement statements declaration expression chain primary
 primaryExpr function parameters parameter  .
 
 Terminals
@@ -27,7 +26,6 @@ expression        -> function chain  : [unwrap1('$1')] ++ ['$2'].
 expression        -> chain  : {chain, '$1'}.
 expression        -> primary  : '$1'.
 expression        -> primaryExpr : '$1'.
-%expression        -> string_list : '$1'.
 expression        -> '[' parameters ']' : {list, unwrap('$2')}.
 expression         -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
 
@@ -84,8 +82,6 @@ unwrapParams([{lambda, _S}=P|R],Acc) -> unwrapParams(R, [P|Acc]);
 unwrapParams( [{N,_,V}|R], Acc) -> unwrapParams(R, [{N,V}|Acc]);
 unwrapParams([{primary_exp, _F, _S, _L}=P|R], Acc) -> unwrapParams(R, [P|Acc]);
 unwrapParams([_Exp=P|R], Acc) -> unwrapParams(R, [P|Acc]).
-%unwrapParams([{lamdba, S}=P|R], Acc) -> {lambda, S};
-%unwrapParams([V|R], Acc) when is_list(V) -> unwrapParams(R, [lists:flatten(V)|Acc]).
 unwrap1({_,Name}) -> Name;
 unwrap1({_,Name,{params,Params}}) -> {Name, {params, Params}}.
 unwrap({primary_exp,V}) -> V;
