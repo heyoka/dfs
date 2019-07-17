@@ -12,11 +12,13 @@ an Analytics Framework on top of dataflow computations powered by erlang style m
 # Status
 Feature Complete, still more test to add
 
-# Notable Differences from TICKscript
+# Features and Notable Differences from TICKscript
  * For Declarations the keyword 'def' is used instead of 'var'
  * Erlang-Style comments with '%' 
  * Regular Expressions start and end with '?'
  * Built-In Functions (math, erlang and custom modules)
+ 
+ * every Declaration can be overridden (includes lists and lambdas) for template usage
 
 # Examples
 Declaration (String Value)
@@ -24,6 +26,12 @@ Declaration (String Value)
     def inId = '14.987ew349f9e87fwef'
     def outId = '202.5dfgs555sa5df5a'
     def dead_message = 'LOW on CARBONIDE !!!'
+    
+Declaration (others)
+    
+    def func = lambda: "rate" / "count"
+    def funMax = lambda: max("v1", "v2")
+    def mylist = [1.22, 14.332, 45.5]
 
 Declaration (Chain)
 
