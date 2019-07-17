@@ -4,38 +4,23 @@
 -author("Alexander Minichmair").
 
 %% API
--export([parse/1, parse/2, parse/3, parse_file/1, parse_file/2, parse_file/3, test_lambda_parsing/0]).
+-export([parse/1, parse/2, parse/3, parse_file/1, parse_file/2, parse_file/3]).
 
 -export([test/0
    , string_test/0
-   , user_node/1]).
+   , user_node/1, test/1]).
 
 %% testing value overriding, here 'threshold' from the example script will be
 %% replaced with a value of 111
 %% the replacement value must match exactly the original values datatpye (int, float, string, ...)
+test(FileName) ->
+   parse_file(FileName, [], [{<<"threshold">>, 111}, {<<"mylist">>,[5,6,7,8]}, {<<"func">>, <<"lambda: \"rate\" * 9">>}]).
 test() ->
-   parse_file("src/test_script.dfs", [], [{<<"threshold">>, 111}, {<<"mylist">>,[5,6,7,8]}, {<<"func">>, <<"lambda: \"rate\" * 9">>}])
+   test("src/test_script.dfs")
 %%   ,
 %%   string_test().
 .
-test_lambda_parsing() ->
-   LambdaLibs = [dfs_std_lib, estr],
-   ets:new(?MODULE, [set, public, named_table]),
-   ets:insert(?MODULE, {lfunc, LambdaLibs}),
-   String = "lambda: \"rate\" * 7 + max(2, \"rate\")",
-   case dfs_lexer:string(String) of
-      {ok, Tokens, _EndLine} ->
-         %io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
-         case dfs_parser:parse(Tokens) of
-            {ok, [{statement, Data}]}-> %io:format("~nDATA: ~n~p~n",[Data]),
-               param(Data);
-            {error, {LN, dfs_parser, Message}} ->
-               {{parser_error, line, LN}, Message};
-            Error -> Error
-         end;
-      {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
-      Err -> Err
-   end.
+
 string_test() ->
    parse(
 
@@ -105,14 +90,13 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    lists:foreach(fun(E) -> code:ensure_loaded(E) end, FLibs),
    ets:new(?MODULE, [set, public, named_table]),
    ets:insert(?MODULE, {lfunc, FLibs}),
-   ets:insert(?MODULE, {replace_def, Replacements} ),
+   Rep = [{RName, prepare_replacement(RName, Repl)} || {RName, Repl} <- Replacements],
+   ets:insert(?MODULE, {replace_def, Rep} ),
    Res =
    case dfs_lexer:string(String) of
       {ok, Tokens, _EndLine} ->
-         io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
          case dfs_parser:parse(Tokens) of
-            {ok, Data} -> io:format("~nDATA: ~n~p~n",[Data]),
-               eval(Data);
+            {ok, Data} -> eval(Data);
             {error, {LN, dfs_parser, Message}} ->
                {{parser_error, line, LN}, Message};
             Error -> Error
@@ -120,16 +104,42 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
       {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
       Err -> Err
    end,
-
    ets:delete(?MODULE),
    Res.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+prepare_replacement(Name, Repl) when is_binary(Repl) ->
+   prepare_replacement(Name, binary_to_list(Repl));
+prepare_replacement(Name, Repl) when is_list(Repl) ->
+   parse_replacement(Name, Repl);
+prepare_replacement(_Name, Repl) ->
+   Repl.
+parse_replacement(_Name, ("lambda:" ++ _R) = String ) ->
+   case dfs_lexer:string(String) of
+      {ok, Tokens, _EndLine} ->
+         case dfs_parser:parse(Tokens) of
+            {ok, [{statement, Data}]}->
+               param(Data);
+            {error, {LN, dfs_parser, Message}} ->
+               {{parser_error, line, LN}, Message};
+            Error -> Error
+         end;
+      {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
+      Err -> Err
+   end;
 
+parse_replacement(Name, L) when is_list(L) ->
+   check_list_types(Name, L);
+parse_replacement(_Name, R) -> R.
 
+check_list_types(Name, L) ->
+   case list_type(L) of
+      true -> L;
+      false -> error([list_contains_mixed_types, Name, L])
+   end.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 eval(Tree) when is_list(Tree) ->
-%%   io:format("Tree: ~p~n",[Tree]),
    Data = lists:foldl(
       fun(E, {Ns, Cs}=A) ->
          case eval(E) of
@@ -140,61 +150,45 @@ eval(Tree) when is_list(Tree) ->
       {[],[]},
       Tree
    ),
-
-   io:format("~nNODE + Conn DATA:~n~p", [Data]),
    Data;
 
 %% @doc chain declaration
 eval({statement, {declarate, DecName, {chain, Chain}}}) ->
    {{nodes, ChainNodes}, {connections, _Connections}} = C = chain(Chain),
    save_chain_declaration(DecName, ChainNodes),
-%%   {LastNodeName, _LNP, _NP} = lists:last(ChainNodes),
-%%   io:format("stmt CHAIN DECLARATION: ~p  ~n" ,[{DecName, ChainNodes}]),
    C;
 %% @doc chain statement without declaration
 eval({statement, {chain, Chain}}) ->
    {{nodes, _ChainNodes}, {connections, _Connections}} = C = chain(Chain),
-
-%%   {LastNodeName, _LNP, _NP} = lists:last(ChainNodes),
-   io:format("stmt CHAIN : ~p  ~n" ,[{C}]),
    C;
 %% @doc chain declaration connected to previously declared identifier
 eval({statement, {declarate, DecName, {ident_expr, Identifier, {chain, Chain}}}}) ->
-%%   io:format("~n(param) DECLARATE ~p identifier  CHAIN lookup for: ~p found: ~p~n",[DecName, Identifier, get_declaration(Identifier)]),
    {{nodes, ChainNodes}, {connections, Connections}} = _Cs = chain(Chain),
    save_chain_declaration(DecName, ChainNodes),
-%%   io:format("NodesANDConnections: ~p~n",[Cs]),
    {Node,_,_} = hd(ChainNodes),
    NewConns =
       case get_declaration(Identifier) of
          nil -> erlang:error("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
-         {connect, Name} -> %io:format("~n<identifier exp> connect node ~p to node ~p~n",[Name, Node]),
+         {connect, Name} ->
             [{Node,Name}|Connections]
       end,
-%%   io:format("stmt IDENTIFIER EXPR: ~p ~n" ,[{Identifier, {{nodes, ChainNodes}, {connections, NewConns}}}]),
    {{nodes, ChainNodes}, {connections, NewConns}};
 eval({statement, {declarate, DecName, {list, DecValues}}}) ->
-   io:format("statement list declaration: Name: ~p, Value: ~p~n",[DecName, DecValues]),
+   check_list_types(DecName, DecValues),
    NewValues = params(DecValues),
-   io:format("new list vals: ~p~n",[NewValues]),
    save_declaration(DecName, NewValues);
 eval({statement, {declarate, DecName, {lambda, _DecValue}=L}}) ->
-   io:format("statement LAMBDA declaration: Name: ~p, Value: ~p~n",[DecName, param(L)]),
    save_declaration(DecName, param(L));
 eval({statement, {declarate, DecName, DecValue}}) ->
-   io:format("statement declarate: Name: ~p, Value: ~p~n",[DecName, DecValue]),
    save_declaration(DecName, DecValue);
 eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
-%%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Identifier, get_declaration(Identifier)]),
    {{nodes, ChainNodes}, {connections, Connections}} = chain(Chain),
    {Node,_,_} = hd(ChainNodes),
    NewConns =
    case get_declaration(Identifier) of
           nil -> erlang:error("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
-          {connect, Name} -> %io:format("~n<identifier exp> connect node ~p to node ~p~n",[Name, Node]),
-                              [{Node,Name}|Connections]
+          {connect, Name} -> [{Node,Name}|Connections]
          end,
-%%   io:format("stmt IDENTIFIER EXPR: ~p ~n" ,[{Identifier, {{nodes, ChainNodes}, {connections, NewConns}}}]),
    {{nodes, ChainNodes}, {connections, NewConns}}
 .
 %%;
@@ -228,7 +222,7 @@ chain(ChainElements) when is_list(ChainElements) ->
             conns := Cs}=Acc) ->
             %io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
             Id = node_id(),
-            io:format("user_node_name: ~p~n",[NodeName]),
+            %io:format("user_node_name: ~p~n",[NodeName]),
             Acc#{nodes => (Ns ++ [NP]), current => {{user_node(NodeName), Id},
                params(Params), []}, conns => [{{user_node(NodeName), Id}, Node}|Cs]};
          ({user_node, NodeName}, #{nodes := [], current := {}}=Acc) ->
@@ -455,7 +449,7 @@ lexp({pfunc, FName}) ->
 save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
-   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
+   %io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
    NewValue =
       case RVal of
          norepl -> Vals;
@@ -465,7 +459,7 @@ save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
 save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
-   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
+   %io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
    NewValue =
       case RVal of
          norepl -> Value;
@@ -475,7 +469,7 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
-   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
+   %io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
    NewValue =
    case RVal of
       norepl -> Value;
@@ -491,7 +485,8 @@ get_declaration(Ident) ->
    case ets:lookup(?MODULE, Ident) of
       [] -> nil;
       [{Ident, {connect, {_Name, _Connection}=N}}] -> {connect, N};
-      [{Ident, Value}] -> io:format("get_declaration value: ~p~n",[Value]), Value
+      [{Ident, Value}] -> %io:format("get_declaration value: ~p~n",[Value]),
+         Value
    end.
 
 unwrap({_T, _LN, Cotents}) ->
@@ -503,6 +498,21 @@ unwrap(V) ->
 
 user_node(Name) ->
    << <<"@">>/binary, Name/binary>>.
+
+list_type([{_Type, _LN, _Val}|_R] = L) ->
+   {_, _, Values} = lists:unzip3(L),
+   list_type(Values);
+list_type([{_Type, _Val}|_R] = L) ->
+   {_, Values} = lists:unzip(L),
+   list_type(Values);
+list_type([E|R]) when is_number(E) ->
+   lists:all(fun(El) -> is_number(El) end ,R);
+list_type([E|R]) when is_list(E) ->
+   lists:all(fun(El) -> is_list(El) end ,R);
+list_type([E|R]) when is_binary(E) ->
+   lists:all(fun(El) -> is_binary(El) end ,R);
+list_type([E|R]) when is_atom(E) ->
+   lists:all(fun(El) -> is_atom(El) end ,R).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA FUNCTIONS %%%%%%%%%%%%%%%%%%%
 pfunction(FName, PCount) when is_list(FName) ->

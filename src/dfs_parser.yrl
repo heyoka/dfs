@@ -83,9 +83,9 @@ unwrapParams([], Acc) -> lists:flatten(lists:reverse(Acc));
 unwrapParams([{lambda, _S}=P|R],Acc) -> unwrapParams(R, [P|Acc]);
 unwrapParams( [{N,_,V}|R], Acc) -> unwrapParams(R, [{N,V}|Acc]);
 unwrapParams([{primary_exp, _F, _S, _L}=P|R], Acc) -> unwrapParams(R, [P|Acc]);
-unwrapParams([_Exp=P|R], Acc) -> unwrapParams(R, [P|Acc]);
-unwrapParams([{lamdba, S}=P|R], Acc) -> {lambda, S};
-unwrapParams([V|R], Acc) when is_list(V) -> unwrapParams(R, [lists:flatten(V)|Acc]).
+unwrapParams([_Exp=P|R], Acc) -> unwrapParams(R, [P|Acc]).
+%unwrapParams([{lamdba, S}=P|R], Acc) -> {lambda, S};
+%unwrapParams([V|R], Acc) when is_list(V) -> unwrapParams(R, [lists:flatten(V)|Acc]).
 unwrap1({_,Name}) -> Name;
 unwrap1({_,Name,{params,Params}}) -> {Name, {params, Params}}.
 unwrap({primary_exp,V}) -> V;

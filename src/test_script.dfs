@@ -2,7 +2,10 @@
 %% it just makes sense syntactically ;)
 
    %% Definitions
-   def mylist = [1,2,3, 'rrr']
+   def func = lambda: "rate" *2
+      def mylist = [1,2,3,4]
+      def onelist = [9,8,7,6]
+   def mylist = ['a', 'b', 'c']
    def inStreamId = '1.004.987349f9e87fwef'
    def outStreamId = '2.404.5dfgs555sa5df5a'
    % false lambda: must be speicifed before primary-expr
@@ -15,6 +18,8 @@
    def in1 =
       |stream_in(bool)
       .from(inStreamId)
+      .f(func)
+      .list(mylist)
 
    def in2 =
       |stream_in()
