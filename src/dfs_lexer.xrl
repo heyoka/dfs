@@ -42,7 +42,7 @@ def             :   {token, {def, TokenLine, list_to_atom(TokenChars)}}.
 {True}          :   {token, {bool,TokenLine,true}}.
 {False}         :   {token, {bool,TokenLine,false}}.
 %{Digit}        :   {token, {digit,TokenLine,TokenChars}}.
-[(),\.=:]       :   {token, {list_to_atom(TokenChars),TokenLine}}.
+[(),\.=:\[\]]   :   {token, {list_to_atom(TokenChars),TokenLine}}.
 \%.*            :   skip_token.
 {WhiteSpace}+   :   skip_token.
 {Slash}         :   skip_token.

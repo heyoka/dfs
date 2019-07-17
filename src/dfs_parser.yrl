@@ -1,7 +1,6 @@
 %% v2
 Nonterminals
-dfscript statement statements declaration expression chain string_list
-string_list_items string_list_item primary
+dfscript statement statements declaration expression chain primary
 primaryExpr function parameters parameter  .
 
 Terminals
@@ -27,7 +26,9 @@ expression        -> function chain  : [unwrap1('$1')] ++ ['$2'].
 expression        -> chain  : {chain, '$1'}.
 expression        -> primary  : '$1'.
 expression        -> primaryExpr : '$1'.
-expression        -> string_list : '$1'.
+%expression        -> string_list : '$1'.
+expression        -> '[' parameters ']' : {list, unwrap('$2')}.
+expression         -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
 
 %chain             -> user_node function chain : [{unwrap('$1'), unwrap1('$2')}] ++ '$3'.
 chain             -> user_node function chain : [unwrap_node_func({user_node, unwrap1('$2')})] ++ '$3'.
@@ -72,11 +73,6 @@ parameters       -> parameter ',' parameters : ['$1'] ++ '$3'.
 parameter        -> primaryExpr : '$1'.
 parameter        -> primary : '$1'.
 parameter        -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
-string_list       -> '[' string_list_items ']' : '$2'.
-string_list_items -> string_list_item : ['$1'] .
-string_list_items -> string_list_item ',' string_list_items : ['$1'] ++ '$3' .
-string_list_item -> string : unwrap('$1').
-string_list_item -> identifier : unwrap('$1').
 
 
 Erlang code.

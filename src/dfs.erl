@@ -10,11 +10,11 @@
    , string_test/0
    , user_node/1]).
 
-%% testing value overriding, here 'threhold' from the example script will be
+%% testing value overriding, here 'threshold' from the example script will be
 %% replaced with a value of 111
 %% the replacement value must match exactly the original values datatpye (int, float, string, ...)
 test() ->
-   parse_file("src/test_script.dfs", [], [{<<"threshold">>, 111}])
+   parse_file("src/test_script.dfs", [], [{<<"threshold">>, 111}, {<<"mylist">>,[5,6,7,8]}, {<<"func">>, <<"lambda: \"rate\" * 9">>}])
 %%   ,
 %%   string_test().
 .
@@ -91,9 +91,9 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    Res =
    case dfs_lexer:string(String) of
       {ok, Tokens, _EndLine} ->
-         %io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
+         io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
          case dfs_parser:parse(Tokens) of
-            {ok, Data} -> %io:format("~nDATA: ~n~p~n",[Data]),
+            {ok, Data} -> io:format("~nDATA: ~n~p~n",[Data]),
                eval(Data);
             {error, {LN, dfs_parser, Message}} ->
                {{parser_error, line, LN}, Message};
@@ -146,7 +146,16 @@ eval({statement, {declarate, DecName, {ident_expr, Identifier, {chain, Chain}}}}
       end,
 %%   io:format("stmt IDENTIFIER EXPR: ~p ~n" ,[{Identifier, {{nodes, ChainNodes}, {connections, NewConns}}}]),
    {{nodes, ChainNodes}, {connections, NewConns}};
+eval({statement, {declarate, DecName, {list, DecValues}}}) ->
+   io:format("statement list declaration: Name: ~p, Value: ~p~n",[DecName, DecValues]),
+   NewValues = params(DecValues),
+   io:format("new list vals: ~p~n",[NewValues]),
+   save_declaration(DecName, NewValues);
+eval({statement, {declarate, DecName, {lambda, _DecValue}=L}}) ->
+   io:format("statement LAMBDA declaration: Name: ~p, Value: ~p~n",[DecName, param(L)]),
+   save_declaration(DecName, param(L));
 eval({statement, {declarate, DecName, DecValue}}) ->
+   io:format("statement declarate: Name: ~p, Value: ~p~n",[DecName, DecValue]),
    save_declaration(DecName, DecValue);
 eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
 %%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Identifier, get_declaration(Identifier)]),
@@ -220,14 +229,17 @@ node_id() ->
    erlang:unique_integer([positive,monotonic]).
 
 params(Params) when is_list(Params)->
-   [param(P) || P <- Params].
+   lists:flatten([param(P) || P <- Params]).
 
 param({identifier, Ident}) ->
 %%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
-          nil -> {identifier,Ident};
-          {connect, _} = C -> C;
-          {Type, _LN, Val} -> {Type, Val}
+      nil -> {identifier, Ident};
+      {connect, _} = C -> C;
+      {Type, _LN, Val} -> {Type, Val};
+      {Type, Val} -> {Type, Val};
+      List when is_list(List) -> [{Type, Val} || {Type, _LN, Val} <- List];
+      {lambda, _, _, _} = Lambda -> Lambda
    end;
 param({pfunc, {_N, {params, _Ps}}}=L) ->
    param({lambda, [L]});
@@ -412,6 +424,27 @@ lexp({pfunc, FName}) ->
 %% here is where declaration - overwriting happens,
 %% you know for templates: every declaration (def keyword) which is not a chain-declaration
 %% can be overwritten with a custom value
+
+save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
+   [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
+   RVal = proplists:get_value(Ident, Replacements, norepl),
+   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
+   NewValue =
+      case RVal of
+         norepl -> Vals;
+         NVal  -> [{VType, VLine, V} || V <- NVal]
+      end,
+   ets:insert(?MODULE, {Ident, NewValue});
+save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
+   [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
+   RVal = proplists:get_value(Ident, Replacements, norepl),
+   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
+   NewValue =
+      case RVal of
+         norepl -> Value;
+         NVal  -> {lamdba, NVal}
+      end,
+   ets:insert(?MODULE, {Ident, NewValue});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
@@ -431,7 +464,7 @@ get_declaration(Ident) ->
    case ets:lookup(?MODULE, Ident) of
       [] -> nil;
       [{Ident, {connect, {_Name, _Connection}=N}}] -> {connect, N};
-      [{Ident, Value}] -> Value
+      [{Ident, Value}] -> io:format("get_declaration value: ~p~n",[Value]), Value
    end.
 
 unwrap({_T, _LN, Cotents}) ->

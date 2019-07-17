@@ -2,6 +2,7 @@
 %% it just makes sense syntactically ;)
 
    %% Definitions
+   def mylist = [1,2,3, 'rrr']
    def inStreamId = '1.004.987349f9e87fwef'
    def outStreamId = '2.404.5dfgs555sa5df5a'
    % false lambda: must be speicifed before primary-expr
