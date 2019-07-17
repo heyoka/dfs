@@ -1,6 +1,7 @@
 %% v2
 Nonterminals
-dfscript statement statements declaration expression chain primary
+dfscript statement statements declaration expression chain string_list
+string_list_items string_list_item primary
 primaryExpr function parameters parameter  .
 
 Terminals

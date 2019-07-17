@@ -4,7 +4,7 @@
 -author("Alexander Minichmair").
 
 %% API
--export([parse/1, parse/2, parse/3, parse_file/1, parse_file/2, parse_file/3]).
+-export([parse/1, parse/2, parse/3, parse_file/1, parse_file/2, parse_file/3, test_lambda_parsing/0]).
 
 -export([test/0
    , string_test/0
@@ -18,6 +18,24 @@ test() ->
 %%   ,
 %%   string_test().
 .
+test_lambda_parsing() ->
+   LambdaLibs = [dfs_std_lib, estr],
+   ets:new(?MODULE, [set, public, named_table]),
+   ets:insert(?MODULE, {lfunc, LambdaLibs}),
+   String = "lambda: \"rate\" * 7 + max(2, \"rate\")",
+   case dfs_lexer:string(String) of
+      {ok, Tokens, _EndLine} ->
+         %io:format("~n~nTOKENS: ~p~n~n",[Tokens]),
+         case dfs_parser:parse(Tokens) of
+            {ok, [{statement, Data}]}-> %io:format("~nDATA: ~n~p~n",[Data]),
+               param(Data);
+            {error, {LN, dfs_parser, Message}} ->
+               {{parser_error, line, LN}, Message};
+            Error -> Error
+         end;
+      {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
+      Err -> Err
+   end.
 string_test() ->
    parse(
 
@@ -126,15 +144,24 @@ eval(Tree) when is_list(Tree) ->
    io:format("~nNODE + Conn DATA:~n~p", [Data]),
    Data;
 
+%% @doc chain declaration
 eval({statement, {declarate, DecName, {chain, Chain}}}) ->
    {{nodes, ChainNodes}, {connections, _Connections}} = C = chain(Chain),
    save_chain_declaration(DecName, ChainNodes),
 %%   {LastNodeName, _LNP, _NP} = lists:last(ChainNodes),
 %%   io:format("stmt CHAIN DECLARATION: ~p  ~n" ,[{DecName, ChainNodes}]),
    C;
+%% @doc chain statement without declaration
+eval({statement, {chain, Chain}}) ->
+   {{nodes, _ChainNodes}, {connections, _Connections}} = C = chain(Chain),
+
+%%   {LastNodeName, _LNP, _NP} = lists:last(ChainNodes),
+   io:format("stmt CHAIN : ~p  ~n" ,[{C}]),
+   C;
+%% @doc chain declaration connected to previously declared identifier
 eval({statement, {declarate, DecName, {ident_expr, Identifier, {chain, Chain}}}}) ->
 %%   io:format("~n(param) DECLARATE ~p identifier  CHAIN lookup for: ~p found: ~p~n",[DecName, Identifier, get_declaration(Identifier)]),
-   {{nodes, ChainNodes}, {connections, Connections}} = Cs = chain(Chain),
+   {{nodes, ChainNodes}, {connections, Connections}} = _Cs = chain(Chain),
    save_chain_declaration(DecName, ChainNodes),
 %%   io:format("NodesANDConnections: ~p~n",[Cs]),
    {Node,_,_} = hd(ChainNodes),
