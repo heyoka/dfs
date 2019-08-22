@@ -96,7 +96,13 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    case dfs_lexer:string(String) of
       {ok, Tokens, _EndLine} ->
          case dfs_parser:parse(Tokens) of
-            {ok, Data} -> eval(Data);
+            {ok, Data} -> try eval(Data) of
+                             Result -> Result
+                          catch
+                             throw:Error -> {error, Error};
+                             exit:Error -> {error, Error};
+                             error:Error -> {error, Error}
+                          end;
             {error, {LN, dfs_parser, Message}} ->
                {{parser_error, line, LN}, Message};
             Error -> Error
@@ -134,7 +140,7 @@ parse_replacement(_Name, R) -> R.
 check_list_types(Name, L) ->
    case list_type(L) of
       true -> L;
-      false -> error([list_contains_mixed_types, Name, L])
+      false -> throw([list_contains_mixed_types, Name, L])
    end.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
