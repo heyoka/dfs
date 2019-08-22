@@ -515,7 +515,7 @@ list_type([E|R]) when is_atom(E) ->
    lists:all(fun(El) -> is_atom(El) end ,R).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA FUNCTIONS %%%%%%%%%%%%%%%%%%%
-pfunction(FName, PCount) when is_list(FName) ->
+pfunction(FName, Arity) when is_list(FName) ->
    NameAtom = list_to_atom(FName),
    [{lfunc, Modules}] = ets:lookup(?MODULE, lfunc),
 %%   io:format("models are ~p~n",[Modules]),
@@ -523,7 +523,7 @@ pfunction(FName, PCount) when is_list(FName) ->
      fun
         (_E, {done, _Module}=M) -> M;
         (E, Module) ->
-           case erlang:function_exported(E, NameAtom, PCount) of
+           case erlang:function_exported(E, NameAtom, Arity) of
               true -> F0 = {done, atom_to_list(E) ++ ":" ++ FName},
                  %io:format("~p :: ~p ~n",[FName, F0]),
               F0;
@@ -535,7 +535,7 @@ pfunction(FName, PCount) when is_list(FName) ->
    ),
    NN =
    case NN0 of
-      nil -> case erlang:function_exported(math, NameAtom, PCount) of
+      nil -> case erlang:function_exported(math, NameAtom, Arity) of
                 true -> "math:" ++ FName;
                 false -> FName %throw("Function " ++ FName ++ " not found in library")
              end;

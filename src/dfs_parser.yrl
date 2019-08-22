@@ -5,7 +5,7 @@ primaryExpr function parameters parameter  .
 
 Terminals
 '=' '(' ')' ',' '[' ']' '.' '-' '!'
-var def node user_node string text identifier number bool
+def node user_node string text identifier number bool
 duration regex int stream_id float operator lambda reference.
 
 
