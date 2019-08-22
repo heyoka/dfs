@@ -96,11 +96,13 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    case dfs_lexer:string(String) of
       {ok, Tokens, _EndLine} ->
          case dfs_parser:parse(Tokens) of
-            {ok, Data} -> try eval(Data) of
-                             Result -> Result
-                          catch
-                             throw:Error -> {error, Error}
-                          end;
+            {ok, Data} ->
+%%               try eval(Data) of
+%%                  Result -> Result
+%%               catch
+%%                  throw:Error -> {error, Error}
+%%               end;
+               eval(Data);
             {error, {LN, dfs_parser, Message}} ->
                {{parser_error, line, LN}, Message};
             Error -> Error
