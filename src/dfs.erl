@@ -168,7 +168,7 @@ eval({statement, {declarate, DecName, {ident_expr, Identifier, {chain, Chain}}}}
    {Node,_,_} = hd(ChainNodes),
    NewConns =
       case get_declaration(Identifier) of
-         nil -> erlang:error("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
+         nil -> throw("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
          {connect, Name} ->
             [{Node,Name}|Connections]
       end,
@@ -186,7 +186,7 @@ eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
    {Node,_,_} = hd(ChainNodes),
    NewConns =
    case get_declaration(Identifier) of
-          nil -> erlang:error("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
+          nil -> throw("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
           {connect, Name} -> [{Node,Name}|Connections]
          end,
    {{nodes, ChainNodes}, {connections, NewConns}}
@@ -537,7 +537,7 @@ pfunction(FName, PCount) when is_list(FName) ->
    case NN0 of
       nil -> case erlang:function_exported(math, NameAtom, PCount) of
                 true -> "math:" ++ FName;
-                false -> FName %erlang:error("Function " ++ FName ++ " not found in library")
+                false -> FName %throw("Function " ++ FName ++ " not found in library")
              end;
       {done, Else} -> Else
    end,
