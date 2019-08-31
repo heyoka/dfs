@@ -84,6 +84,7 @@ parse(D, Libs) ->
 parse(Binary, Libs, Replacements) when is_binary(Binary) ->
    parse(binary_to_list(Binary), Libs, Replacements);
 parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
+   catch ets:delete(?MODULE),
    LambdaLibs = [dfs_std_lib, estr] ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
    %% ensure libs are there for us
