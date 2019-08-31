@@ -5,7 +5,7 @@ primaryExpr function parameters parameter  .
 
 Terminals
 '=' '(' ')' ',' '[' ']' '.' '-' '!'
-var def node user_node string text identifier number bool
+def node user_node string text identifier number bool
 duration regex int stream_id float operator lambda reference.
 
 
@@ -18,7 +18,6 @@ statements        -> statement statements : ['$1'] ++ '$2'.
 statement         -> declaration : {statement, '$1'}.
 statement         -> expression : {statement, '$1'}.
 
-declaration       -> 'var' identifier '=' expression : {declarate, unwrap('$2'), '$4'}.
 declaration       -> 'def' identifier '=' expression : {declarate, unwrap('$2'), '$4'}.
 
 expression        -> identifier chain : {ident_expr, unwrap('$1'), {chain, '$2'}}.
