@@ -199,10 +199,10 @@ eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
    {{nodes, ChainNodes}, {connections, NewConns}};
 eval({statement, [{_T, What}]}) ->
    erlang:error(iolist_to_binary([<<"Syntax error, illegal statement in script: ">>,io_lib:format("~p",[What])]));
+eval({statement, {_T, LN, What}}) ->
+   erlang:error(iolist_to_binary([<<"Syntax error near line ">>, integer_to_binary(LN),<<", illegal statement: ">>,io_lib:format("~p",[What])]));
 eval({statement, What}) ->
    erlang:error(iolist_to_binary([<<"Syntax error, illegal statement in script: ">>,io_lib:format("~p",[What])]));
-eval({statement, {_T, LN, What}}) ->
-   erlang:error(iolist_to_binary([<<"Syntax error near line ">>, integer_to_binary(LN),<<", illegal statement: ">>,io_lib:format("~p",[What])])).
 %%;
 %%   {Identifier, chain(Chain, [])}.
 chain(ChainElements) when is_list(ChainElements) ->
