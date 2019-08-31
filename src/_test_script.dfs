@@ -1,5 +1,10 @@
     def threshold = 333
    %% Definitions
+   |eval()
+
+   gars
+   |evals()
+
    def in1 =
     |eval(lambda: if(("ts" > max(threshold) + 2), 'true', 'false'))
         .as('ts_greater')

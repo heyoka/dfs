@@ -33,7 +33,6 @@
 -spec bool(any()) -> true|false.
 bool(V) when is_integer(V) orelse is_float(V) ->
    V > 0;
-bool(<<"">>) -> false;
 bool(<<>>) -> false;
 bool(V) when is_binary(V) ->
    case binary_to_number(V) of

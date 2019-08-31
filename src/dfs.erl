@@ -189,8 +189,9 @@ eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
           nil -> erlang:error("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
           {connect, Name} -> [{Node,Name}|Connections]
          end,
-   {{nodes, ChainNodes}, {connections, NewConns}}
-.
+   {{nodes, ChainNodes}, {connections, NewConns}};
+eval({statement, What}) ->
+   erlang:error(iolist_to_binary([<<"Syntax error, illegal statement in script: ">>,io_lib:format("~p",[What])])).
 %%;
 %%   {Identifier, chain(Chain, [])}.
 chain(ChainElements) when is_list(ChainElements) ->
