@@ -336,10 +336,8 @@ extract_refs({pexp, Elems}) when is_list(Elems) ->
 extract_refs(_) -> [].
 
 param_from_ref(Ref) when is_binary(Ref) ->
-   Ref0 = binary:replace(Ref, <<".">>, <<"_">>),
-   [Hd|RefString] = binary_to_list(Ref0),
-   NewFirst = string:to_upper(Hd),
-   [NewFirst|RefString].
+   Ref0 = binary:replace(Ref, <<".">>, <<"_">>, [global]),
+   string:titlecase(binary_to_list(Ref0)).
 
 l_params([], Acc) ->
    Acc;
