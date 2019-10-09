@@ -14,6 +14,11 @@
    def deadman_period = 15m
    def bool = TRUE
    def number = 33.4434
+   def sql = <<< SELECT COUNT(*) FROM table % WHERE "data_obj"['a']['b'] = c GROUP BY c LIMIT 3>>>
+
+    def query =
+    |postgre_query()
+    .query(sql)
 
    def in1 =
       |stream_in(bool)
