@@ -3,7 +3,7 @@
 
    %% Definitions
    def func = lambda: "rate" *2
-      def mylist = [1,2,3,4]
+      %def mylist = [1,2,3,4]
       def onelist = [9,8,7,6]
    def mylist = ['a', 'b', 'c']
    def inStreamId = '1.004.987349f9e87fwef'
@@ -19,6 +19,8 @@
     def query =
     |postgre_query()
     .query(sql)
+
+    def in1 = 'naaaahhh'
 
    def in1 =
       |stream_in(bool)

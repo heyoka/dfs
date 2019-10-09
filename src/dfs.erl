@@ -20,7 +20,6 @@ test() ->
 %%   ,
 %%   string_test().
 .
-
 string_test() ->
    parse(
 
@@ -457,6 +456,7 @@ lexp({pfunc, FName}) ->
 %% can be overwritten with a custom value
 
 save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
+   check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
    %io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
@@ -467,6 +467,7 @@ save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
       end,
    ets:insert(?MODULE, {Ident, NewValue});
 save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
+   check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
    %io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
@@ -477,6 +478,7 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
       end,
    ets:insert(?MODULE, {Ident, NewValue});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
+   check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
    %io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
@@ -487,6 +489,7 @@ save_declaration(Ident, {VType, VLine, _Val}=Value) ->
    end,
    ets:insert(?MODULE, {Ident, NewValue}).
 save_chain_declaration(Ident, Nodes) when is_list(Nodes) ->
+   check_new_declaration(Ident),
    LastNode = lists:last(Nodes),
    {NodeName, _Np, _NCP} = LastNode,
    ets:insert(?MODULE, {Ident, {connect, NodeName}}).
@@ -497,6 +500,13 @@ get_declaration(Ident) ->
       [{Ident, {connect, {_Name, _Connection}=N}}] -> {connect, N};
       [{Ident, Value}] -> %io:format("get_declaration value: ~p~n",[Value]),
          Value
+   end.
+
+check_new_declaration(Identifier) ->
+   case get_declaration(Identifier) of
+      nil -> ok;
+      _Other -> erlang:error(iolist_to_binary([<<"Identifier ">>,
+         io_lib:format("'~s'",[Identifier]),<<" already defined">>]))
    end.
 
 unwrap({_T, _LN, Cotents}) ->
