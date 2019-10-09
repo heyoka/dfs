@@ -20,8 +20,6 @@
     |postgre_query()
     .query(sql)
 
-    def in1 = 'naaaahhh'
-
    def in1 =
       |stream_in(bool)
       .from(inStreamId)
