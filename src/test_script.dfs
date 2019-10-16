@@ -16,6 +16,10 @@
    def number = 33.4434
    def sql = <<< SELECT COUNT(*) FROM table % WHERE "data_obj"['a']['b'] = c GROUP BY c LIMIT 3>>>
 
+    |eval()
+    .lambdas(lambda: round( (float("UTC-Time")*1000) ) )
+    .as('ts')
+
     def query =
     |postgre_query()
     .query(sql)

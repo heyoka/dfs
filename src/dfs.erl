@@ -97,6 +97,7 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
       {ok, Tokens, _EndLine} ->
          case dfs_parser:parse(Tokens) of
             {ok, Data} ->
+               %io:format("~nDATA: ~p~n",[Data]),
 %%               try eval(Data) of
 %%                  Result -> Result
 %%               catch
@@ -294,13 +295,13 @@ param({lambda, LambdaList}) ->
                   NewPs++Rs;
                _ -> Rs
             end,
-%%            io:format("param lexp(~p ++ ~p~n): n",[lexp(E)]),
+%%            io:format("~nparam lexp(~p ++ ~p~n): n",[L, lexp(E)]),
             {L++[lexp(E)], Refs0}
          end,{[], []},LambdaList), %% foldl
    %% unique params
    BRefs = sets:to_list(sets:from_list(BinRefs)),
    Refs = lists:map(fun(E) -> param_from_ref(E) end, BRefs),
-%%   io:format("LAMBDA ~p (~p)~n",[lists:concat(Lambda), BRefs]),
+%%   io:format("~nLAMBDA ~p (~p)~n",[lists:concat(Lambda), BRefs]),
    {lambda, lists:concat(Lambda), BRefs, Refs}
 ;
 param({regex, Regex}) ->
@@ -335,8 +336,13 @@ extract_refs({pexp, Elems}) when is_list(Elems) ->
 extract_refs(_) -> [].
 
 param_from_ref(Ref) when is_binary(Ref) ->
-   Ref0 = binary:replace(Ref, <<".">>, <<"_">>, [global]),
+   Ref1 = clean_param_name(Ref),
+   Ref0 = binary:replace(Ref1, <<".">>, <<"_">>, [global]),
    string:titlecase(binary_to_list(Ref0)).
+
+clean_param_name(Name) when is_binary(Name) ->
+   re:replace(Name, "[^a-zA-Z0-9_.]", <<"_">>, [{return, binary}]).
+
 
 l_params([], Acc) ->
    Acc;
