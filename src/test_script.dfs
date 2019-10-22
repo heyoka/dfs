@@ -23,6 +23,8 @@
     def query =
     |postgre_query()
     .query(sql)
+    .stmt( <<< trag.wack[2].sack >>> )
+    .string('trag.wack[2].sack')
 
    def in1 =
       |stream_in(bool)
