@@ -1,6 +1,8 @@
 %% Disclaimer : This script does not reflect any real application of the dfs script-language,
 %% it just makes sense syntactically ;)
 
+    def str1 = 'interface::WcdInterface::logGram'
+
    %% Definitions
    def func = lambda: "rate" *2
       %def mylist = [1,2,3,4]
@@ -25,6 +27,7 @@
     .query(sql)
     .stmt( <<< trag.wack[2].sack >>> )
     .string('trag.wack[2].sack')
+    .level('interface::WmsInterface::logTelegram')
 
    def in1 =
       |stream_in(bool)

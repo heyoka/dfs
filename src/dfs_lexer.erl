@@ -12,7 +12,7 @@
 -export([format_error/1]).
 
 %% User code. This is placed here to allow extra attributes.
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 49).
+-file("src/dfs_lexer.xrl", 49).
 
 -export([reserved_word/1]).
 
@@ -313,7 +313,7 @@ adjust_line(T, A, [_|Cs], L) ->
 %% return signal either an unrecognised character or end of current
 %% input.
 
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.erl", 316).
+-file("src/dfs_lexer.erl", 316).
 yystate() -> 70.
 
 yystate(77, Ics, Line, Tlen, _, _) ->
@@ -484,6 +484,8 @@ yystate(69, [95|Ics], Line, Tlen, Action, Alen) ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(69, [93|Ics], Line, Tlen, Action, Alen) ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
+yystate(69, [58|Ics], Line, Tlen, Action, Alen) ->
+    yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(69, [39|Ics], Line, Tlen, Action, Alen) ->
     yystate(2, Ics, Line, Tlen+1, Action, Alen);
 yystate(69, [37|Ics], Line, Tlen, Action, Alen) ->
@@ -592,7 +594,7 @@ yystate(61, [33|Ics], Line, Tlen, Action, Alen) ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(61, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 45 ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
-yystate(61, [C|Ics], Line, Tlen, Action, Alen) when C >= 47, C =< 57 ->
+yystate(61, [C|Ics], Line, Tlen, Action, Alen) when C >= 47, C =< 58 ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(61, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
@@ -675,6 +677,8 @@ yystate(53, [126|Ics], Line, Tlen, Action, Alen) ->
 yystate(53, [95|Ics], Line, Tlen, Action, Alen) ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(53, [93|Ics], Line, Tlen, Action, Alen) ->
+    yystate(10, Ics, Line, Tlen+1, Action, Alen);
+yystate(53, [58|Ics], Line, Tlen, Action, Alen) ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(53, [39|Ics], Line, Tlen, Action, Alen) ->
     yystate(2, Ics, Line, Tlen+1, Action, Alen);
@@ -780,7 +784,7 @@ yystate(45, [32|Ics], Line, Tlen, Action, Alen) ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(45, [33|Ics], Line, Tlen, Action, Alen) ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
-yystate(45, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
+yystate(45, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 58 ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(45, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
@@ -1136,7 +1140,7 @@ yystate(10, [32|Ics], Line, Tlen, Action, Alen) ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(10, [33|Ics], Line, Tlen, Action, Alen) ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
-yystate(10, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 57 ->
+yystate(10, [C|Ics], Line, Tlen, Action, Alen) when C >= 42, C =< 58 ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
 yystate(10, [C|Ics], Line, Tlen, Action, Alen) when C >= 60, C =< 62 ->
     yystate(10, Ics, Line, Tlen+1, Action, Alen);
@@ -1309,102 +1313,102 @@ yyaction(19, _, _, _) ->
 yyaction(_, _, _, _) -> error.
 
 -compile({inline,yyaction_0/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 24).
+-file("src/dfs_lexer.xrl", 24).
 yyaction_0(TokenChars, TokenLine) ->
      { token, { def, TokenLine, list_to_atom (TokenChars) } } .
 
 -compile({inline,yyaction_1/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 25).
+-file("src/dfs_lexer.xrl", 25).
 yyaction_1(TokenChars, TokenLine) ->
      { token, { operator, TokenLine, list_to_atom (TokenChars) } } .
 
 -compile({inline,yyaction_2/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 26).
+-file("src/dfs_lexer.xrl", 26).
 yyaction_2(TokenChars, TokenLine) ->
      { token, { stream_id, TokenLine, list_to_binary (TokenChars) } } .
 
 -compile({inline,yyaction_3/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 27).
+-file("src/dfs_lexer.xrl", 27).
 yyaction_3(TokenChars, TokenLine) ->
      { token, { lambda, TokenLine, list_to_binary (lists : sublist (TokenChars, 9, length (TokenChars))) } } .
 
 -compile({inline,yyaction_4/1}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 28).
+-file("src/dfs_lexer.xrl", 28).
 yyaction_4(TokenLine) ->
      { token, { user_node, TokenLine, user_node } } .
 
 -compile({inline,yyaction_5/1}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 29).
+-file("src/dfs_lexer.xrl", 29).
 yyaction_5(TokenLine) ->
      { token, { node, TokenLine, node } } .
 
 -compile({inline,yyaction_6/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 30).
+-file("src/dfs_lexer.xrl", 30).
 yyaction_6(TokenChars, TokenLine) ->
      { token, { duration, TokenLine, list_to_binary (TokenChars) } } .
 
 -compile({inline,yyaction_7/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 31).
+-file("src/dfs_lexer.xrl", 31).
 yyaction_7(TokenChars, TokenLine) ->
      { token, { identifier, TokenLine, list_to_binary (TokenChars) } } .
 
 -compile({inline,yyaction_8/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 32).
+-file("src/dfs_lexer.xrl", 32).
 yyaction_8(TokenChars, TokenLine) ->
      { token, { reference, TokenLine, unquote (TokenChars) } } .
 
 -compile({inline,yyaction_9/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 34).
+-file("src/dfs_lexer.xrl", 34).
 yyaction_9(TokenChars, TokenLine) ->
      { token, { float, TokenLine, list_to_float (TokenChars) } } .
 
 -compile({inline,yyaction_10/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 35).
+-file("src/dfs_lexer.xrl", 35).
 yyaction_10(TokenChars, TokenLine) ->
      { token, { int, TokenLine, list_to_integer (TokenChars) } } .
 
 -compile({inline,yyaction_11/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 36).
+-file("src/dfs_lexer.xrl", 36).
 yyaction_11(TokenChars, TokenLine) ->
      { token, { text, TokenLine, list_to_binary (strip_text (TokenChars, length (TokenChars))) } } .
 
 -compile({inline,yyaction_12/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 37).
+-file("src/dfs_lexer.xrl", 37).
 yyaction_12(TokenChars, TokenLine) ->
      { token, { string, TokenLine, list_to_binary (strip (TokenChars, length (TokenChars))) } } .
 
 -compile({inline,yyaction_13/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 38).
+-file("src/dfs_lexer.xrl", 38).
 yyaction_13(TokenChars, TokenLine) ->
      { token, { regex, TokenLine, prep_regex (TokenChars) } } .
 
 -compile({inline,yyaction_14/1}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 39).
+-file("src/dfs_lexer.xrl", 39).
 yyaction_14(TokenLine) ->
      { token, { bool, TokenLine, true } } .
 
 -compile({inline,yyaction_15/1}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 40).
+-file("src/dfs_lexer.xrl", 40).
 yyaction_15(TokenLine) ->
      { token, { bool, TokenLine, false } } .
 
 -compile({inline,yyaction_16/2}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 42).
+-file("src/dfs_lexer.xrl", 42).
 yyaction_16(TokenChars, TokenLine) ->
      { token, { list_to_atom (TokenChars), TokenLine } } .
 
 -compile({inline,yyaction_17/0}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 43).
+-file("src/dfs_lexer.xrl", 43).
 yyaction_17() ->
      skip_token .
 
 -compile({inline,yyaction_18/0}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 44).
+-file("src/dfs_lexer.xrl", 44).
 yyaction_18() ->
      skip_token .
 
 -compile({inline,yyaction_19/0}).
--file("/home/heyoka/workspace/dfs/src/dfs_lexer.xrl", 45).
+-file("src/dfs_lexer.xrl", 45).
 yyaction_19() ->
      skip_token .
 
