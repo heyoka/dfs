@@ -48,6 +48,7 @@ primaryExpr      -> function : [{pfunc,unwrap1('$1')}].
 %primaryExpr      -> '(' primaryExpr ')' : {paren,'$2'}.
 primaryExpr      -> '(' primary ')' : {paren,'$2'}.
 
+
 function         -> identifier '(' parameters ')' : {func, unwrap('$1'), {params, unwrapParams('$3')}}.
 function         -> identifier '(' ')' : {func, unwrap('$1')}.
 primary          -> '(' primaryExpr ')' : {paren,'$2'}.
@@ -68,6 +69,7 @@ primary          -> '!' primary : '$2'.
 primary          -> operator : '$1'.
 parameters       -> parameter : ['$1'] .
 parameters       -> parameter ',' parameters : ['$1'] ++ '$3'.
+parameter        -> '[' parameters ']' : {list, unwrap('$2')}.
 parameter        -> primaryExpr : '$1'.
 parameter        -> primary : '$1'.
 parameter        -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.

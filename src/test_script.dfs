@@ -1,6 +1,17 @@
 %% Disclaimer : This script does not reflect any real application of the dfs script-language,
 %% it just makes sense syntactically ;)
 
+def prefix = 'pre_'
+def offset = 9
+def list = ['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse']
+
+|node()
+.host(['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse'], ['more', 5, 'lists'])
+.alist(list)
+.lamb(lambda: avg("e" * 2, "holymoly"))
+.eval(lambda: str_concat(['alle', 'kinder'], ['ueber', str_last("die"), prefix, "strasse"]) )
+
+
    %% Definitions
    def func = lambda: "rate" *2
       %def mylist = [1,2,3,4]

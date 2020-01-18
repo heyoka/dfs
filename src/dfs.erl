@@ -283,6 +283,7 @@ param({lambda, LambdaList}) ->
    {Lambda, BinRefs} =
       lists:foldl(
          fun(E, {L, Rs}) ->
+%%            io:format("~nElement lammbda: ~p~n",[E]),
             Refs0 =
             case E of
                {reference, _LN, Ref}=_R ->
@@ -293,7 +294,9 @@ param({lambda, LambdaList}) ->
                {pfunc, {_FName, {params, Params}}}=_P ->
                   NewPs = extract_refs(Params),
                   NewPs++Rs;
-               _ -> Rs
+               _ ->
+%%                  io:format("~n NA: ~p~n", [Rs]),
+                  Rs
             end,
 %%            io:format("~nparam lexp(~p ++ ~p~n): n",[L, lexp(E)]),
             {L++[lexp(E)], Refs0}
@@ -306,8 +309,9 @@ param({lambda, LambdaList}) ->
 ;
 param({regex, Regex}) ->
    {regex, Regex};
+param({list, List}) ->
+   List;
 param(P) ->
-%%   io:format("PARAM: ~p~n",[P]),
    P.
 
 
@@ -320,6 +324,7 @@ extract_refs(Elements) when is_list(Elements) ->
             {pfunc, {_FName, {params, Params}}} -> lists:flatten([extract_refs(Params)|Acc]);
             {pexp, Eles} -> lists:flatten([extract_refs(Eles)|Acc]);
             {paren, Exp} -> lists:flatten([extract_refs(Exp)|Acc]);
+            {list, List} -> lists:flatten([extract_refs(List)|Acc]);
             _O -> Acc
          end
       end,
@@ -336,6 +341,7 @@ extract_refs({pexp, Elems}) when is_list(Elems) ->
 extract_refs(_) -> [].
 
 param_from_ref(Ref) when is_binary(Ref) ->
+%%   io:format("~nparam from ref: ~p~n",[Ref]),
    Ref1 = clean_param_name(Ref),
    Ref0 = binary:replace(Ref1, <<".">>, <<"_">>, [global]),
    string:titlecase(binary_to_list(Ref0)).
@@ -387,7 +393,7 @@ param_pfunc({string, Ref}) ->
 param_pfunc({pexp, Elements}) ->
    [param_pfunc(E) || E <- Elements ];
 param_pfunc(Other) ->
-   %io:format("[param_pfunc] ~p~n",[Other]),
+%%   io:format("[param_pfunc] ~p~n",[Other]),
       lexp(Other).
 
 
@@ -395,7 +401,7 @@ param_pfunc(Other) ->
 lexp(Expressions) when is_list(Expressions) ->
 %%   io:format("LAMBDA EXPRESSIONS: ~p~n",[Expressions]),
    lists:flatten([lexp(E) || E <- Expressions]);
-%% parenthized expressions
+%% parenthesized expressions
 lexp({paren, Exp}) ->
    "(" ++ lexp(Exp) ++ ")";
 lexp({int, Int}) ->
@@ -454,7 +460,12 @@ lexp({pfunc, {FName, {params, Params}}}) ->
    FuncName = pfunction(binary_to_list(FName), length(Params)),
    FuncName ++ "(" ++ Ps ++ ")";
 lexp({pfunc, FName}) ->
-   pfunction(binary_to_list(FName), 0) ++ "()".
+   pfunction(binary_to_list(FName), 0) ++ "()";
+lexp({list, List}) ->
+   L1 = [param_pfunc(LEle) || LEle <- List],
+%%   io:format("~nL1 : ~p~n", [L1]),
+   L2 = "[" ++ lists:flatten(lists:join(", ", L1)) ++ "]",
+   L2.
 
 %% save a simple declaration,
 %% here is where declaration - overwriting happens,
