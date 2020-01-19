@@ -298,7 +298,7 @@ param({lambda, LambdaList}) ->
 %%                  io:format("~n NA: ~p~n", [Rs]),
                   Rs
             end,
-%%            io:format("~nparam lexp(~p ++ ~p~n): n",[L, lexp(E)]),
+%%            io:format("~nparam lexp(~p ++ ~p~n): ~n",[L, lexp(E)]),
             {L++[lexp(E)], Refs0}
          end,{[], []},LambdaList), %% foldl
    %% unique params
@@ -343,7 +343,7 @@ extract_refs(_) -> [].
 param_from_ref(Ref) when is_binary(Ref) ->
 %%   io:format("~nparam from ref: ~p~n",[Ref]),
    Ref1 = clean_param_name(Ref),
-   Ref0 = binary:replace(Ref1, <<".">>, <<"_">>, [global]),
+   Ref0 = binary:replace(Ref1, [<<".">>,<<"[">>,<<"]">>], <<"_">>, [global]),
    string:titlecase(binary_to_list(Ref0)).
 
 clean_param_name(Name) when is_binary(Name) ->

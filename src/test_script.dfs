@@ -11,6 +11,13 @@ def list = ['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse']
 .lamb(lambda: avg("e" * 2, "holymoly"))
 .eval(lambda: str_concat(['alle', 'kinder'], ['ueber', str_last("die"), prefix, "strasse"]) )
 
+|eval()
+.lambdas(
+    lambda: str_concat(
+        ['The reason ', 'is ', "data.condition_reason", ' because of ', string("data.vac_on_without_contact[2]")]
+        )
+    )
+.as('data.concat_string')
 
    %% Definitions
    def func = lambda: "rate" *2
