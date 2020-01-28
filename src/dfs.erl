@@ -97,7 +97,7 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
       {ok, Tokens, _EndLine} ->
          case dfs_parser:parse(Tokens) of
             {ok, Data} ->
-               io:format("~nDATA: ~p~n",[Data]),
+%%               io:format("~nDATA: ~p~n",[Data]),
 %%               try eval(Data) of
 %%                  Result -> Result
 %%               catch
