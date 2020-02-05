@@ -1,6 +1,10 @@
 %% Disclaimer : This script does not reflect any real application of the dfs script-language,
 %% it just makes sense syntactically ;)
 
+
+
+|where(lambda: "action_ts" < int('last_ts') )
+
 def q = <<<
 SELECT AISLE, COUNT (*) AS COUNT,
 >>>
@@ -16,6 +20,9 @@ SELECT AISLE, COUNT (*) AS COUNT, '{ id:'||PS.CONST||',name:'||PS.NAME||'}' AS S
     GROUP BY WG.AISLE,  PS.CONST, PS.NAME
     ORDER BY WG.AISLE
 >>>
+
+
+
 
 def prefix = 'pre_'
 def offset = 9
