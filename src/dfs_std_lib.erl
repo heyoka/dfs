@@ -60,7 +60,7 @@ int(V) when is_integer(V) ->
    V;
 int(true) ->
    1;
-int(false) ->
+int(_) ->
    0.
 
 %% @doc type conversion to a float value
@@ -80,8 +80,8 @@ float(false) ->
    0.0;
 float(V) when is_number(V) ->
    erlang:float(V);
-float(V) ->
-   V.
+float(_) ->
+   0.0.
 
 %% @doc type conversion to a binary-string value
 %%
