@@ -66,6 +66,7 @@ def list = ['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse']
     .query(sql)
     .stmt( <<< trag.wack[2].sack >>> )
     .string('trag.wack[2].sack')
+    .level('interface::WmsInterface::logTelegram')
 
    def in1 =
       |stream_in(bool)
