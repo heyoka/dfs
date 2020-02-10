@@ -44,6 +44,7 @@ primaryExpr      -> function primaryExpr: [{pfunc, unwrap1('$1')}, unwrap('$2')]
 primaryExpr      -> operator primary primaryExpr: {pexp, ['$1', '$2', '$3']}.
 primaryExpr      -> primary operator primary : {pexp, ['$1', '$2', '$3']}.
 primaryExpr      -> primary operator primaryExpr : {pexp, ['$1', '$2', '$3']}.
+%primaryExpr      -> primaryExpr operator primaryExpr : {pexp, ['$1', '$2', '$3']}.
 primaryExpr      -> function : [{pfunc,unwrap1('$1')}].
 %primaryExpr      -> identifier '(' primaryExpr ')' : {function, unwrap($1), {params, '$3'}}.
 %primaryExpr      -> '(' primaryExpr ')' : {paren,'$2'}.

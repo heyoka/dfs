@@ -1,7 +1,7 @@
 % Lexer for Dataflow framework
 Definitions.
 
-Lambda          = lambda:(\s|\t)*
+Lambda          = lambda:(\s|\t|\n)*
 StreamId        = [\'][0-9]\.[0-9]{3}\.[0-9a-zA-Z]*[\']
 Reference       = \"(\"\"|[^\"\n]|[\.])*\"
 Operator        = (\+|-|\*|\/|==|!=|<|<=|>|>=|=~|!~|!|AND|OR|div|rem)

@@ -95,6 +95,7 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    Res =
    case dfs_lexer:string(String) of
       {ok, Tokens, _EndLine} ->
+%%         io:format("~nTokens: ~p~n",[Tokens]),
          case dfs_parser:parse(Tokens) of
             {ok, Data} ->
 %%               io:format("~nDATA: ~p~n",[Data]),
@@ -292,6 +293,7 @@ param({lambda, LambdaList}) ->
                   NewPs = extract_refs(Eles),
                   NewPs++Rs;
                {pfunc, {_FName, {params, Params}}}=_P ->
+
                   NewPs = extract_refs(Params),
                   NewPs++Rs;
                _ ->
@@ -316,6 +318,7 @@ param(P) ->
 
 
 extract_refs(Elements) when is_list(Elements) ->
+%%   io:format("~nExtract ref for : ~p~n",[Elements]),
    lists:foldl(
       fun(E1, Acc) ->
          case E1 of
@@ -325,20 +328,26 @@ extract_refs(Elements) when is_list(Elements) ->
             {pexp, Eles} -> lists:flatten([extract_refs(Eles)|Acc]);
             {paren, Exp} -> lists:flatten([extract_refs(Exp)|Acc]);
             {list, List} -> lists:flatten([extract_refs(List)|Acc]);
-            _O -> Acc
+            [Other] -> lists:flatten([extract_refs(Other)|Acc]);
+            List when is_list(List) -> lists:flatten([extract_refs(List)|Acc]);
+            _O -> Acc %io:format("extract_refs OTHER: ~p~n",[_O]),Acc
          end
       end,
       [],
       Elements
    );
-
+extract_refs({pfunc, {_Name, {params, Params}}}) ->
+%%   io:format("extract params: ~p~n",[Params]),
+   extract_refs(Params);
 extract_refs({reference, _Ln, Ref1}) ->
    Ref1;
 extract_refs({reference, Ref1}) ->
    Ref1;
 extract_refs({pexp, Elems}) when is_list(Elems) ->
    extract_refs(Elems);
-extract_refs(_) -> [].
+extract_refs(_Other) ->
+%%   io:format("Other in extract refs: ~p~n",[_Other]),
+   [].
 
 param_from_ref(Ref) when is_binary(Ref) ->
 %%   io:format("~nparam from ref: ~p~n",[Ref]),
@@ -440,6 +449,10 @@ lexp({string, _LN, S}) ->
 lexp({string, S}) ->
    %io:format("~nlexp string ~p~n",[S]),
    "<<\"" ++ binary_to_list(S) ++ "\">>";
+lexp({text, _LN, S}) ->
+   lexp({string, S});
+lexp({text, S}) ->
+   lexp({string, S});
 lexp({pexp, Elements}) when is_list(Elements) ->
    lists:concat([lexp(E) || E <- Elements]);
 lexp({pexp, {pexp, Elements}}) when is_list(Elements) ->
@@ -455,7 +468,7 @@ lexp({pfunc, {<<"if">>, {params, Params}}}) ->
 %%   io:format("Lambda IF fun : ~p~n",[lists:flatten(F0)]),
    F0;
 lexp({pfunc, {FName, {params, Params}}}) ->
-   %io:format("Lambda fun name is : ~p ~n",[FName]),
+%%   io:format("Lambda fun name is : ~p ~n",[FName]),
    Ps = params_pfunc(Params),
    FuncName = pfunction(binary_to_list(FName), length(Params)),
    FuncName ++ "(" ++ Ps ++ ")";

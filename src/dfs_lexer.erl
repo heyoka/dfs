@@ -778,6 +778,8 @@ yystate(48, Ics, Line, Tlen, _, _) ->
     {7,Tlen,Ics,Line,48};
 yystate(47, [32|Ics], Line, Tlen, _, _) ->
     yystate(47, Ics, Line, Tlen+1, 3, Tlen);
+yystate(47, [10|Ics], Line, Tlen, _, _) ->
+    yystate(47, Ics, Line+1, Tlen+1, 3, Tlen);
 yystate(47, [9|Ics], Line, Tlen, _, _) ->
     yystate(47, Ics, Line, Tlen+1, 3, Tlen);
 yystate(47, Ics, Line, Tlen, _, _) ->
