@@ -1,7 +1,7 @@
 %% Disclaimer : This script does not reflect any real application of the dfs script-language,
 %% it just makes sense syntactically ;)
 
-
+def duration_zero = 0h
 
 |where(lambda: "action_ts" < int('last_ts') )
 

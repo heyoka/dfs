@@ -5,7 +5,7 @@ Lambda          = lambda:(\s|\t|\n)*
 StreamId        = [\'][0-9]\.[0-9]{3}\.[0-9a-zA-Z]*[\']
 Reference       = \"(\"\"|[^\"\n]|[\.])*\"
 Operator        = (\+|-|\*|\/|==|!=|<|<=|>|>=|=~|!~|!|AND|OR|div|rem)
-Duration        = (\+|-)?[1-9]+[0-9]*(m|ms|s|h|d|w)
+Duration        = (\+|-)?(0|[1-9])+[0-9]*(m|ms|s|h|d|w)
 Identifier      = [a-z_][0-9a-zA-Z_\.]*
 Int             = (\+|-)?(0|[1-9])+[0-9]*
 Float           = (\+|-)?[0-9]+[\.]+[0-9]+
