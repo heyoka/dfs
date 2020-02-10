@@ -9,6 +9,8 @@ def numb = 2323.44
         (hour("ts")) > 3 AND (hour("ts") < 9)
     )
 
+def boolTrue = 'wahr'
+def boolFalse = 'falsch'
 |eval(lambda: if(( "ts" > (max(threshold,23.55) + 2)), boolTrue, boolFalse) )
 
 |eval(lambda: string( min(max("val1", 33), max("val2", 44) )) )
