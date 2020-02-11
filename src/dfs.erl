@@ -319,10 +319,13 @@ param({regex, Regex}) ->
    {regex, Regex};
 param({list, List}) ->
    List;
+param({list, _LN, List}) ->
+   List;
 param({text, _T}=V) ->
    find_text_template(V);
 param({text, _LN, _T}=V) ->
-   find_text_template(V);
+   {text, T} = find_text_template(V),
+   {text, _LN, T};
 param(P) ->
    P.
 
@@ -554,11 +557,11 @@ check_new_declaration(Identifier) ->
 
 %% check identifiers for possible text templates and substitute template vars
 find_text_template({text, _LN, Text}) ->
-   {text, _LN, text_template(Text)};
+   {text, text_template(Text)};
 find_text_template({text, Text}) ->
    {text, text_template(Text)};
 find_text_template({Type, _LN, Val}) ->
-   {Type, _LN, Val};
+   {Type, Val};
 find_text_template({Type, Val}) ->
    {Type, Val}.
 
