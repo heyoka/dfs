@@ -1,0 +1,25 @@
+def wasid = 334588
+def threshold = 55
+def table = 'doc.mytable'
+def string = 'schtringg'
+def tname = 'text_template'
+
+def text_list = [<<<alles>>>, <<<ist>>>, <<<wurscht>>>, <<<{{string}}>>>]
+
+def template_declaration = <<<This is my super {{string}}>>>
+
+def  sql =
+    <<<
+    SELECT COUNT(*) FROM "{{table }}" WHERE data['WasId'] = {{"wasid"}} AND value < {{threshold}}
+    >>>
+
+|db()
+.query(sql)
+.host('127.0.0.1')
+.port(4456)
+.as(template_declaration)
+.ttemplate(<<<Try this template it is called: {{tname}}>>>)
+.list(text_list)
+
+
+

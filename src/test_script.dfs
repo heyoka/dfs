@@ -1,6 +1,25 @@
 %% Disclaimer : This script does not reflect any real application of the dfs script-language,
 %% it just makes sense syntactically ;)
 
+def threshold = 333
+def table = 'doc.mytable'
+def string = 'schtringg'
+def tname = 'text_template'
+
+def template_declaration = <<<This is my super {{string}}>>>
+
+def  sql0 =
+    <<<
+    SELECT COUNT(*) FROM "{{table }}" WHERE data['WasId'] = {{"wasid"}} AND value < {{threshold}}
+    >>>
+
+|db()
+.query(sql0)
+.host('127.0.0.1')
+.port(4456)
+.as(template_declaration)
+.ttemplate(<<<Try this template it is called: {{tname}}>>>)
+
 def duration_zero = 0h
 
 |where(lambda: "action_ts" < int('last_ts') )
@@ -137,7 +156,7 @@ def list = ['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse']
 
       |shift(-6h)
 
-  def threshold = 333
+
   def boolTrue = true
   def boolFalse = false
   def in12 =

@@ -14,7 +14,12 @@
 %% replaced with a value of 111
 %% the replacement value must match exactly the original values datatpye (int, float, string, ...)
 test(FileName) ->
-   parse_file(FileName, [], [{<<"threshold">>, 111}, {<<"mylist">>,[5,6,7,8]}, {<<"func">>, <<"lambda: \"rate\" * 9">>}]).
+   parse_file(FileName, [], [
+      {<<"threshold">>, 111},
+      {<<"string">>, <<"eschtaring">>},
+      {<<"mylist">>,[5,6,7,8]},
+      {<<"func">>, <<"lambda: \"rate\" * 9">>}
+   ]).
 test() ->
    test("src/test_script.dfs")
 %%   ,
@@ -270,10 +275,11 @@ param({identifier, Ident}) ->
    case get_declaration(Ident) of
       nil -> {identifier, Ident};
       {connect, _} = C -> C;
-      {Type, _LN, Val} -> {Type, Val};
-      {Type, Val} -> {Type, Val};
+%%      {Type, _LN, Val} -> {Type, Val};
+%%      {Type, Val} -> {Type, Val};
       List when is_list(List) -> [{Type, Val} || {Type, _LN, Val} <- List];
-      {lambda, _, _, _} = Lambda -> Lambda
+      {lambda, _, _, _} = Lambda -> Lambda;
+      Other -> find_text_template(Other)
    end;
 param({pfunc, {_N, {params, _Ps}}}=L) ->
    param({lambda, [L]});
@@ -314,7 +320,10 @@ param({regex, Regex}) ->
 param({list, List}) ->
    List;
 param(P) ->
-   P.
+   find_text_template(P).
+%%   io:format("param other : ~p~n",[P]),
+%%   io:format("param other TEXT TEMPLATE : ~p~n",[find_text_template(P)]),
+%%   P.
 
 
 extract_refs(Elements) when is_list(Elements) ->
@@ -426,7 +435,7 @@ lexp({bool, _LN, Bool}) ->
 lexp({bool, Bool}) ->
    atom_to_list(Bool);
 lexp({identifier, _LN, Id}) ->
-   %io:format("[lexp({identifier] ~p~n",[Id]),
+%%   io:format("[lexp({identifier] ~p~n",[Id]),
    param_pfunc({identifier, Id});
 lexp({reference, _LN, Ref}) ->
    param_from_ref(Ref);
@@ -450,8 +459,10 @@ lexp({string, S}) ->
    %io:format("~nlexp string ~p~n",[S]),
    "<<\"" ++ binary_to_list(S) ++ "\">>";
 lexp({text, _LN, S}) ->
+   io:format("~nlexp text ~p~n",[S]),
    lexp({string, S});
 lexp({text, S}) ->
+   io:format("~nlexp text ~p~n",[S]),
    lexp({string, S});
 lexp({pexp, Elements}) when is_list(Elements) ->
    lists:concat([lexp(E) || E <- Elements]);
@@ -484,7 +495,6 @@ lexp({list, List}) ->
 %% here is where declaration - overwriting happens,
 %% you know for templates: every declaration (def keyword) which is not a chain-declaration
 %% can be overwritten with a custom value
-
 save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
@@ -511,7 +521,7 @@ save_declaration(Ident, {VType, VLine, _Val}=Value) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
-   %io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
+%%   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
    NewValue =
    case RVal of
       norepl -> Value;
@@ -539,10 +549,61 @@ check_new_declaration(Identifier) ->
          io_lib:format("'~s'",[Identifier]),<<" already defined">>]))
    end.
 
-unwrap({_T, _LN, Cotents}) ->
-   Cotents;
-unwrap({_T, Cotents}) ->
-   Cotents;
+%% check identifiers for possible text templates and substitute template vars
+find_text_template({text, _LN, Text}) ->
+   {text, _LN, text_template(Text)};
+find_text_template({text, Text}) ->
+   {text, text_template(Text)};
+find_text_template(Other) ->
+   Other.
+
+text_template(Text) ->
+   extract_template(Text).
+
+extract_template(Template) when is_binary(Template) ->
+   Matches = re:run(Template, "{{([a-zA-Z0-9\s\.\\[\\]_-]*)}}", [global, {capture, all, binary}]),
+%%   io:format("~nMatches for Template: ~p~n", [Matches]),
+   case Matches of
+      nomatch -> Template;
+      {match, Matched} ->
+         Res0 = [{TVar, clean_identifier_name(Var)} || [TVar, Var] <- Matched],
+         {Replace, Vars} = lists:unzip(Res0),
+         Format = binary_to_list(binary:replace(Template, Replace, <<"~s">>, [global])),
+%%         io:format("FORMAT: ~p~nVars: ~p~n",[Format, Vars]),
+%%         io:format("get declarations for vars: ~p~n",[get_template_vars(Vars)]),
+         Subst = get_template_vars(Vars),
+         list_to_binary(io_lib:format(Format, conv_template_vars(Subst)))
+   end.
+
+get_template_vars(Vars) when is_list(Vars) ->
+   lists:map(
+      fun(Var) ->
+         case get_declaration(Var) of
+            nil -> throw("Undefined Identifier \"" ++ binary_to_list(Var) ++ "\" used in text template");
+            Other -> unwrap(Other)
+         end
+      end,
+      Vars
+   ).
+
+clean_identifier_name(Name) when is_binary(Name) ->
+   re:replace(Name, "[\s\t\r\n]", <<"">>, [{return, binary}, global]).
+
+conv_template_vars(Vars) when is_list(Vars) ->
+   [conv_var(unwrap(Var)) || Var <- Vars].
+
+conv_var(V) when is_float(V) ->
+   float_to_binary(V, [{decimals, 8}]);
+conv_var(V) when is_integer(V) ->
+   integer_to_binary(V);
+conv_var(V) -> V.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+unwrap({_T, _LN, Contents}) ->
+   Contents;
+unwrap({_T, Contents}) ->
+   Contents;
 unwrap(V) ->
    V.
 
