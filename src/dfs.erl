@@ -495,6 +495,8 @@ lexp({list, List}) ->
 %% here is where declaration - overwriting happens,
 %% you know for templates: every declaration (def keyword) which is not a chain-declaration
 %% can be overwritten with a custom value
+save_declaration(Ident, [{VType, _Val}|_R]=Vals) when is_list(Vals) ->
+   save_declaration(Ident, [{VTy, 0, V} || {VTy, V} <- Vals]);
 save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
@@ -551,11 +553,13 @@ check_new_declaration(Identifier) ->
 
 %% check identifiers for possible text templates and substitute template vars
 find_text_template({text, _LN, Text}) ->
-   {text, _LN, text_template(Text)};
+   {text, text_template(Text)};
 find_text_template({text, Text}) ->
    {text, text_template(Text)};
-find_text_template(Other) ->
-   Other.
+find_text_template({Type, _LN, Val}) ->
+   {Type, _LN, Val};
+find_text_template({Type, Val}) ->
+   {Type, Val}.
 
 text_template(Text) ->
    extract_template(Text).

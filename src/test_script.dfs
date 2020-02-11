@@ -13,12 +13,16 @@ def  sql0 =
     SELECT COUNT(*) FROM "{{table }}" WHERE data['WasId'] = {{"wasid"}} AND value < {{threshold}}
     >>>
 
+
+def text_list = [<<<alles>>>, <<<ist>>>, <<<wurscht>>>, <<<{{string}}>>>]
+
 |db()
 .query(sql0)
 .host('127.0.0.1')
 .port(4456)
 .as(template_declaration)
 .ttemplate(<<<Try this template it is called: {{tname}}>>>)
+.list(text_list)
 
 def duration_zero = 0h
 
