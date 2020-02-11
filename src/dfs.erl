@@ -319,11 +319,12 @@ param({regex, Regex}) ->
    {regex, Regex};
 param({list, List}) ->
    List;
+param({text, _T}=V) ->
+   find_text_template(V);
+param({text, _LN, _T}=V) ->
+   find_text_template(V);
 param(P) ->
-   find_text_template(P).
-%%   io:format("param other : ~p~n",[P]),
-%%   io:format("param other TEXT TEMPLATE : ~p~n",[find_text_template(P)]),
-%%   P.
+   P.
 
 
 extract_refs(Elements) when is_list(Elements) ->
@@ -495,8 +496,8 @@ lexp({list, List}) ->
 %% here is where declaration - overwriting happens,
 %% you know for templates: every declaration (def keyword) which is not a chain-declaration
 %% can be overwritten with a custom value
-save_declaration(Ident, [{VType, _Val}|_R]=Vals) when is_list(Vals) ->
-   save_declaration(Ident, [{VTy, 0, V} || {VTy, V} <- Vals]);
+%%save_declaration(Ident, [{_VType, _Val}|_R]=Vals) when is_list(Vals) ->
+%%   save_declaration(Ident, [{VTy, 0, V} || {VTy, V} <- Vals]);
 save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
@@ -553,7 +554,7 @@ check_new_declaration(Identifier) ->
 
 %% check identifiers for possible text templates and substitute template vars
 find_text_template({text, _LN, Text}) ->
-   {text, text_template(Text)};
+   {text, _LN, text_template(Text)};
 find_text_template({text, Text}) ->
    {text, text_template(Text)};
 find_text_template({Type, _LN, Val}) ->
