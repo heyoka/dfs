@@ -462,12 +462,14 @@ lexp({string, _LN, S}) ->
 lexp({string, S}) ->
    %io:format("~nlexp string ~p~n",[S]),
    "<<\"" ++ binary_to_list(S) ++ "\">>";
-lexp({text, _LN, S}) ->
-   io:format("~nlexp text ~p~n",[S]),
-   lexp({string, S});
-lexp({text, S}) ->
-   io:format("~nlexp text ~p~n",[S]),
-   lexp({string, S});
+lexp({text, _LN, _S} = T) ->
+   {text, Text} = find_text_template(T),
+%%   io:format("~nlexp text ~p~n",[T]),
+   lexp({string, Text});
+lexp({text, _S} = T) ->
+   {text, Text} = find_text_template(T),
+%%   io:format("~nlexp text ~p~n",[T]),
+   lexp({string, Text});
 lexp({pexp, Elements}) when is_list(Elements) ->
    lists:concat([lexp(E) || E <- Elements]);
 lexp({pexp, {pexp, Elements}}) when is_list(Elements) ->

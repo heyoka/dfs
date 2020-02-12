@@ -1,0 +1,17 @@
+
+def threshold = 55
+def big_room = 'room is very big'
+def small_room = 'room is small'
+def here_we_are = 'here WE are !!!'
+def now_string = 'now'
+def lambda_output = 'data.l_out'
+
+
+|eval(lambda: str_concat('and', <<<{{here_we_are}}>>>))
+|eval(lambda: str_concat(['and', <<<{{here_we_are}}>>>, now_string]))
+.as(<<<{{lambda_output}}>>>)
+|keep('data')
+.vars(<<<one->>>, <<<-two>>>, <<<three 3>>>)
+|eval(lambda: if(( "room_qm3" > threshold), <<<Yes, {{big_room}}>>>, <<<No, {{small_room}}>>>) )
+
+

@@ -2,7 +2,9 @@ def wasid = 334588
 def threshold = 55
 def table = 'doc.mytable'
 def string = 'schtringg'
-def tname = 'text_template'
+def tname = 'text-template'
+def big_room = 'room is very big'
+def small_room = 'room is small'
 
 def text_list = [<<<alles>>>, <<<ist>>>, <<<wurscht>>>, <<<{{string}}>>>]
 
@@ -20,6 +22,5 @@ def  sql =
 .as(template_declaration)
 .ttemplate(<<<Try this template it is called: {{tname}}>>>)
 .list(text_list)
-
 
 
