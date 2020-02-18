@@ -7,7 +7,6 @@
 -export([parse/1, parse/2, parse/3, parse_file/1, parse_file/2, parse_file/3]).
 
 -export([test/0
-   , string_test/0
    , user_node/1, test/1]).
 
 %% testing value overriding, here 'threshold' from the example script will be
@@ -21,52 +20,7 @@ test(FileName) ->
       {<<"func">>, <<"lambda: \"rate\" * 9">>}
    ]).
 test() ->
-   test("src/test_script.dfs")
-%%   ,
-%%   string_test().
-.
-string_test() ->
-   parse(
-
-     "
-      def m = 'pm'
-      def inStreamId = '1.004.987349f9e87fwef'
-      def outStreamId = '2.404.5dfgs555sa5df5a'
-      % false lambda: must be speicifed before primary-expr
-      def host = 'de.example.com'
-      def dead_message = 'LOW on CARBONIDE !!!'
-      def deadman_period = 15m
-      def bool = TRUE
-      def number = 33.4434
-      def in1 =
-         |stream_in(bool)
-         .from(inStreamId)
-
-      def in2 =
-         |stream_in()
-         .from('1.004.987349f9e87fwef')
-
-      in2
-         |join(in1)
-         .on('val')
-         .translate(
-            ?_chair?, %% 'red_chair', red_desk
-            lambda: \"opmean.val\" + 2 * max(\"val1\", \"val2\")/3,
-            myNextParam,
-            lambda: (\"max\" - \"min\") /2,
-            lambda: string(\"max\") == '5',
-            lambda: str_ends_with(inStreamId, 'fwef'),
-            lambda: str_ends_with(\"muxolo\", 'olo'),
-            lambda: lookup(deadman_period) + number,
-            lambda: string(bool)
-           )
-
-         |lambda(
-            lambda: str_trim(\"host\") == 'server001.example.com',
-            mode,
-            '12354688978' %% numberstring here
-         )"
-   ).
+   test("src/test_script.dfs").
 
 -spec parse(list()) -> list().
 parse_file(FileName) when is_list(FileName) ->
@@ -96,6 +50,7 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    ets:new(?MODULE, [set, public, named_table]),
    ets:insert(?MODULE, {lfunc, FLibs}),
    Rep = [{RName, prepare_replacement(RName, Repl)} || {RName, Repl} <- Replacements],
+   logger:notice("all replacemens: ~p" ,[Rep]),
    ets:insert(?MODULE, {replace_def, Rep} ),
    Res =
    case dfs_lexer:string(String) of
@@ -117,6 +72,8 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
       {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
       Err -> Err
    end,
+   io:format("~n----------------------------~nETS data:~n~p~n-----------------------------------~n",
+      [ets:tab2list(?MODULE)]),
    ets:delete(?MODULE),
    Res.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -393,7 +350,7 @@ param_pfunc({identifier, _LN, Ident}) ->
 %%param_pfunc({identifier, {identifier, 0, Ident}}) ->
 %%   param_pfunc({identifier, Ident});
 param_pfunc({identifier, Ident}) ->
-   %io:format("~n(param_func) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
+   io:format("~n(param_func) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
       nil -> binary_to_list(Ident);
       {connect, _} -> binary_to_list(Ident);

@@ -5,6 +5,7 @@ def small_room = 'room is small'
 def here_we_are = 'here WE are !!!'
 def now_string = 'now'
 def lambda_output = 'data.l_out'
+def is_text = <<<hallllop>>>
 
 
 |eval(lambda: str_concat('and', <<<{{here_we_are}}>>>))
