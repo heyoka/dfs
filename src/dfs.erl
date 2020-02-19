@@ -14,11 +14,15 @@
 %% the replacement value must match exactly the original values datatpye (int, float, string, ...)
 test(FileName) ->
    parse_file(FileName, [], [
-      {<<"threshold">>, 111},
-      {<<"string">>, <<"eschtaring">>},
-      {<<"mylist">>,[5,6,7,8]},
-      {<<"function">>, <<"lambda: string(\"rate\" * 9)">>},
-      {<<"func">>, <<"lambda: string(\"rate\" * 9)">>}
+      {<<"emit_every">>, <<"3s">>},
+      {<<"emit_every_jitter">>, <<"248ms">>},
+      {<<"debug_type">>, <<"notice">>},
+
+%%      {<<"threshold">>, 111},
+%%      {<<"string">>, <<"eschtaring">>},
+%%      {<<"mylist">>,[5,6,7,8]},
+%%      {<<"function">>, <<"lambda: string(\"rate\" * 9)">>},
+      {<<"fun">>, <<"lambda: string(\"rate\" * 9)">>}
    ]).
 test() ->
    test("src/test_script.dfs").
@@ -79,10 +83,15 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    ets:delete(?MODULE),
    {NewDFS, Res}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-prepare_replacement(Name, Repl) when is_binary(Repl) ->
-   prepare_replacement(Name, binary_to_list(Repl));
-prepare_replacement(Name, Repl) when is_list(Repl) ->
-   parse_replacement(Name, Repl);
+%%prepare_replacement(Name, Repl) when is_binary(Repl) ->
+%%   io:format("parse_replacement: ~p ~p~n",[Name, Repl]),
+%%   prepare_replacement(Name, binary_to_list(Repl));
+%%prepare_replacement(Name, Repl) when is_list(Repl) ->
+%%   parse_replacement(Name, Repl);
+prepare_replacement(Name, <<"lambda:", _R/binary>> = BinString) ->
+   parse_replacement(Name, binary_to_list(BinString));
+prepare_replacement(Name, L) when is_list(L) ->
+   check_list_types(Name, L);
 prepare_replacement(_Name, Repl) ->
    Repl.
 parse_replacement(_Name, ("lambda:" ++ _R) = String ) ->
@@ -98,9 +107,6 @@ parse_replacement(_Name, ("lambda:" ++ _R) = String ) ->
       {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
       Err -> Err
    end;
-
-parse_replacement(Name, L) when is_list(L) ->
-   check_list_types(Name, L);
 parse_replacement(_Name, R) -> R.
 
 check_list_types(Name, L) ->
