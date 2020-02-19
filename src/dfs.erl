@@ -17,7 +17,8 @@ test(FileName) ->
       {<<"threshold">>, 111},
       {<<"string">>, <<"eschtaring">>},
       {<<"mylist">>,[5,6,7,8]},
-      {<<"func">>, <<"lambda: \"rate\" * 9">>}
+      {<<"function">>, <<"lambda: string(\"rate\" * 9)">>},
+      {<<"func">>, <<"lambda: string(\"rate\" * 9)">>}
    ]).
 test() ->
    test("src/test_script.dfs").
@@ -38,7 +39,7 @@ parse(StringData) ->
 parse(D, Libs) ->
    parse(D, Libs, []).
 
--spec parse(binary()|list(), list(), list()) -> list().
+-spec parse(binary()|list(), list(), list()) -> {list(), {list(), list()}}.
 parse(Binary, Libs, Replacements) when is_binary(Binary) ->
    parse(binary_to_list(Binary), Libs, Replacements);
 parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
@@ -50,6 +51,7 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    ets:new(?MODULE, [set, public, named_table]),
    ets:insert(?MODULE, {lfunc, FLibs}),
    Rep = [{RName, prepare_replacement(RName, Repl)} || {RName, Repl} <- Replacements],
+%%   logger:notice("all replacemens: ~p" ,[Rep]),
    ets:insert(?MODULE, {replace_def, Rep} ),
    Res =
    case dfs_lexer:string(String) of
@@ -71,8 +73,11 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
       {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
       Err -> Err
    end,
+   %% now maybe rewrite the DFS script with replacements
+   TabList = ets:tab2list(?MODULE),
+   NewDFS = dfs_rewriter:execute(Replacements, TabList, String),
    ets:delete(?MODULE),
-   Res.
+   {NewDFS, Res}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 prepare_replacement(Name, Repl) when is_binary(Repl) ->
    prepare_replacement(Name, binary_to_list(Repl));

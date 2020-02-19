@@ -1,0 +1,3 @@
+% def fun = lambda: avg("vallist") *2
+
+def function = lambda: avg("vallist") * 2
