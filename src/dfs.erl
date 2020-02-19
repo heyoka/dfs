@@ -50,7 +50,6 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    ets:new(?MODULE, [set, public, named_table]),
    ets:insert(?MODULE, {lfunc, FLibs}),
    Rep = [{RName, prepare_replacement(RName, Repl)} || {RName, Repl} <- Replacements],
-   logger:notice("all replacemens: ~p" ,[Rep]),
    ets:insert(?MODULE, {replace_def, Rep} ),
    Res =
    case dfs_lexer:string(String) of
@@ -72,8 +71,6 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
       {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
       Err -> Err
    end,
-   io:format("~n----------------------------~nETS data:~n~p~n-----------------------------------~n",
-      [ets:tab2list(?MODULE)]),
    ets:delete(?MODULE),
    Res.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -479,7 +476,7 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
    NewValue =
       case RVal of
          norepl -> Value;
-         NVal  -> {lamdba, NVal}
+         NVal  -> {lambda, NVal}
       end,
    ets:insert(?MODULE, {Ident, NewValue});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
