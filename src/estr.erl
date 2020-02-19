@@ -3,50 +3,50 @@
 -include_lib("eunit/include/eunit.hrl").
 -endif.
 -export([
-        new/1
-    ,   str_at/2
-    ,   str_capitalize/1
-    ,   str_chunk/2
-    ,   str_codepoints/1
-    ,   str_contains/2
-    ,   str_downcase/1
-    ,   str_ends_with/2
-    ,   str_ends_with_any/2
-    ,   str_eqi/2
-    ,   str_first/1
-    ,   str_last/1
-    ,   str_length/1
-    ,   str_lstrip/1
-    ,   str_lstrip/2
-    ,   str_next_codepoint/1
-    ,   str_normalize/2
-    ,   str_pad_leading/2
-    ,   str_pad_leading/3
-    ,   str_pad_trailing/2
-    ,   str_pad_trailing/3
-    ,   str_replace/3
-    ,   str_replace_leading/3
-    ,   str_replace_prefix/3
-    ,   str_replace_suffix/3
-    ,   str_replace_trailing/3
-    ,   str_reverse/1
-    ,   str_rstrip/1
-    ,   str_rstrip/2
-    ,   str_slice/3
-    ,   str_split/1
-    ,   str_split/2
-    ,   str_split/3
-    ,   str_split_at/2
-    ,   str_split_by_any/2
-    ,   str_split_by_any/3
-    ,   str_split_by_re/2
-    ,   str_split_by_re/3
-    ,   str_starts_with/2
-    ,   str_starts_with_any/2
-    ,   str_strip/1
-    ,   str_strip/2
-    ,   str_upcase/1
-]).
+    new/1
+    , str_at/2
+    , str_capitalize/1
+    , str_chunk/2
+    , str_codepoints/1
+    , str_contains/2
+    , str_downcase/1
+    , str_ends_with/2
+    , str_ends_with_any/2
+    , str_eqi/2
+    , str_first/1
+    , str_last/1
+    , str_length/1
+    , str_lstrip/1
+    , str_lstrip/2
+    , str_next_codepoint/1
+    , str_normalize/2
+    , str_pad_leading/2
+    , str_pad_leading/3
+    , str_pad_trailing/2
+    , str_pad_trailing/3
+    , str_replace/3
+    , str_replace_leading/3
+    , str_replace_prefix/3
+    , str_replace_suffix/3
+    , str_replace_trailing/3
+    , str_reverse/1
+    , str_rstrip/1
+    , str_rstrip/2
+    , str_slice/3
+    , str_split/1
+    , str_split/2
+    , str_split/3
+    , str_split_at/2
+    , str_split_by_any/2
+    , str_split_by_any/3
+    , str_split_by_re/2
+    , str_split_by_re/3
+    , str_starts_with/2
+    , str_starts_with_any/2
+    , str_strip/1
+    , str_strip/2
+    , str_upcase/1
+    , duplicate/2, graphemes/1, next_grapheme/1, is_printable/1, is_valid/1]).
 
 -type estr()        :: binary().
 -type grapheme()    :: binary().
@@ -341,7 +341,7 @@ is_valid(String) when is_binary(String) ->
 estr_test() ->
     L = "жen",
     B = <<208,182,101,110>> = estr:new(L),
-    ?assertException(error, badarg, list_to_binary(L)),
+    ?assertError(badarg, list_to_binary(L)),
     ?assertEqual({<<208,182>>,<<"en">>}, str_next_codepoint(B)),
     ?assertEqual(<<208,150,69,78>>, str_upcase(B)),
     ?assertEqual(3, ?MODULE:str_length(B)),
