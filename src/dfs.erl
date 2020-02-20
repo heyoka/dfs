@@ -21,8 +21,8 @@ test(FileName) ->
 %%      {<<"threshold">>, 111},
 %%      {<<"string">>, <<"eschtaring">>},
 %%      {<<"mylist">>,[5,6,7,8]},
-%%      {<<"function">>, <<"lambda: string(\"rate\" * 9)">>},
-      {<<"fun">>, <<"lambda: string(\"rate\" * 9)">>}
+      {<<"function">>, <<"lambda: string(\"rate\" * 9)">>},
+      {<<"fun">>, <<"lambda: string(\"rate\" * 10)">>}
    ]).
 test() ->
    test("src/test_script.dfs").
@@ -55,7 +55,7 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    ets:new(?MODULE, [set, public, named_table]),
    ets:insert(?MODULE, {lfunc, FLibs}),
    Rep = [{RName, prepare_replacement(RName, Repl)} || {RName, Repl} <- Replacements],
-%%   logger:notice("all replacemens: ~p" ,[Rep]),
+%%   logger:notice("all replacemens: ~p~n" ,[Rep]),
    ets:insert(?MODULE, {replace_def, Rep} ),
    Res =
    case dfs_lexer:string(String) of
@@ -358,7 +358,6 @@ param_pfunc({identifier, _LN, Ident}) ->
 %%param_pfunc({identifier, {identifier, 0, Ident}}) ->
 %%   param_pfunc({identifier, Ident});
 param_pfunc({identifier, Ident}) ->
-   io:format("~n(param_func) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
       nil -> binary_to_list(Ident);
       {connect, _} -> binary_to_list(Ident);
@@ -483,14 +482,15 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
-   %io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
+%%   io:format("~nReplacements ~p~n~nKey: ~p~nreplacement-value: ~p~nOriginal-Value~p~n~n",[Replacements, Ident, RVal, Value]),
    NewValue =
       case RVal of
          norepl -> Value;
-         NVal  -> {lambda, NVal}
+         _  -> RVal
       end,
    ets:insert(?MODULE, {Ident, NewValue});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
+%%   io:format("~nsave_declaration single: ~p: ~p~n",[Ident, Value]),
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),

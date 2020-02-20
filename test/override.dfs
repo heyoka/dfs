@@ -1,0 +1,31 @@
+%% testing declaration overriding here
+%% numbers
+def number1 = 23.33
+def number2 =
+    56
+def number3 = -0.0012
+%% strings
+def string1 = 'this is my original string'
+def string2 =
+    'this is the original multiline string'
+%def string2 = 'this string should not be touched'
+%% text
+def text1 =
+    <<<
+        This is my original text !
+    >>>
+def text2 = <<< this is also a text, but will not change >>>
+%% duration literals
+def dur1 = 125ms
+def dur2 = -6h
+%% lambda expressions
+def lambda1 = lambda:  max("val1", "val2")
+
+
+|eval(
+    lambda1
+)
+.add(number2)
+.message(text1)
+.timeouts(dur1)
+.after(dur2)

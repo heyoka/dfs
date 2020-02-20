@@ -23,7 +23,7 @@
 -define(PATTERN_DURATION(VarName),
    [?BASE_PATTERN, VarName, <<")\\s*=[\\s\\n\\t\\r]*-?\\d+)(w|d|s|m|ms|h)(?=\\s|\\n|\\t|\\z)">>]).
 -define(PATTERN_LAMBDA(VarName),
-   [?BASE_PATTERN, VarName, <<")\\s*=[\\s\\n\\t\\r]*lambda:.*)(?=\\R|\\z)">>]).
+   [?BASE_PATTERN, VarName, <<")\\s*=[\\s\\n\\t\\r]*lambda:\\s+.*)(?=\\R|\\z)">>]).
 
 %% API
 -export([execute/3, do/0]).
@@ -47,24 +47,22 @@ replace(VarName, NewValue, VarList, DFS) ->
    case pattern(VarName, VarList) of
       false -> DFS;
       {Type, Pattern} ->
-         io:format("~nPattern for ~p: ~p~n", [Type, Pattern]),
          DfsValue = to_dfs_var(Type, dfs_std_lib:string(NewValue)),
-         io:format("DfsValue for ~p: ~p~n", [VarName, DfsValue]),
          Replacement =
             iolist_to_binary([<<"def ">>, VarName, <<" = ">>, DfsValue]),
-         io:format("Replacement for: ~p: ~p~n",[VarName, Replacement]),
             re:replace(DFS, Pattern, Replacement,
                [{return, list}, global, multiline, unicode, ungreedy])
 
    end.
 
 pattern(VarName, VarList) ->
-   io:format("VarName: ~p Value: ~p~n",[VarName, proplists:get_value(VarName, VarList)]),
    case proplists:get_value(VarName, VarList) of
       {Type, _Line, _Value} -> {Type, pat(Type, VarName)};
-      {lambda,{lambda, _Value, _DefsDFS, _DefsErl}} -> {lambda, pat(lambda, VarName)};
       {lambda,{_Value, _DefsDFS, _DefsErl}} -> {lambda, pat(lambda, VarName)};
-      _ -> io:format("~nno varlist entry for ~p~n", [VarName]), false
+      {lambda,_Value, _DefsDFS, _DefsErl} -> {lambda, pat(lambda, VarName)};
+      _ ->
+         %io:format("~nno varlist entry for ~p~n", [VarName]),
+         false
    end.
 
 pat(duration, VarName) -> ?PATTERN_DURATION(VarName);
@@ -73,7 +71,9 @@ pat(float, VarName) -> ?PATTERN_NUMBER(VarName);
 pat(text, VarName) -> ?PATTERN_TEXT(VarName);
 pat(string, VarName) -> ?PATTERN_STRING(VarName);
 pat(lambda, VarName) -> ?PATTERN_LAMBDA(VarName);
-pat(T, N) -> io:format("~nno pattern found for type: ~p~n",[{T, N}]),false.
+pat(T, N) ->
+   %io:format("~nno pattern found for type: ~p~n",[{T, N}]),
+   false.
 
 to_dfs_var(text, Val) -> <<"<<<", Val/binary, ">>>">>;
 to_dfs_var(string, Val) -> <<"'", Val/binary, "'">>;
@@ -159,7 +159,7 @@ re_2_test() ->
       ],
       [
          {<<"fun">>,
-            {lambda,{lambda,"dfs_std_lib:string(Rate * 9)",[<<"rate">>],["Rate"]}}}
+            {lambda,"dfs_std_lib:string(Rate * 9)",[<<"rate">>],["Rate"]}}
       ],
       DFSIn),
    ?assertEqual(DFSOut, Out).

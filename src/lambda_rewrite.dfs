@@ -1,3 +1,7 @@
-% def fun = lambda: avg("vallist") *2
+def fun = lambda: avg("vallist") * 3
 
 def function = lambda: avg("vallist") * 2
+
+|eval(function)
+.more('orless')
+.func(fun)
