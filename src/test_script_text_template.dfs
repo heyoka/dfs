@@ -5,6 +5,8 @@ def string = 'schtringg'
 def tname = 'text-template'
 def big_room = 'room is very big'
 def small_room = 'room is small'
+def db_number = '10112'
+def db = 'DB{{db_number}}.DB'
 
 def text_list = [<<<alles>>>, <<<ist>>>, <<<wurscht>>>, <<<{{string}}>>>]
 
@@ -23,4 +25,7 @@ def  sql =
 .ttemplate(<<<Try this template it is called: {{tname}}>>>)
 .list(text_list)
 
+|s7poll()
+.vars('{{db}}X30.1', '{{db}}X30.2')
+.as('test', 'test2')
 

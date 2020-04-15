@@ -157,6 +157,12 @@ eval({statement, {declarate, DecName, {list, DecValues}}}) ->
    save_declaration(DecName, NewValues);
 eval({statement, {declarate, DecName, {lambda, _DecValue}=L}}) ->
    save_declaration(DecName, param(L));
+eval({statement, {declarate, DecName, {text, LN, V}}}) ->
+   Val = text_template(V),
+   save_declaration(DecName, {text, LN, Val});
+eval({statement, {declarate, DecName, {string, LN, V}}}) ->
+   Val = text_template(V),
+   save_declaration(DecName, {string, LN, Val});
 eval({statement, {declarate, DecName, DecValue}}) ->
    save_declaration(DecName, DecValue);
 eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
@@ -291,6 +297,12 @@ param({text, _T}=V) ->
 param({text, _LN, _T}=V) ->
    {text, T} = find_text_template(V),
    {text, _LN, T};
+param({string, S}=V) ->
+   {text, T} = find_text_template({text, S}),
+   {string, T};
+param({string, LN, S}=_V) ->
+   {text, T} = find_text_template({text, LN, S}),
+   {string, LN, T};
 param(P) ->
    P.
 
@@ -424,16 +436,17 @@ lexp({duration, S}) ->
 lexp({string, _LN, S}) ->
    lexp({string, S});
 lexp({string, S}) ->
-   %io:format("~nlexp string ~p~n",[S]),
-   "<<\"" ++ binary_to_list(S) ++ "\">>";
-lexp({text, _LN, _S} = T) ->
-   {text, Text} = find_text_template(T),
+%%   io:format("~nlexp string ~p~n",[S]),
+   {text, Text} = find_text_template({text, S}),
+   "<<\"" ++ binary_to_list(Text) ++ "\">>";
+lexp({text, _LN, S} = _T) ->
+%%   {text, Text} = find_text_template(T),
 %%   io:format("~nlexp text ~p~n",[T]),
-   lexp({string, Text});
-lexp({text, _S} = T) ->
-   {text, Text} = find_text_template(T),
+   lexp({string, S});
+lexp({text, S} = _T) ->
+%%   {text, Text} = find_text_template(T),
 %%   io:format("~nlexp text ~p~n",[T]),
-   lexp({string, Text});
+   lexp({string, S});
 lexp({pexp, Elements}) when is_list(Elements) ->
    lists:concat([lexp(E) || E <- Elements]);
 lexp({pexp, {pexp, Elements}}) when is_list(Elements) ->
