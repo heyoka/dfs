@@ -5,7 +5,7 @@ primaryExpr function parameters parameter  .
 
 Terminals
 '=' '(' ')' ',' '[' ']' '.' '-' '!'
-def node user_node string text identifier number bool
+def node macro user_node string text identifier number bool
 duration regex int stream_id float operator lambda reference.
 
 
@@ -29,13 +29,16 @@ expression        -> '[' parameters ']' : {list, unwrap('$2')}.
 expression         -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
 
 %chain             -> user_node function chain : [{unwrap('$1'), unwrap1('$2')}] ++ '$3'.
+
 chain             -> user_node function chain : [unwrap_node_func({user_node, unwrap1('$2')})] ++ '$3'.
+chain             -> macro function chain : [unwrap_node_func({macro, unwrap1('$2')})] ++ '$3'.
 chain             -> node function chain : [unwrap_node_func({node, unwrap1('$2')})] ++ '$3'.
 chain             -> '.' function chain : ['$2'] ++ '$3'.
 chain             -> '.' identifier chain : ['$2'] ++ '$3'.
 chain             -> '.' function : ['$2'].
 chain             -> node function : [unwrap_node_func({node, unwrap1('$2')})].
 chain             -> user_node function : [unwrap_node_func({user_node, unwrap1('$2')})].
+chain             -> macro function : [unwrap_node_func({macro, unwrap1('$2')})].
 
 primaryExpr      -> primaryExpr primaryExpr: ['$1']++['$2'].
 primaryExpr      -> operator primary : {pexp, ['$1', '$2']}.
@@ -93,4 +96,5 @@ unwrap({_,_,V}) -> V;
 unwrap(V) when is_list(V) -> lists:flatten(V).
 unwrap_node_func({node, {N, P}}) -> {node, N, P};
 unwrap_node_func({user_node, {N, P}}) -> {user_node, N, P};
+unwrap_node_func({macro, {N, P}}) -> {macro, N, P};
 unwrap_node_func(V) -> V.
