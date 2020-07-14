@@ -21,6 +21,7 @@ test(FileName) ->
 %%      {<<"threshold">>, 111},
 %%      {<<"string">>, <<"eschtaring">>},
 %%      {<<"mylist">>,[5,6,7,8]},
+      {<<"address_list">>, [<<"{{db}}X55.2">>, <<"{{db}}X55.3">>, <<"{{db}}X55.4">>]},
       {<<"function">>, <<"lambda: string(\"rate\" * 9)">>},
       {<<"fun">>, <<"lambda: string(\"rate\" * 10)">>}
    ]).
@@ -549,7 +550,7 @@ text_template(Text) ->
    extract_template(Text).
 
 extract_template(Template) when is_binary(Template) ->
-   Matches = re:run(Template, "{{([a-zA-Z0-9\s\.\\[\\]_-]*)}}", [global, {capture, all, binary}]),
+   Matches = re:run(Template, "{{([a-zA-Z0-9\\+\\-\s\.\\[\\]_-]*)}}", [global, {capture, all, binary}]),
 %%   io:format("~nMatches for Template: ~p~n", [Matches]),
    case Matches of
       nomatch -> Template;
@@ -557,8 +558,8 @@ extract_template(Template) when is_binary(Template) ->
          Res0 = [{TVar, clean_identifier_name(Var)} || [TVar, Var] <- Matched],
          {Replace, Vars} = lists:unzip(Res0),
          Format = binary_to_list(binary:replace(Template, Replace, <<"~s">>, [global])),
-%%         io:format("FORMAT: ~p~nVars: ~p~n",[Format, Vars]),
-%%         io:format("get declarations for vars: ~p~n",[get_template_vars(Vars)]),
+         io:format("FORMAT: ~p~nVars: ~p~n",[Format, Vars]),
+         io:format("get declarations for vars: ~p~n",[get_template_vars(Vars)]),
          Subst = get_template_vars(Vars),
          list_to_binary(io_lib:format(Format, conv_template_vars(Subst)))
    end.
