@@ -4,27 +4,28 @@
 -author("Alexander Minichmair").
 
 %% API
--export([parse/1, parse/2, parse/3, parse_file/1, parse_file/2, parse_file/3]).
+-export([parse/1, parse/2, parse/4, parse_file/1, parse_file/2, parse_file/3, parse_file/4]).
 
 -export([test/0
-   , user_node/1, test/1]).
+   , user_node/1, test/1, test_macro/1]).
 
-%% testing value overriding, here 'threshold' from the example script will be
-%% replaced with a value of 111
-%% the replacement value must match exactly the original values datatpye (int, float, string, ...)
+test_macro(FileName) ->
+   {ok, Data1} = file:read_file("src/ctc_module_condition.dfs"),
+   StringData1 = binary_to_list(binary:replace(Data1, <<"\\">>, <<>>, [global])),
+   {ok, Data2} = file:read_file("src/publish_macro.dfs"),
+   StringData2 = binary_to_list(binary:replace(Data2, <<"\\">>, <<>>, [global])),
+   parse_file(FileName, [], [], [{<<"ctc_module_condition">>, StringData1}, {<<"publish_macro">>, StringData2}]).
+
 test(FileName) ->
    parse_file(FileName, [], [
       {<<"emit_every">>, <<"3s">>},
       {<<"emit_every_jitter">>, <<"248ms">>},
       {<<"debug_type">>, <<"notice">>},
-
-%%      {<<"threshold">>, 111},
-%%      {<<"string">>, <<"eschtaring">>},
-%%      {<<"mylist">>,[5,6,7,8]},
       {<<"address_list">>, [<<"{{db}}X55.2">>, <<"{{db}}X55.3">>, <<"{{db}}X55.4">>]},
       {<<"function">>, <<"lambda: string(\"rate\" * 9)">>},
       {<<"fun">>, <<"lambda: string(\"rate\" * 10)">>}
    ]).
+
 test() ->
    test("src/test_script.dfs").
 
@@ -34,20 +35,23 @@ parse_file(FileName) when is_list(FileName) ->
 parse_file(FileName, Libs) ->
    parse_file(FileName, Libs, []).
 parse_file(FileName, Libs, Replacements) ->
+   parse_file(FileName, Libs, Replacements, []).
+parse_file(FileName, Libs, Replacements, Macros) ->
    {ok, Data} = file:read_file(FileName),
    StringData = binary_to_list(binary:replace(Data, <<"\\">>, <<>>, [global])),
-   parse(StringData, Libs, Replacements).
+   parse(StringData, Libs, Replacements, Macros).
 
 parse(StringData) ->
-   parse(StringData, [], []).
+   parse(StringData, [], [], []).
 
 parse(D, Libs) ->
-   parse(D, Libs, []).
+   parse(D, Libs, [], []).
 
--spec parse(binary()|list(), list(), list()) -> {list(), {list(), list()}}.
-parse(Binary, Libs, Replacements) when is_binary(Binary) ->
-   parse(binary_to_list(Binary), Libs, Replacements);
-parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
+-spec parse(binary()|list(), list(), list(), list()) -> {list(), {list(), list()}}.
+parse(Binary, Libs, Replacements, Macros) when is_binary(Binary) ->
+   parse(binary_to_list(Binary), Libs, Replacements, Macros);
+parse(String, Libs, Replacements, Macros)
+      when is_list(String) andalso is_list(Libs) andalso is_list(Macros) ->
    catch ets:delete(?MODULE),
    LambdaLibs = [dfs_std_lib, estr] ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
@@ -61,10 +65,10 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    Res =
    case dfs_lexer:string(String) of
       {ok, Tokens, _EndLine} ->
-         io:format("~nTokens: ~p~n",[Tokens]),
+%%         io:format("~nTokens: ~p~n",[Tokens]),
          case dfs_parser:parse(Tokens) of
             {ok, Data} ->
-               io:format("~nDATA: ~p~n",[Data]),
+%%               io:format("~nDATA: ~p~n",[Data]),
 %%               try eval(Data) of
 %%                  Result -> Result
 %%               catch
@@ -82,13 +86,70 @@ parse(String, Libs, Replacements) when is_list(String) andalso is_list(Libs) ->
    TabList = ets:tab2list(?MODULE),
    NewDFS = dfs_rewriter:execute(Replacements, TabList, String),
    ets:delete(?MODULE),
-   {NewDFS, Res}.
+   %% check for macros in the script
+   {NewNodes, NewConns} = macros(Res, Macros),
+   {NewDFS, {NewNodes, NewConns}}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MACROs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%prepare_replacement(Name, Repl) when is_binary(Repl) ->
-%%   io:format("parse_replacement: ~p ~p~n",[Name, Repl]),
-%%   prepare_replacement(Name, binary_to_list(Repl));
-%%prepare_replacement(Name, Repl) when is_list(Repl) ->
-%%   parse_replacement(Name, Repl);
+macros({Nodes, Conns} = Res, []) when is_list(Nodes), is_list(Conns) ->
+   Res;
+macros({Nodes, Conns}, Macros) when is_list(Nodes), is_list(Conns), is_list(Macros) ->
+   replace_macros(Nodes, Conns, Macros);
+macros(_ = Res, []) ->
+   Res.
+
+replace_macros(Nodes, Connections, Macros) ->
+%%   io:format("Conns: ~n~p~n",[Connections]),
+   FNodes = fun
+               ({{<<"||" , NodeName/binary>>, _}=MacroName, _NodeParams, Params}, {Ns, Cs}) ->
+                  MacroDfs =
+                  case proplists:get_value(NodeName, Macros) of
+                     undefined -> throw("no dfs for macro named " ++ binary_to_list(NodeName));
+                     Other -> Other
+                  end,
+%%                  io:format("Macro : ~p~n with params: ~p", [NodeName, Params]),
+                  {_NewMacroDfs, {MacroNodes, MacroConns}} = prepare_macro(MacroDfs, Params, Macros),
+%%                  io:format("macro nodes: ~p~n macro conns: ~p~n", [MacroNodes, MacroConns]),
+                  [{FirstMacroNode, _, _}|_] = MacroNodes,
+                  {LastMacroNode, _, _} = lists:last(MacroNodes),
+%%                  io:format("First Macro Node: ~p~nLast Macro Node: ~p~n", [FirstMacroNode, LastMacroNode]),
+                  NewNodes0 = proplists:delete(MacroName, Ns),
+                  NewNodes = NewNodes0 ++ MacroNodes,
+                  NewConns0 = Cs ++ MacroConns,
+                  NewConns = rewrite_conns(NewConns0, MacroName, {FirstMacroNode, LastMacroNode}, []),
+                  {NewNodes, NewConns}
+               ;
+               ({{_NodeName, _}, _NodeParams, _Params}, Acc) ->
+%%                  io:format("non-macro node: ~p~n", [NodeName]),
+                  Acc
+            end,
+   lists:foldl(FNodes, {Nodes, Connections}, Nodes).
+
+prepare_macro(MacroDfs, Replacements, Macros) ->
+   Vars = clean_replacements(Replacements, []),
+%%   io:format("~nReplacements for macro: ~p : ~p",[MacroDfsFile, Vars]),
+   parse(MacroDfs, [], Vars, Macros).
+
+clean_replacements([], Out) ->
+   Out;
+clean_replacements([{Name, [{_Type, Val}]}|R], Out) ->
+%%   io:format("replacement: ~p => ~p", [V, {Name, Val}]),
+   clean_replacements(R, [{Name, Val}|Out]).
+
+rewrite_conns([], _, _, Acc) -> Acc;
+rewrite_conns([{MacroName, OtherNode} | R], MacroName, {First, Last}, Acc) ->
+%%   NewAcc0 = proplists:delete(MacroName, Cs),
+   rewrite_conns(R, MacroName, {First, Last}, [{First, OtherNode}|Acc]);
+rewrite_conns([{OtherNode, MacroName} | R], MacroName, {First, Last}, Acc) ->
+%%   NewAcc0 = proplists:delete(OtherNode, Cs),
+   rewrite_conns(R, MacroName, {First, Last}, [{OtherNode, Last}|Acc]);
+rewrite_conns([{_, _}=C | R], MacroName, {First, Last}, Acc) ->
+   rewrite_conns(R, MacroName, {First, Last}, [C|Acc]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declaration substitution
 prepare_replacement(Name, <<"lambda:", _R/binary>> = BinString) ->
    parse_replacement(Name, binary_to_list(BinString));
 prepare_replacement(Name, L) when is_list(L) ->
@@ -245,7 +306,7 @@ chain(ChainElements) when is_list(ChainElements) ->
             Id = node_id(),
 %%            io:format("~nconnect node ~p to node ~p~n",[NodeName, _Node]),
             Acc#{nodes => Ns++[CN], current => {{macro_node(NodeName), Id}, [], []},
-               conns => [{{user_node(NodeName),Id}, Node}|Cs]};
+               conns => [{{macro_node(NodeName),Id}, Node}|Cs]};
 
          ({func, Name, {params, Params}}, #{current := {Node, NodeParams, Ps}}=Acc) ->
             Acc#{current := {Node, NodeParams, Ps++[{Name, params(Params)}]}};
