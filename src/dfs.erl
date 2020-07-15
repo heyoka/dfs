@@ -349,7 +349,7 @@ param({pfunc, {_N, {params, _Ps}}}=L) ->
 param({pfunc, N}) ->
    param({lambda, [{pfunc, {N,{params,[]}}}]});
 param({lambda, LambdaList}) ->
-   io:format("param: lambda ~p~n",[LambdaList]),
+%%   io:format("param: lambda ~p~n",[LambdaList]),
    {Lambda, BinRefs} =
       lists:foldl(
          fun(E, {L, Rs}) ->
@@ -435,7 +435,7 @@ extract_refs(_Other) ->
    [].
 
 param_from_ref(Ref) when is_binary(Ref) ->
-   io:format("~nPARAM from Reference: ~p~n",[Ref]),
+%%   io:format("~nPARAM from Reference: ~p~n",[Ref]),
    Ref1 = clean_param_name(Ref),
    Ref0 = binary:replace(Ref1, [<<".">>,<<"[">>,<<"]">>], <<"_">>, [global]),
    string:titlecase(binary_to_list(Ref0)).
