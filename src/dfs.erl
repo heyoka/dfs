@@ -340,8 +340,6 @@ param({identifier, Ident}) ->
    case get_declaration(Ident) of
       nil -> {identifier, Ident};
       {connect, _} = C -> C;
-%%      {Type, _LN, Val} -> {Type, Val};
-%%      {Type, Val} -> {Type, Val};
       List when is_list(List) -> [{Type, Val} || {Type, _LN, Val} <- List];
       {lambda, _, _, _} = Lambda -> Lambda;
       Other -> find_text_template(Other)
@@ -351,7 +349,7 @@ param({pfunc, {_N, {params, _Ps}}}=L) ->
 param({pfunc, N}) ->
    param({lambda, [{pfunc, {N,{params,[]}}}]});
 param({lambda, LambdaList}) ->
-%%   io:format("param: lambda ~p~n",[LambdaList]),
+   io:format("param: lambda ~p~n",[LambdaList]),
    {Lambda, BinRefs} =
       lists:foldl(
          fun(E, {L, Rs}) ->
@@ -375,7 +373,10 @@ param({lambda, LambdaList}) ->
             {L++[lexp(E)], Refs0}
          end,{[], []},LambdaList), %% foldl
    %% unique params
-   BRefs = sets:to_list(sets:from_list(BinRefs)),
+   BRefs0 = sets:to_list(sets:from_list(BinRefs)),
+   %% rewrite text templates
+   BRefs1 = [find_text_template({text, BinRef}) || BinRef <- BRefs0],
+   {_, BRefs} = lists:unzip(BRefs1),
    Refs = lists:map(fun(E) -> param_from_ref(E) end, BRefs),
 %%   io:format("~nLAMBDA ~p (~p)~n",[lists:concat(Lambda), BRefs]),
    {lambda, lists:concat(Lambda), BRefs, Refs}
@@ -434,7 +435,7 @@ extract_refs(_Other) ->
    [].
 
 param_from_ref(Ref) when is_binary(Ref) ->
-%%   io:format("~nparam from ref: ~p~n",[Ref]),
+   io:format("~nPARAM from Reference: ~p~n",[Ref]),
    Ref1 = clean_param_name(Ref),
    Ref0 = binary:replace(Ref1, [<<".">>,<<"[">>,<<"]">>], <<"_">>, [global]),
    string:titlecase(binary_to_list(Ref0)).
@@ -512,7 +513,10 @@ lexp({identifier, _LN, Id}) ->
 %%   io:format("[lexp({identifier] ~p~n",[Id]),
    param_pfunc({identifier, Id});
 lexp({reference, _LN, Ref}) ->
-   param_from_ref(Ref);
+   {text, Val} = find_text_template({text, Ref}),
+   param_from_ref(
+      Val
+   );
 lexp({operator, _LN, Op}) ->
    case Op of
       'AND' -> " andalso ";
@@ -651,8 +655,8 @@ extract_template(Template) when is_binary(Template) ->
          Res0 = [{TVar, clean_identifier_name(Var)} || [TVar, Var] <- Matched],
          {Replace, Vars} = lists:unzip(Res0),
          Format = binary_to_list(binary:replace(Template, Replace, <<"~s">>, [global])),
-         io:format("FORMAT: ~p~nVars: ~p~n",[Format, Vars]),
-         io:format("get declarations for vars: ~p~n",[get_template_vars(Vars)]),
+%%         io:format("FORMAT: ~p~nVars: ~p~n",[Format, Vars]),
+%%         io:format("get declarations for vars: ~p~n",[get_template_vars(Vars)]),
          Subst = get_template_vars(Vars),
          list_to_binary(io_lib:format(Format, conv_template_vars(Subst)))
    end.
