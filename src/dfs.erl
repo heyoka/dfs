@@ -51,7 +51,8 @@ parse(D, Libs) ->
 parse(Binary, Libs, Replacements, Macros) when is_binary(Binary) ->
    parse(binary_to_list(Binary), Libs, Replacements, Macros);
 parse(String, Libs, Replacements, Macros)
-      when is_list(String) andalso is_list(Libs) andalso is_list(Macros) ->
+      when is_list(String) andalso is_list(Libs) andalso (is_list(Macros) orelse is_function(Macros)) ->
+
    catch ets:delete(?MODULE),
    LambdaLibs = [dfs_std_lib, estr] ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
@@ -104,20 +105,20 @@ replace_macros(Nodes, Connections, Macros) ->
 %%   io:format("Conns: ~n~p~n",[Connections]),
    FNodes = fun
                ({{<<"||" , NodeName/binary>>, _}=MacroName, _NodeParams, Params}, {Ns, Cs}) ->
-                  MacroDfs =
-                  case proplists:get_value(NodeName, Macros) of
-                     undefined -> throw("no dfs for macro named " ++ binary_to_list(NodeName));
-                     Other -> Other
-                  end,
-%%                  io:format("Macro : ~p~n with params: ~p", [NodeName, Params]),
+                  %% get the dfs script for the macro-node
+                  MacroDfs = macro_dfs(NodeName, Macros),
                   {_NewMacroDfs, {MacroNodes, MacroConns}} = prepare_macro(MacroDfs, Params, Macros),
 %%                  io:format("macro nodes: ~p~n macro conns: ~p~n", [MacroNodes, MacroConns]),
+                  %% for connection rewriting we need the first and the last node in the macro-script
                   [{FirstMacroNode, _, _}|_] = MacroNodes,
                   {LastMacroNode, _, _} = lists:last(MacroNodes),
 %%                  io:format("First Macro Node: ~p~nLast Macro Node: ~p~n", [FirstMacroNode, LastMacroNode]),
+                  %% remove the macro-node
                   NewNodes0 = proplists:delete(MacroName, Ns),
+                  %% add new nodes and connections from macro
                   NewNodes = NewNodes0 ++ MacroNodes,
                   NewConns0 = Cs ++ MacroConns,
+                  %% rewrite connections in and out of the macro
                   NewConns = rewrite_conns(NewConns0, MacroName, {FirstMacroNode, LastMacroNode}, []),
                   {NewNodes, NewConns}
                ;
@@ -137,6 +138,14 @@ clean_replacements([], Out) ->
 clean_replacements([{Name, [{_Type, Val}]}|R], Out) ->
 %%   io:format("replacement: ~p => ~p", [V, {Name, Val}]),
    clean_replacements(R, [{Name, Val}|Out]).
+
+macro_dfs(Name, Macros) when is_function(Macros) ->
+   Macros(Name);
+macro_dfs(Name, Macros) when is_list(Macros) ->
+   case proplists:get_value(Name, Macros) of
+      undefined -> throw("no dfs for macro named " ++ binary_to_list(Name));
+      Other -> Other
+   end.
 
 rewrite_conns([], _, _, Acc) -> Acc;
 rewrite_conns([{MacroName, OtherNode} | R], MacroName, {First, Last}, Acc) ->

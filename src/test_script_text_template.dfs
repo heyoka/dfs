@@ -6,7 +6,7 @@ def tname = 'text-template'
 def big_room = 'room is very big'
 def small_room = 'room is small'
 def db_number = '10112'
-def db = 'DB{{db_number + 1}}.DB{{big_room}}'
+def db = 'DB{{db_number}}.DB{{big_room}}'
 def pre = 'test'
 
 def text_list = [<<<alles>>>, <<<ist>>>, <<<wurscht>>>, <<<{{string}}>>>]
@@ -32,4 +32,5 @@ def  sql =
 |s7poll()
 .vars(address_list)
 .as(as_list)
+.lambda(lambda: "{{pre}}.test" > 0)
 

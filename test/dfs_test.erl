@@ -46,6 +46,7 @@ macro_test() ->
    StringData1 = binary_to_list(binary:replace(Data1, <<"\\">>, <<>>, [global])),
    {ok, Data2} = file:read_file("test/publish_macro.dfs"),
    StringData2 = binary_to_list(binary:replace(Data2, <<"\\">>, <<>>, [global])),
+
    {_, Res} = dfs:parse_file(FileName, [], [],
       [{<<"ctc_module_condition">>, StringData1}, {<<"publish_macro">>, StringData2}]),
    Expected =
