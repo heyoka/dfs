@@ -96,7 +96,7 @@ parse(String, Libs, Replacements, Macros)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 macros({Nodes, Conns} = Res, []) when is_list(Nodes), is_list(Conns) ->
    Res;
-macros({Nodes, Conns}, Macros) when is_list(Nodes), is_list(Conns), is_list(Macros) ->
+macros({Nodes, Conns}, Macros) when is_list(Nodes), is_list(Conns) ->
    replace_macros(Nodes, Conns, Macros);
 macros(_ = Res, []) ->
    Res.
