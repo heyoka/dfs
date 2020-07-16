@@ -71,7 +71,7 @@ pat(float, VarName) -> ?PATTERN_NUMBER(VarName);
 pat(text, VarName) -> ?PATTERN_TEXT(VarName);
 pat(string, VarName) -> ?PATTERN_STRING(VarName);
 pat(lambda, VarName) -> ?PATTERN_LAMBDA(VarName);
-pat(T, N) ->
+pat(_T, _N) ->
    %io:format("~nno pattern found for type: ~p~n",[{T, N}]),
    false.
 

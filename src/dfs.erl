@@ -394,7 +394,7 @@ param({text, _T}=V) ->
 param({text, _LN, _T}=V) ->
    {text, T} = find_text_template(V),
    {text, _LN, T};
-param({string, S}=V) ->
+param({string, S}) ->
    {text, T} = find_text_template({text, S}),
    {string, T};
 param({string, LN, S}=_V) ->
