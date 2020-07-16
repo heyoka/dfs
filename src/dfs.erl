@@ -135,6 +135,8 @@ prepare_macro(MacroDfs, Replacements, Macros) ->
 
 clean_replacements([], Out) ->
    Out;
+clean_replacements([{_Name, []}|R], Out) ->
+   clean_replacements(R, Out);
 clean_replacements([{Name, [{_Type, Val}]}|R], Out) ->
 %%   io:format("replacement: ~p => ~p", [V, {Name, Val}]),
    clean_replacements(R, [{Name, Val}|Out]).
