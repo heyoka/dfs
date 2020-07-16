@@ -98,7 +98,7 @@ macros({Nodes, Conns} = Res, []) when is_list(Nodes), is_list(Conns) ->
    Res;
 macros({Nodes, Conns}, Macros) when is_list(Nodes), is_list(Conns) ->
    replace_macros(Nodes, Conns, Macros);
-macros(_ = Res, []) ->
+macros(_ = Res, _) ->
    Res.
 
 replace_macros(Nodes, Connections, Macros) ->
