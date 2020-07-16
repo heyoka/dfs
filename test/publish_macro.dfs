@@ -1,0 +1,4 @@
+def ts1 = 23
+def ts2 = 'some stringy'
+|delete().fields('val', ts2).max(ts1)
+|default().fields('id').field_values('myid222')
