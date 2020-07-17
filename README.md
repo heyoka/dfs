@@ -50,8 +50,8 @@ Lambda Expressions Parameter
     in1
       |eval(
         lambda: "value" * "value",
-        lambda: 1/"value2",
-        .as('value2', 'inv_value2')
+        lambda: 1/"value2")
+      .as('value2', 'inv_value2')
 
     in1
       |where(lambda: "host" == 'server001.example.com'))
