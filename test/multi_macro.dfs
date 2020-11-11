@@ -1,0 +1,10 @@
+def val = 1
+|where(lambda: "val" > val)
+|keep().fields('val')
+|set().fields('id').field_values('myid222')
+||publish_macro()
+.ts1(99)
+||publish_macro()
+.ts2('somestring')
+|mqtt_publish()
+.host('127.0.0.1')

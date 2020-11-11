@@ -108,7 +108,7 @@ replace_macros(Nodes, Connections, Macros) ->
                   %% get the dfs script for the macro-node
                   MacroDfs = macro_dfs(NodeName, Macros),
                   {_NewMacroDfs, {MacroNodes, MacroConns}} = prepare_macro(MacroDfs, Params, Macros),
-%%                  io:format("macro nodes: ~p~n macro conns: ~p~n", [MacroNodes, MacroConns]),
+                  io:format("macro nodes: ~p~n macro conns: ~p~n", [MacroNodes, MacroConns]),
                   %% for connection rewriting we need the first and the last node in the macro-script
                   [{FirstMacroNode, _, _}|_] = MacroNodes,
                   {LastMacroNode, _, _} = lists:last(MacroNodes),
@@ -130,7 +130,7 @@ replace_macros(Nodes, Connections, Macros) ->
 
 prepare_macro(MacroDfs, Replacements, Macros) ->
    Vars = clean_replacements(Replacements, []),
-%%   io:format("~nReplacements for macro: ~p : ~p",[MacroDfsFile, Vars]),
+%%   io:format("~nReplacements for macro: ~p : ~p",[MacroDfs, Vars]),
    parse(MacroDfs, [], Vars, Macros).
 
 clean_replacements([], Out) ->

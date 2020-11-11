@@ -1,0 +1,3 @@
+def what = 'any'
+|consume()
+.what(what)

@@ -1,0 +1,5 @@
+||publish_macro()
+.ts1(99)
+||publish_macro()
+.ts2('somestring')
+||macro1()

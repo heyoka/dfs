@@ -18,10 +18,4 @@ def val = 1
 ||ctc_module_condition()
 .val(2)
 
-
-%||publish_macro()
-%.ts1(34)
-%.ts2('some string this is')
-
-
 |debug()
