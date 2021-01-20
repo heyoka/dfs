@@ -59,34 +59,51 @@ parse(String, Libs, Replacements, Macros)
    %% ensure libs are there for us
    lists:foreach(fun(E) -> code:ensure_loaded(E) end, FLibs),
    ets:new(?MODULE, [set, public, named_table]),
+   %% counter ets for node_ids
+   ets:insert(?MODULE, {node_id, 0}),
    ets:insert(?MODULE, {lfunc, FLibs}),
+   Res = do_parse(String, Replacements, Macros),
+   ets:delete(?MODULE),
+   Res.
+
+
+do_parse(String, Replacements, Macros)
+   when is_list(String) andalso (is_list(Macros) orelse is_function(Macros)) ->
+
+   %% clean up ets table here
+   TabList0 = ets:tab2list(?MODULE),
+   NewTabList = lists:filter(fun({Key, _V}) -> lists:member(Key, [node_id, lfunc, replace_def]) end, TabList0),
+%%   io:format("enter tab: ~p~n",[NewTabList]),
+   ets:delete_all_objects(?MODULE),
+   ets:insert(?MODULE, NewTabList),
+
    Rep = [{RName, prepare_replacement(RName, Repl)} || {RName, Repl} <- Replacements],
 %%   logger:notice("all replacemens: ~p~n" ,[Rep]),
    ets:insert(?MODULE, {replace_def, Rep} ),
    Res =
-   case dfs_lexer:string(String) of
-      {ok, Tokens, _EndLine} ->
+      case dfs_lexer:string(String) of
+         {ok, Tokens, _EndLine} ->
 %%         io:format("~nTokens: ~p~n",[Tokens]),
-         case dfs_parser:parse(Tokens) of
-            {ok, Data} ->
+            case dfs_parser:parse(Tokens) of
+               {ok, Data} ->
 %%               io:format("~nDATA: ~p~n",[Data]),
 %%               try eval(Data) of
 %%                  Result -> Result
 %%               catch
 %%                  throw:Error -> {error, Error}
 %%               end;
-               eval(Data);
-            {error, {LN, dfs_parser, Message}} ->
-               {{parser_error, line, LN}, Message};
-            Error -> Error
-         end;
-      {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
-      Err -> Err
-   end,
+                  eval(Data);
+               {error, {LN, dfs_parser, Message}} ->
+                  {{parser_error, line, LN}, Message};
+               Error -> Error
+            end;
+         {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
+         Err -> Err
+      end,
    %% now maybe rewrite the DFS script with replacements
    TabList = ets:tab2list(?MODULE),
+%%   io:format("done do_parse tab: ~p~n",[TabList]),
    NewDFS = dfs_rewriter:execute(Replacements, TabList, String),
-   ets:delete(?MODULE),
    %% check for macros in the script
    {NewNodes, NewConns} = macros(Res, Macros),
    {NewDFS, {NewNodes, NewConns}}.
@@ -108,7 +125,7 @@ replace_macros(Nodes, Connections, Macros) ->
                   %% get the dfs script for the macro-node
                   MacroDfs = macro_dfs(NodeName, Macros),
                   {_NewMacroDfs, {MacroNodes, MacroConns}} = prepare_macro(MacroDfs, Params, Macros),
-                  io:format("macro nodes: ~p~n macro conns: ~p~n", [MacroNodes, MacroConns]),
+%%                  io:format("macro nodes: ~p~n macro conns: ~p~n", [MacroNodes, MacroConns]),
                   %% for connection rewriting we need the first and the last node in the macro-script
                   [{FirstMacroNode, _, _}|_] = MacroNodes,
                   {LastMacroNode, _, _} = lists:last(MacroNodes),
@@ -131,7 +148,7 @@ replace_macros(Nodes, Connections, Macros) ->
 prepare_macro(MacroDfs, Replacements, Macros) ->
    Vars = clean_replacements(Replacements, []),
 %%   io:format("~nReplacements for macro: ~p : ~p",[MacroDfs, Vars]),
-   parse(MacroDfs, [], Vars, Macros).
+   do_parse(MacroDfs, Vars, Macros).
 
 clean_replacements([], Out) ->
    Out;
@@ -332,7 +349,7 @@ chain(ChainElements) when is_list(ChainElements) ->
    {{nodes, AllNodes}, {connections, Connections}}.
 
 node_id() ->
-   erlang:unique_integer([positive,monotonic]).
+   ets:update_counter(?MODULE, node_id, 1).
 
 params(Params) when is_list(Params)->
    lists:flatten([param(P) || P <- Params]).
