@@ -66,7 +66,8 @@ parse(String, Libs, Replacements, Macros)
    ets:delete(?MODULE),
    Res.
 
-
+do_parse(Binary, Replacements, Macros) when is_binary(Binary) ->
+   do_parse(binary_to_list(Binary), Replacements, Macros);
 do_parse(String, Replacements, Macros)
    when is_list(String) andalso (is_list(Macros) orelse is_function(Macros)) ->
 
@@ -155,12 +156,12 @@ clean_replacements([], Out) ->
    Out;
 clean_replacements([{_Name, []}|R], Out) ->
    clean_replacements(R, Out);
-clean_replacements([{Name, [{_Type, Val}]}|R]=V, Out) ->
-%%   io:format("replacement: ~p => ~p~n", [V, {Name, Val}]),
+clean_replacements([{Name, [{_Type, Val}]}|R]=_V, Out) ->
+%%   io:format("replacement: ~p => ~p~n", [_V, {Name, Val}]),
    clean_replacements(R, [{Name, Val}|Out]);
-clean_replacements([{Name, Val}|R]=V, Out) when is_list(Val) ->
+clean_replacements([{Name, Val}|R]=_V, Out) when is_list(Val) ->
    Cleaned = [Value || {_Type, Value} <- Val],
-%%   io:format("replacement no type: ~p => ~p~n", [V, {Name, Cleaned}]),
+%%   io:format("replacement no type: ~p => ~p~n", [_V, {Name, Cleaned}]),
    clean_replacements(R, [{Name, Cleaned}|Out]).
 
 macro_dfs(Name, Macros) when is_function(Macros) ->
