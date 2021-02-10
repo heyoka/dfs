@@ -146,6 +146,7 @@ replace_macros(Nodes, Connections, Macros) ->
    lists:foldl(FNodes, {Nodes, Connections}, Nodes).
 
 prepare_macro(MacroDfs, Replacements, Macros) ->
+%%   io:format("~nReplacements before: ~p",[Replacements]),
    Vars = clean_replacements(Replacements, []),
 %%   io:format("~nReplacements for macro: ~p : ~p",[MacroDfs, Vars]),
    do_parse(MacroDfs, Vars, Macros).
@@ -154,9 +155,13 @@ clean_replacements([], Out) ->
    Out;
 clean_replacements([{_Name, []}|R], Out) ->
    clean_replacements(R, Out);
-clean_replacements([{Name, [{_Type, Val}]}|R], Out) ->
-%%   io:format("replacement: ~p => ~p", [V, {Name, Val}]),
-   clean_replacements(R, [{Name, Val}|Out]).
+clean_replacements([{Name, [{_Type, Val}]}|R]=V, Out) ->
+%%   io:format("replacement: ~p => ~p~n", [V, {Name, Val}]),
+   clean_replacements(R, [{Name, Val}|Out]);
+clean_replacements([{Name, Val}|R]=V, Out) when is_list(Val) ->
+   Cleaned = [Value || {_Type, Value} <- Val],
+%%   io:format("replacement no type: ~p => ~p~n", [V, {Name, Cleaned}]),
+   clean_replacements(R, [{Name, Cleaned}|Out]).
 
 macro_dfs(Name, Macros) when is_function(Macros) ->
    Macros(Name);

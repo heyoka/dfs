@@ -1,0 +1,4 @@
+def bindings = ['ta', 'ti', 'to']
+||macro_test_macro()
+.key('my_value')
+.bindings(bindings)

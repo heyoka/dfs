@@ -1,0 +1,5 @@
+def key = 'value'
+def bindings = ['tri', 'tra', 'trallala']
+|some_node()
+.bindings(bindings)
+.key(key)
