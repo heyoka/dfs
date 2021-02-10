@@ -1,7 +1,7 @@
 {application, dfs,
  [
   {description, "DataFlow DSL for Analytics"},
-  {vsn, "0.7"},
+  {vsn, "0.7.1"},
   {registered, []},
   {applications, [
                   kernel,
