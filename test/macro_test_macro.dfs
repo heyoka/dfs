@@ -3,3 +3,5 @@ def bindings = ['tri', 'tra', 'trallala']
 |some_node()
 .bindings(bindings)
 .key(key)
+.lambda(lambda: str_replace("data.str", '/', '.'))
+|where(lambda: defined("data.val"))

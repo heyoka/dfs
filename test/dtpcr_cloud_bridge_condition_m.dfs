@@ -1,0 +1,10 @@
+def site_id = 'x7823'
+def device_id = 't_2342'
+def name = 'pcr_grip'
+def basekey = 't.sys.{{site_id}}.{{device_id}}'
+
+def bindings = ['{{basekey}}.pcr.cond.#', '{{basekey}}some_other string']
+
+||macro_cloud_bridge()
+.bindings(bindings)
+.name(name)

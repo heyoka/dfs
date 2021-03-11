@@ -1,0 +1,28 @@
+def site_id = 'x7823'
+def device_id = 't_2342'
+def name = 'pcr_grip'
+def basekey = 't.sys.{{site_id}}.{{device_id}}'
+
+def bindings = [
+    %%'{{basekey}}.pcr.grip.#',
+    '{{basekey}}.pcr.grip.logs.reasoning.schedulers_ol_log',
+    '{{basekey}}.pcr.grip.images.#', '{{basekey}}.pcr.grip.status.v1'
+    ]
+%, '{{basekey}}.pcr.cwa.#',
+%    '{{basekey}}.pcr.cond.#', '{{basekey}}.pcr.rplc.#', '{{basekey}}.pcr.ctrack.#']
+
+|amqp_consume()
+.host('10.10.1.103')
+.bindings(bindings)
+.user('admin')
+.pass('admin')
+.exchange('x_tgw_{{name}}')
+.queue('q_{{name}}')
+
+|debug()
+
+|amqp_publish()
+.port(5671)
+.routing_key_lambda(lambda: str_replace("topic", ' ', ''))
+.exchange('xchange_1_fanout')
+.ssl()

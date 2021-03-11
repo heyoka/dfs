@@ -1,4 +1,5 @@
-def bindings = ['ta', 'ti', 'to']
+def pre = 'hui'
+def bindings = ['{{pre}}-ta', '{{pre}}-ti', '{{pre}}-to']
 ||macro_test_macro()
 .key('my_value')
 .bindings(bindings)

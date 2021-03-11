@@ -157,11 +157,11 @@ clean_replacements([], Out) ->
 clean_replacements([{_Name, []}|R], Out) ->
    clean_replacements(R, Out);
 clean_replacements([{Name, [{_Type, Val}]}|R]=_V, Out) ->
-%%   io:format("replacement: ~p => ~p~n", [_V, {Name, Val}]),
+   io:format("~nreplacement: ~p => ~p~n", [_V, {Name, Val}]),
    clean_replacements(R, [{Name, Val}|Out]);
 clean_replacements([{Name, Val}|R]=_V, Out) when is_list(Val) ->
    Cleaned = [Value || {_Type, Value} <- Val],
-%%   io:format("replacement no type: ~p => ~p~n", [_V, {Name, Cleaned}]),
+   io:format("~nreplacement no type: ~p => ~p~n", [_V, {Name, Cleaned}]),
    clean_replacements(R, [{Name, Cleaned}|Out]).
 
 macro_dfs(Name, Macros) when is_function(Macros) ->
@@ -607,7 +607,7 @@ save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
-   %io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
+   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
    NewValue =
       case RVal of
          norepl -> Vals;
@@ -762,7 +762,7 @@ pfunction(FName, Arity) when is_list(FName) ->
    case NN0 of
       nil -> case erlang:function_exported(math, NameAtom, Arity) of
                 true -> "math:" ++ FName;
-                false -> FName %throw("Function " ++ FName ++ " not found in library")
+                false -> throw("Function '" ++ FName ++ "' not found in library!")
              end;
       {done, Else} -> Else
    end,
