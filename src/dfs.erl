@@ -408,9 +408,8 @@ param({inline, InlineList}) ->
                      NewPs = extract_refs(Eles),
                      NewPs++Rs;
                   {pfunc, {_FName, {params, Params}}}=_P ->
-
-                     NewPs = extract_refs(Params),
-                     NewPs++Rs;
+                     NewPs0 = extract_refs(Params),
+                     NewPs0++Rs;
                   _ ->
 %%                  io:format("~n NA: ~p~n", [Rs]),
                      Rs
@@ -518,7 +517,7 @@ extract_refs({reference, Ref1}) ->
 extract_refs({pexp, Elems}) when is_list(Elems) ->
    extract_refs(Elems);
 extract_refs(_Other) ->
-%%   io:format("Other in extract refs: ~p~n",[_Other]),
+%%   io:format("--- Other in extract refs: ~p~n",[_Other]),
    [].
 
 param_from_ref(Ref) when is_binary(Ref) ->
@@ -569,12 +568,14 @@ param_pfunc({reference, Ref}) ->
 param_pfunc({string, _LN, Ref}) ->
    param_pfunc({string, Ref});
 param_pfunc({string, Ref}) ->
-   "<<\"" ++ binary_to_list(Ref) ++ "\">>";
+%%   io:format("PARAM_PFUNC: string ~p~n",[Ref]),
+   {text, S} = find_text_template({text, Ref}),
+   "<<\"" ++ binary_to_list(S) ++ "\">>";
 param_pfunc({pexp, Elements}) ->
    [param_pfunc(E) || E <- Elements ];
 param_pfunc(Other) ->
 %%   io:format("[param_pfunc] ~p~n",[Other]),
-      lexp(Other).
+   lexp(Other).
 
 
 %% lambda primary expressions
