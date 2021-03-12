@@ -6,7 +6,7 @@ primaryExpr function parameters parameter  .
 Terminals
 '=' '(' ')' ',' '[' ']' '.' '-' '!'
 def node macro user_node string text identifier number bool
-duration regex int stream_id float operator lambda reference.
+duration regex int stream_id float operator lambda inline reference.
 
 
 Rootsymbol dfscript.
@@ -27,6 +27,7 @@ expression        -> primary  : '$1'.
 expression        -> primaryExpr : '$1'.
 expression        -> '[' parameters ']' : {list, unwrap('$2')}.
 expression         -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
+expression         -> inline primaryExpr : {inline, lists:flatten([unwrap('$2')])}.
 
 %chain             -> user_node function chain : [{unwrap('$1'), unwrap1('$2')}] ++ '$3'.
 
@@ -78,6 +79,7 @@ parameter        -> '[' parameters ']' : {list, unwrap('$2')}.
 parameter        -> primaryExpr : '$1'.
 parameter        -> primary : '$1'.
 parameter        -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
+parameter        -> inline primaryExpr : {inline, lists:flatten([unwrap('$2')])}.
 
 
 Erlang code.
@@ -85,6 +87,7 @@ Erlang code.
 unwrapParams(L) -> unwrapParams(L, []).
 unwrapParams([], Acc) -> lists:flatten(lists:reverse(Acc));
 unwrapParams([{lambda, _S}=P|R],Acc) -> unwrapParams(R, [P|Acc]);
+unwrapParams([{inline, _S}=P|R],Acc) -> unwrapParams(R, [P|Acc]);
 unwrapParams( [{N,_,V}|R], Acc) -> unwrapParams(R, [{N,V}|Acc]);
 unwrapParams([{primary_exp, _F, _S, _L}=P|R], Acc) -> unwrapParams(R, [P|Acc]);
 unwrapParams([_Exp=P|R], Acc) -> unwrapParams(R, [P|Acc]).

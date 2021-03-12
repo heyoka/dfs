@@ -84,10 +84,10 @@ do_parse(String, Replacements, Macros)
    Res =
       case dfs_lexer:string(String) of
          {ok, Tokens, _EndLine} ->
-%%         io:format("~nTokens: ~p~n",[Tokens]),
+         io:format("~nTokens: ~p~n",[Tokens]),
             case dfs_parser:parse(Tokens) of
                {ok, Data} ->
-%%               io:format("~nDATA: ~p~n",[Data]),
+               io:format("~nDATA: ~p~n",[Data]),
 %%               try eval(Data) of
 %%                  Result -> Result
 %%               catch
@@ -186,11 +186,26 @@ rewrite_conns([{_, _}=C | R], MacroName, {First, Last}, Acc) ->
 %% declaration substitution
 prepare_replacement(Name, <<"lambda:", _R/binary>> = BinString) ->
    parse_replacement(Name, binary_to_list(BinString));
+prepare_replacement(Name, <<"e:", _R/binary>> = BinString) ->
+   parse_replacement(Name, binary_to_list(BinString));
 prepare_replacement(Name, L) when is_list(L) ->
    check_list_types(Name, L);
 prepare_replacement(_Name, Repl) ->
    Repl.
 parse_replacement(_Name, ("lambda:" ++ _R) = String ) ->
+   case dfs_lexer:string(String) of
+      {ok, Tokens, _EndLine} ->
+         case dfs_parser:parse(Tokens) of
+            {ok, [{statement, Data}]}->
+               param(Data);
+            {error, {LN, dfs_parser, Message}} ->
+               {{parser_error, line, LN}, Message};
+            Error -> Error
+         end;
+      {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
+      Err -> Err
+   end;
+parse_replacement(_Name, ("e:" ++ _R) = String ) ->
    case dfs_lexer:string(String) of
       {ok, Tokens, _EndLine} ->
          case dfs_parser:parse(Tokens) of
@@ -253,6 +268,11 @@ eval({statement, {declarate, DecName, {list, DecValues}}}) ->
    save_declaration(DecName, NewValues);
 eval({statement, {declarate, DecName, {lambda, _DecValue}=L}}) ->
    save_declaration(DecName, param(L));
+%% @todo eval inline expression
+eval({statement, {declarate, DecName, {inline, _DecValue}=L}}) ->
+   io:format("~ndeclaration INLINE: ~p : ~p~n", [DecName, L]),
+   Res = eval_inline_expression(L),
+   save_declaration(DecName, Res);
 eval({statement, {declarate, DecName, {text, LN, V}}}) ->
    Val = text_template(V),
    save_declaration(DecName, {text, LN, Val});
@@ -367,18 +387,60 @@ param({identifier, Ident}) ->
       {connect, _} = C -> C;
       List when is_list(List) -> [{Type, Val} || {Type, _LN, Val} <- List];
       {lambda, _, _, _} = Lambda -> Lambda;
+      {inline, _, _, _} = Inline -> Inline;
       Other -> find_text_template(Other)
    end;
 param({pfunc, {_N, {params, _Ps}}}=L) ->
    param({lambda, [L]});
 param({pfunc, N}) ->
    param({lambda, [{pfunc, {N,{params,[]}}}]});
-param({lambda, LambdaList}) ->
-%%   io:format("param: lambda ~p~n",[LambdaList]),
+param({inline, InlineList}) ->
+   io:format("~n param: INLINE: ~p~n",[InlineList]),
    {Lambda, BinRefs} =
       lists:foldl(
          fun(E, {L, Rs}) ->
-%%            io:format("~nElement lammbda: ~p~n",[E]),
+            io:format("~nElement lambda: ~p~n",[E]),
+            Refs0 =
+               case E of
+                  {reference, _LN, Ref}=_R ->
+                     [Ref|Rs];
+                  {pexp, Eles} ->
+                     NewPs = extract_refs(Eles),
+                     NewPs++Rs;
+                  {pfunc, {_FName, {params, Params}}}=_P ->
+
+                     NewPs = extract_refs(Params),
+                     NewPs++Rs;
+                  _ ->
+%%                  io:format("~n NA: ~p~n", [Rs]),
+                     Rs
+               end,
+%%            io:format("~nparam lexp(~p ++ ~p~n): ~n",[L, lexp(E)]),
+            {L++[lexp(E)], Refs0}
+         end,{[], []},InlineList), %% foldl
+   %% unique params
+   BRefs0 = sets:to_list(sets:from_list(BinRefs)),
+   %% rewrite text templates
+   BRefs1 = [find_text_template({text, BinRef}) || BinRef <- BRefs0],
+   {_, BRefs} = lists:unzip(BRefs1),
+   Refs = lists:map(fun(E) -> param_from_ref(E) end, BRefs),
+%%   io:format("~nLAMBDA ~p (~p)~n",[lists:concat(Lambda), BRefs]),
+   Expr = lists:concat(Lambda),
+   Fun = make_fun(Expr),
+   Result = Fun(),
+   Out = case Result of
+             _ when is_float(Result) -> {float, Result};
+             _ when is_integer(Result) -> {int, Result};
+             _ when is_binary(Result) -> {string, Result}
+          end,
+   Out;
+%%   {inline, lists:concat(Lambda), BRefs, Refs};
+param({lambda, LambdaList}) ->
+   io:format("param: lambda ~p~n",[LambdaList]),
+   {Lambda, BinRefs} =
+      lists:foldl(
+         fun(E, {L, Rs}) ->
+%%            io:format("~nElement lambda: ~p~n",[E]),
             Refs0 =
             case E of
                {reference, _LN, Ref}=_R ->
@@ -625,6 +687,8 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
          _  -> RVal
       end,
    ets:insert(?MODULE, {Ident, NewValue});
+save_declaration(Ident, {VType, Val}) ->
+   save_declaration(Ident, {VType, 1, Val});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
 %%   io:format("~nsave_declaration single: ~p: ~p~n",[Ident, Value]),
    check_new_declaration(Ident),
@@ -768,3 +832,74 @@ pfunction(FName, Arity) when is_list(FName) ->
    end,
 %%   io:format("convert function name: ~p ==> ~p~n",[FName, NN]),
    NN.
+
+
+eval_inline_expression({inline, InlineList}) ->
+   io:format("~n param: INLINE: ~p~n",[InlineList]),
+   {Lambda, BinRefs} =
+      lists:foldl(
+         fun(E, {L, Rs}) ->
+            io:format("~nElement inline: ~p~n",[E]),
+            Refs0 =
+               case E of
+                  {reference, _LN, Ref}=_R ->
+                     [Ref|Rs];
+                  {pexp, Eles} ->
+                     NewPs = extract_refs(Eles),
+                     NewPs++Rs;
+                  {pfunc, {_FName, {params, Params}}}=_P ->
+
+                     NewPs = extract_refs(Params),
+                     NewPs++Rs;
+                  _ ->
+%%                  io:format("~n NA: ~p~n", [Rs]),
+                     Rs
+               end,
+%%            io:format("~nparam lexp(~p ++ ~p~n): ~n",[L, lexp(E)]),
+            {L++[lexp(E)], Refs0}
+         end,{[], []},InlineList), %% foldl
+   %% unique params
+   BRefs0 = sets:to_list(sets:from_list(BinRefs)),
+   %% rewrite text templates
+   BRefs1 = [find_text_template({text, BinRef}) || BinRef <- BRefs0],
+   {_, BRefs} = lists:unzip(BRefs1),
+   Refs = lists:map(fun(E) -> param_from_ref(E) end, BRefs),
+%%   io:format("~nLAMBDA ~p (~p)~n",[lists:concat(Lambda), BRefs]),
+   Expr = lists:concat(Lambda),
+   Fun = make_fun(Expr),
+   Result = Fun(),
+   Out = case Result of
+            _ when is_float(Result) -> {float, Result};
+            _ when is_integer(Result) -> {int, Result};
+            _ when is_binary(Result) -> {string, Result}
+         end,
+   Out.
+
+make_fun(LambdaString) ->
+
+   S =  "fun() -> " ++ LambdaString ++ " end.",
+   io:format("inline expression: ~p~n",[S]),
+   case erl_scan:string(S) of
+      {ok, Ts, _} ->
+         {ok, Exprs} = erl_parse:parse_exprs(Ts),
+         {value, Fun, _} = erl_eval:exprs(Exprs, []),
+         Fun;
+      {error, ErrorInfo, _ErrorLocation} ->
+         Msg = io_lib:format("Error scanning lambda expression: ~p location:~p",
+            [ErrorInfo, _ErrorLocation]),
+         throw(Msg)
+
+   end.
+
+%%parse_fun(S) ->
+%%   case erl_scan:string(S) of
+%%      {ok, Ts, _} ->
+%%         {ok, Exprs} = erl_parse:parse_exprs(Ts),
+%%         {value, Fun, _} = erl_eval:exprs(Exprs, []),
+%%         Fun;
+%%      {error, ErrorInfo, _ErrorLocation} ->
+%%         Msg = io_lib:format("Error scanning lambda expression: ~p location:~p",
+%%            [ErrorInfo, _ErrorLocation]),
+%%         throw(Msg)
+%%
+%%   end.

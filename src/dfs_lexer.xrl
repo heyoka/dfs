@@ -2,6 +2,7 @@
 Definitions.
 
 Lambda          = lambda:(\s|\t|\n)*
+Expression      = e:(\s|\t|\n)*
 StreamId        = [\'][0-9]\.[0-9]{3}\.[0-9a-zA-Z]*[\']
 Reference       = \"(\"\"|[^\"\n]|[\.])*\"
 Operator        = (\+|-|\*|\/|==|!=|<|<=|>|>=|=~|!~|!|AND|OR|div|rem)
@@ -28,6 +29,7 @@ def             :   {token, {def, TokenLine, list_to_atom(TokenChars)}}.
 {Operator}      :   {token, {operator,TokenLine,list_to_atom(TokenChars)}}.
 {StreamId}      :   {token, {stream_id, TokenLine, list_to_binary(TokenChars)}}.
 {Lambda}        :   {token, {lambda, TokenLine, list_to_binary(lists:sublist(TokenChars,9,length(TokenChars)))}}.
+{Expression}    :   {token, {inline, TokenLine, list_to_binary(lists:sublist(TokenChars,3,length(TokenChars)))}}.
 {UserNode}      :   {token, {user_node, TokenLine, 'user_node'}}.
 {Node}          :   {token, {node, TokenLine, 'node'}}.
 {Macro}         :   {token, {macro, TokenLine, 'macro'}}.
