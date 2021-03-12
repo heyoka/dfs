@@ -394,48 +394,11 @@ param({pfunc, {_N, {params, _Ps}}}=L) ->
    param({lambda, [L]});
 param({pfunc, N}) ->
    param({lambda, [{pfunc, {N,{params,[]}}}]});
-param({inline, InlineList}) ->
+param({inline, InlineList} = Expr) ->
    io:format("~n param: INLINE: ~p~n",[InlineList]),
-   {Lambda, BinRefs} =
-      lists:foldl(
-         fun(E, {L, Rs}) ->
-            io:format("~nElement lambda: ~p~n",[E]),
-            Refs0 =
-               case E of
-                  {reference, _LN, Ref}=_R ->
-                     [Ref|Rs];
-                  {pexp, Eles} ->
-                     NewPs = extract_refs(Eles),
-                     NewPs++Rs;
-                  {pfunc, {_FName, {params, Params}}}=_P ->
-                     NewPs0 = extract_refs(Params),
-                     NewPs0++Rs;
-                  _ ->
-%%                  io:format("~n NA: ~p~n", [Rs]),
-                     Rs
-               end,
-%%            io:format("~nparam lexp(~p ++ ~p~n): ~n",[L, lexp(E)]),
-            {L++[lexp(E)], Refs0}
-         end,{[], []},InlineList), %% foldl
-   %% unique params
-   BRefs0 = sets:to_list(sets:from_list(BinRefs)),
-   %% rewrite text templates
-   BRefs1 = [find_text_template({text, BinRef}) || BinRef <- BRefs0],
-   {_, BRefs} = lists:unzip(BRefs1),
-   Refs = lists:map(fun(E) -> param_from_ref(E) end, BRefs),
-%%   io:format("~nLAMBDA ~p (~p)~n",[lists:concat(Lambda), BRefs]),
-   Expr = lists:concat(Lambda),
-   Fun = make_fun(Expr),
-   Result = Fun(),
-   Out = case Result of
-             _ when is_float(Result) -> {float, Result};
-             _ when is_integer(Result) -> {int, Result};
-             _ when is_binary(Result) -> {string, Result}
-          end,
-   Out;
-%%   {inline, lists:concat(Lambda), BRefs, Refs};
+   eval_inline_expression(Expr);
 param({lambda, LambdaList}) ->
-   io:format("param: lambda ~p~n",[LambdaList]),
+%%   io:format("param: lambda ~p~n",[LambdaList]),
    {Lambda, BinRefs} =
       lists:foldl(
          fun(E, {L, Rs}) ->
@@ -836,11 +799,9 @@ pfunction(FName, Arity) when is_list(FName) ->
 
 
 eval_inline_expression({inline, InlineList}) ->
-   io:format("~n param: INLINE: ~p~n",[InlineList]),
-   {Lambda, BinRefs} =
+   {Lambda, _BinRefs} =
       lists:foldl(
          fun(E, {L, Rs}) ->
-            io:format("~nElement inline: ~p~n",[E]),
             Refs0 =
                case E of
                   {reference, _LN, Ref}=_R ->
@@ -849,8 +810,13 @@ eval_inline_expression({inline, InlineList}) ->
                      NewPs = extract_refs(Eles),
                      NewPs++Rs;
                   {pfunc, {_FName, {params, Params}}}=_P ->
-
                      NewPs = extract_refs(Params),
+                     case NewPs of
+                        [] -> ok;
+                        _ when is_list(NewPs) ->
+                           Refs = lists:flatten(lists:join(", ", [binary_to_list(Bin) || Bin <- NewPs])),
+                           throw("Reference(s) used in inline-expression: " ++ Refs)
+                     end,
                      NewPs++Rs;
                   _ ->
 %%                  io:format("~n NA: ~p~n", [Rs]),
@@ -859,13 +825,6 @@ eval_inline_expression({inline, InlineList}) ->
 %%            io:format("~nparam lexp(~p ++ ~p~n): ~n",[L, lexp(E)]),
             {L++[lexp(E)], Refs0}
          end,{[], []},InlineList), %% foldl
-   %% unique params
-   BRefs0 = sets:to_list(sets:from_list(BinRefs)),
-   %% rewrite text templates
-   BRefs1 = [find_text_template({text, BinRef}) || BinRef <- BRefs0],
-   {_, BRefs} = lists:unzip(BRefs1),
-   Refs = lists:map(fun(E) -> param_from_ref(E) end, BRefs),
-%%   io:format("~nLAMBDA ~p (~p)~n",[lists:concat(Lambda), BRefs]),
    Expr = lists:concat(Lambda),
    Fun = make_fun(Expr),
    Result = Fun(),
@@ -891,16 +850,3 @@ make_fun(LambdaString) ->
          throw(Msg)
 
    end.
-
-%%parse_fun(S) ->
-%%   case erl_scan:string(S) of
-%%      {ok, Ts, _} ->
-%%         {ok, Exprs} = erl_parse:parse_exprs(Ts),
-%%         {value, Fun, _} = erl_eval:exprs(Exprs, []),
-%%         Fun;
-%%      {error, ErrorInfo, _ErrorLocation} ->
-%%         Msg = io_lib:format("Error scanning lambda expression: ~p location:~p",
-%%            [ErrorInfo, _ErrorLocation]),
-%%         throw(Msg)
-%%
-%%   end.

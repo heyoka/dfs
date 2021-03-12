@@ -99,7 +99,32 @@ macro_test() ->
 
    ?assertEqual(Expected, Res).
 
+inline_expression_test() ->
+   {NewDFS, ParseResult} = dfs:parse_file("test/inline_expr.dfs", [], []),
+   {ok, DFSOut} = file:read_file("test/inline_expr_result.dfs"),
+   ?assertEqual(binary_to_list(DFSOut), NewDFS),
+   ExpectedResult =
+      {[{{<<"use_id">>,1},
+         [],
+         [{<<"use_inline">>,
+            [{string,<<"9.73205080756887674909e+00">>}]},
+            {<<"use_inline_string">>,[{string,<<"thas as my strang">>}]},
+            {<<"inline_expression">>,[{int,27}]},
+            {<<"inline_expression_string">>,
+               [{string,<<"GESTATTEN: HANS WURSCHT">>}]},
+            {<<"lambda">>,
+               [{lambda,"5 * 4 + dfs_std_lib:round(1.21515100000000000335e+01)",
+                  [],[]}]},
+            {<<"lambda_string">>,
+               [{lambda,"estr:str_upcase(<<\"Gestatten: hans wurscht\">>)",
+                  [],[]}]}]}],
+         []},
+?assertEqual(ExpectedResult, ParseResult).
 
+inline_expression_use_ref_test() ->
+
+   ?assertThrow("Reference(s) used in inline-expression: data.separator, data.string_value",
+      dfs:parse_file("test/inline_expr_ref.dfs", [], [])).
 
 -endif.
 
