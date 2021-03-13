@@ -54,7 +54,7 @@ parse(String, Libs, Replacements, Macros)
       when is_list(String) andalso is_list(Libs) andalso (is_list(Macros) orelse is_function(Macros)) ->
 
    catch ets:delete(?MODULE),
-   LambdaLibs = [dfs_std_lib, estr] ++ [Libs],
+   LambdaLibs = [dfs_std_lib, estr, math] ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
    %% ensure libs are there for us
    lists:foreach(fun(E) -> code:ensure_loaded(E) end, FLibs),
@@ -84,7 +84,7 @@ do_parse(String, Replacements, Macros)
    Res =
       case dfs_lexer:string(String) of
          {ok, Tokens, _EndLine} ->
-         io:format("~nTokens: ~p~n",[Tokens]),
+%%         io:format("~nTokens: ~p~n",[Tokens]),
             case dfs_parser:parse(Tokens) of
                {ok, Data} ->
                io:format("~nDATA: ~p~n",[Data]),
@@ -149,7 +149,7 @@ replace_macros(Nodes, Connections, Macros) ->
 prepare_macro(MacroDfs, Replacements, Macros) ->
 %%   io:format("~nReplacements before: ~p",[Replacements]),
    Vars = clean_replacements(Replacements, []),
-%%   io:format("~nReplacements for macro: ~p : ~p",[MacroDfs, Vars]),
+%%   io:format("~nReplacements for macro: ~p : ~n~p",[MacroDfs, Vars]),
    do_parse(MacroDfs, Vars, Macros).
 
 clean_replacements([], Out) ->
@@ -157,11 +157,11 @@ clean_replacements([], Out) ->
 clean_replacements([{_Name, []}|R], Out) ->
    clean_replacements(R, Out);
 clean_replacements([{Name, [{_Type, Val}]}|R]=_V, Out) ->
-   io:format("~nreplacement: ~p => ~p~n", [_V, {Name, Val}]),
+%%   io:format("~nreplacement: ~p => ~p~n", [_V, {Name, Val}]),
    clean_replacements(R, [{Name, Val}|Out]);
 clean_replacements([{Name, Val}|R]=_V, Out) when is_list(Val) ->
    Cleaned = [Value || {_Type, Value} <- Val],
-   io:format("~nreplacement no type: ~p => ~p~n", [_V, {Name, Cleaned}]),
+%%   io:format("~nreplacement no type: ~p => ~p~n", [_V, {Name, Cleaned}]),
    clean_replacements(R, [{Name, Cleaned}|Out]).
 
 macro_dfs(Name, Macros) when is_function(Macros) ->
@@ -186,8 +186,8 @@ rewrite_conns([{_, _}=C | R], MacroName, {First, Last}, Acc) ->
 %% declaration substitution
 prepare_replacement(Name, <<"lambda:", _R/binary>> = BinString) ->
    parse_replacement(Name, binary_to_list(BinString));
-prepare_replacement(Name, <<"e:", _R/binary>> = BinString) ->
-   parse_replacement(Name, binary_to_list(BinString));
+prepare_replacement(Name, <<"e:", _R/binary>> = _BinString) ->
+   throw("Declaration replacement of type script-expression is unsupported! '" ++ binary_to_list(Name) ++ "'");
 prepare_replacement(Name, L) when is_list(L) ->
    check_list_types(Name, L);
 prepare_replacement(_Name, Repl) ->
@@ -205,19 +205,19 @@ parse_replacement(_Name, ("lambda:" ++ _R) = String ) ->
       {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
       Err -> Err
    end;
-parse_replacement(_Name, ("e:" ++ _R) = String ) ->
-   case dfs_lexer:string(String) of
-      {ok, Tokens, _EndLine} ->
-         case dfs_parser:parse(Tokens) of
-            {ok, [{statement, Data}]}->
-               param(Data);
-            {error, {LN, dfs_parser, Message}} ->
-               {{parser_error, line, LN}, Message};
-            Error -> Error
-         end;
-      {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
-      Err -> Err
-   end;
+%%parse_replacement(_Name, ("e:" ++ _R) = String ) ->
+%%   case dfs_lexer:string(String) of
+%%      {ok, Tokens, _EndLine} ->
+%%         case dfs_parser:parse(Tokens) of
+%%            {ok, [{statement, Data}]}->
+%%               param(Data);
+%%            {error, {LN, dfs_parser, Message}} ->
+%%               {{parser_error, line, LN}, Message};
+%%            Error -> Error
+%%         end;
+%%      {error, {LN, dfs_lexer, Message}, _LN} -> {{lexer_error, line, LN}, Message};
+%%      Err -> Err
+%%   end;
 parse_replacement(_Name, R) -> R.
 
 check_list_types(Name, L) ->
@@ -270,7 +270,6 @@ eval({statement, {declarate, DecName, {lambda, _DecValue}=L}}) ->
    save_declaration(DecName, param(L));
 %% @todo eval inline expression
 eval({statement, {declarate, DecName, {inline, _DecValue}=L}}) ->
-   io:format("~ndeclaration INLINE: ~p : ~p~n", [DecName, L]),
    Res = eval_inline_expression(L),
    save_declaration(DecName, Res);
 eval({statement, {declarate, DecName, {text, LN, V}}}) ->
@@ -394,8 +393,7 @@ param({pfunc, {_N, {params, _Ps}}}=L) ->
    param({lambda, [L]});
 param({pfunc, N}) ->
    param({lambda, [{pfunc, {N,{params,[]}}}]});
-param({inline, InlineList} = Expr) ->
-   io:format("~n param: INLINE: ~p~n",[InlineList]),
+param({inline, _InlineList} = Expr) ->
    eval_inline_expression(Expr);
 param({lambda, LambdaList}) ->
 %%   io:format("param: lambda ~p~n",[LambdaList]),
@@ -651,7 +649,8 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
          _  -> RVal
       end,
    ets:insert(?MODULE, {Ident, NewValue});
-save_declaration(Ident, {VType, Val}) ->
+save_declaration(Ident, {VType, Val} = _V) ->
+%%   io:format("~nsave_declaration: ~p : ~p~n",[Ident, V]),
    save_declaration(Ident, {VType, 1, Val});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
 %%   io:format("~nsave_declaration single: ~p: ~p~n",[Ident, Value]),
@@ -767,6 +766,13 @@ list_type([E|R]) when is_binary(E) ->
 list_type([E|R]) when is_atom(E) ->
    lists:all(fun(El) -> is_atom(El) end ,R).
 
+is_duration(Binary) when is_binary(Binary) ->
+   case catch string:to_integer(binary_to_list(Binary)) of
+      {Int, R} when is_integer(Int) ->
+         lists:member(R, ["ms", "s", "m", "h", "d", "w", "y"]);
+      _ -> false
+   end.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA FUNCTIONS %%%%%%%%%%%%%%%%%%%
 pfunction(FName, Arity) when is_list(FName) ->
    NameAtom = list_to_atom(FName),
@@ -790,7 +796,7 @@ pfunction(FName, Arity) when is_list(FName) ->
    case NN0 of
       nil -> case erlang:function_exported(math, NameAtom, Arity) of
                 true -> "math:" ++ FName;
-                false -> throw("Function '" ++ FName ++ "' not found in library!")
+                false -> throw("Function '" ++ FName ++ "/" ++ integer_to_list(Arity) ++ "' not found in library!")
              end;
       {done, Else} -> Else
    end,
@@ -831,14 +837,16 @@ eval_inline_expression({inline, InlineList}) ->
    Out = case Result of
             _ when is_float(Result) -> {float, Result};
             _ when is_integer(Result) -> {int, Result};
-            _ when is_binary(Result) -> {string, Result}
+            _ when is_binary(Result) ->
+               case is_duration(Result) of true -> {duration, Result}; false -> {string, Result} end;
+            _ when Result =:= true orelse Result =:= false -> {bool, Result}
          end,
    Out.
 
 make_fun(LambdaString) ->
 
    S =  "fun() -> " ++ LambdaString ++ " end.",
-   io:format("inline expression: ~p~n",[S]),
+%%   io:format("inline expression: ~p~n",[S]),
    case erl_scan:string(S) of
       {ok, Ts, _} ->
          {ok, Exprs} = erl_parse:parse_exprs(Ts),

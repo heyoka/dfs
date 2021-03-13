@@ -18,12 +18,16 @@
    [?BASE_PATTERN, VarName, <<")\\s*=[\\s\\n\\t\\r]*-?\\d+\\.?\\d*)(?=\\s|\\n|\\t)">>]).
 -define(PATTERN_STRING(VarName),
    [?BASE_PATTERN, VarName, <<")\\s*=[\\t\\r\\s\\n]*('[\\n\\r\\t\\s\\S]*'))">>]).
+-define(PATTERN_BOOL(VarName),
+   [?BASE_PATTERN, VarName, <<")\\s*=[\\t\\r\\s\\n]*('[\\n\\r\\t\\s\\S]*'))">>]).
 -define(PATTERN_TEXT(VarName),
    [?BASE_PATTERN, VarName, <<")\\s*=[\\t\\r\\s\\n]*(<{3}[\\n\\r\\t\\s\\S]*>{3}))">>]).
 -define(PATTERN_DURATION(VarName),
    [?BASE_PATTERN, VarName, <<")\\s*=[\\s\\n\\t\\r]*-?\\d+)(w|d|s|m|ms|h)(?=\\s|\\n|\\t|\\z)">>]).
 -define(PATTERN_LAMBDA(VarName),
    [?BASE_PATTERN, VarName, <<")\\s*=[\\s\\n\\t\\r]*lambda:\\s+.*)(?=\\R|\\z)">>]).
+-define(PATTERN_INLINE(VarName),
+   [?BASE_PATTERN, VarName, <<")\\s*=[\\s\\n\\t\\r]*e:\\s+.*)(?=\\R|\\z)">>]).
 
 %% API
 -export([execute/3, do/0]).
@@ -60,6 +64,8 @@ pattern(VarName, VarList) ->
       {Type, _Line, _Value} -> {Type, pat(Type, VarName)};
       {lambda,{_Value, _DefsDFS, _DefsErl}} -> {lambda, pat(lambda, VarName)};
       {lambda,_Value, _DefsDFS, _DefsErl} -> {lambda, pat(lambda, VarName)};
+      {inline,{_Value, _DefsDFS, _DefsErl}} -> {inline, pat(inline, VarName)};
+      {inline,_Value, _DefsDFS, _DefsErl} -> {inline, pat(inline, VarName)};
       _ ->
          %io:format("~nno varlist entry for ~p~n", [VarName]),
          false
@@ -70,9 +76,11 @@ pat(int, VarName) -> ?PATTERN_NUMBER(VarName);
 pat(float, VarName) -> ?PATTERN_NUMBER(VarName);
 pat(text, VarName) -> ?PATTERN_TEXT(VarName);
 pat(string, VarName) -> ?PATTERN_STRING(VarName);
+pat(bool, VarName) -> ?PATTERN_BOOL(VarName);
 pat(lambda, VarName) -> ?PATTERN_LAMBDA(VarName);
+pat(inline, VarName) -> ?PATTERN_INLINE(VarName);
 pat(_T, _N) ->
-   %io:format("~nno pattern found for type: ~p~n",[{T, N}]),
+   io:format("~n******************~nno pattern found for type: ~p~n",[{_T, _N}]),
    false.
 
 to_dfs_var(text, Val) -> <<"<<<", Val/binary, ">>>">>;

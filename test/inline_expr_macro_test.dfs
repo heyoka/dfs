@@ -1,0 +1,4 @@
+||inline_expr_type_test()
+.dur_num('12')
+.dur_unit('s')
+.bool_exp(e: ! str_starts_with(str_capitalize('alHambRA'), 'A'))

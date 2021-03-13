@@ -1,6 +1,6 @@
 -module(dfs_parser).
 -export([parse/1, parse_and_scan/1, format_error/1]).
--file("src/dfs_parser.yrl", 85).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 85).
 
 unwrapParams(L) -> unwrapParams(L, []).
 unwrapParams([], Acc) -> lists:flatten(lists:reverse(Acc));
@@ -19,7 +19,7 @@ unwrap_node_func({node, {N, P}}) -> {node, N, P};
 unwrap_node_func({user_node, {N, P}}) -> {user_node, N, P};
 unwrap_node_func({macro, {N, P}}) -> {macro, N, P};
 unwrap_node_func(V) -> V.
--file("/home/heyoka/.asdf/installs/erlang/23.2.3/lib/parsetools-2.2/include/yeccpre.hrl", 0).
+-file("/home/heyoka/.asdf/installs/erlang/23.2.6/lib/parsetools-2.2/include/yeccpre.hrl", 0).
 %%
 %% %CopyrightBegin%
 %%
@@ -191,7 +191,7 @@ yecctoken2string(Other) ->
 
 
 
--file("src/dfs_parser.erl", 194).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.erl", 194).
 
 -dialyzer({nowarn_function, yeccpars2/7}).
 yeccpars2(0=S, Cat, Ss, Stack, T, Ts, Tzr) ->
@@ -1708,7 +1708,7 @@ yeccgoto_statements(2=_S, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_93(_S, Cat, Ss, Stack, T, Ts, Tzr).
 
 -compile({inline,yeccpars2_2_/1}).
--file("src/dfs_parser.yrl", 11).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 11).
 yeccpars2_2_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1716,7 +1716,7 @@ yeccpars2_2_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_5_/1}).
--file("src/dfs_parser.yrl", 48).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 48).
 yeccpars2_5_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1724,7 +1724,7 @@ yeccpars2_5_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_6_/1}).
--file("src/dfs_parser.yrl", 15).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 15).
 yeccpars2_6_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1732,7 +1732,7 @@ yeccpars2_6_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_8_/1}).
--file("src/dfs_parser.yrl", 14).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 14).
 yeccpars2_8_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1740,7 +1740,7 @@ yeccpars2_8_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_9_/1}).
--file("src/dfs_parser.yrl", 21).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 21).
 yeccpars2_9_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1748,7 +1748,7 @@ yeccpars2_9_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_33_/1}).
--file("src/dfs_parser.yrl", 37).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 37).
 yeccpars2_33_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1756,7 +1756,7 @@ yeccpars2_33_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_39_/1}).
--file("src/dfs_parser.yrl", 72).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 72).
 yeccpars2_39_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1764,7 +1764,7 @@ yeccpars2_39_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_40_/1}).
--file("src/dfs_parser.yrl", 48).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 48).
 yeccpars2_40_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1772,7 +1772,7 @@ yeccpars2_40_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_41_/1}).
--file("src/dfs_parser.yrl", 55).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 55).
 yeccpars2_41_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1780,7 +1780,7 @@ yeccpars2_41_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_46_/1}).
--file("src/dfs_parser.yrl", 77).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 77).
 yeccpars2_46_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1788,7 +1788,7 @@ yeccpars2_46_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_49_/1}).
--file("src/dfs_parser.yrl", 46).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 46).
 yeccpars2_49_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1796,7 +1796,7 @@ yeccpars2_49_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_50_/1}).
--file("src/dfs_parser.yrl", 45).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 45).
 yeccpars2_50_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1804,7 +1804,7 @@ yeccpars2_50_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_51_/1}).
--file("src/dfs_parser.yrl", 40).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 40).
 yeccpars2_51_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1812,7 +1812,7 @@ yeccpars2_51_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_52_/1}).
--file("src/dfs_parser.yrl", 78).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 78).
 yeccpars2_52_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1820,7 +1820,7 @@ yeccpars2_52_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_54_/1}).
--file("src/dfs_parser.yrl", 67).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 67).
 yeccpars2_54_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1828,7 +1828,7 @@ yeccpars2_54_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_56_/1}).
--file("src/dfs_parser.yrl", 74).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 74).
 yeccpars2_56_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1836,7 +1836,7 @@ yeccpars2_56_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_57_/1}).
--file("src/dfs_parser.yrl", 43).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 43).
 yeccpars2_57_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1844,7 +1844,7 @@ yeccpars2_57_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_59_/1}).
--file("src/dfs_parser.yrl", 73).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 73).
 yeccpars2_59_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1852,7 +1852,7 @@ yeccpars2_59_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_60_/1}).
--file("src/dfs_parser.yrl", 54).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 54).
 yeccpars2_60_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1860,7 +1860,7 @@ yeccpars2_60_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_61_/1}).
--file("src/dfs_parser.yrl", 30).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 30).
 yeccpars2_61_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1868,7 +1868,7 @@ yeccpars2_61_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_62_/1}).
--file("src/dfs_parser.yrl", 41).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 41).
 yeccpars2_62_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1876,7 +1876,7 @@ yeccpars2_62_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_63_/1}).
--file("src/dfs_parser.yrl", 42).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 42).
 yeccpars2_63_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1884,7 +1884,7 @@ yeccpars2_63_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_67_/1}).
--file("src/dfs_parser.yrl", 56).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 56).
 yeccpars2_67_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1892,7 +1892,7 @@ yeccpars2_67_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_68_/1}).
--file("src/dfs_parser.yrl", 44).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 44).
 yeccpars2_68_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1900,7 +1900,7 @@ yeccpars2_68_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_69_/1}).
--file("src/dfs_parser.yrl", 36).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 36).
 yeccpars2_69_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1908,7 +1908,7 @@ yeccpars2_69_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_70_/1}).
--file("src/dfs_parser.yrl", 32).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 32).
 yeccpars2_70_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1916,7 +1916,7 @@ yeccpars2_70_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_71_/1}).
--file("src/dfs_parser.yrl", 38).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 38).
 yeccpars2_71_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1924,7 +1924,7 @@ yeccpars2_71_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_72_/1}).
--file("src/dfs_parser.yrl", 31).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 31).
 yeccpars2_72_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1932,7 +1932,7 @@ yeccpars2_72_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_73_/1}).
--file("src/dfs_parser.yrl", 25).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 25).
 yeccpars2_73_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1940,7 +1940,7 @@ yeccpars2_73_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_74_/1}).
--file("src/dfs_parser.yrl", 26).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 26).
 yeccpars2_74_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1948,7 +1948,7 @@ yeccpars2_74_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_75_/1}).
--file("src/dfs_parser.yrl", 19).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 19).
 yeccpars2_75_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1956,7 +1956,7 @@ yeccpars2_75_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_77_/1}).
--file("src/dfs_parser.yrl", 35).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 35).
 yeccpars2_77_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1964,7 +1964,7 @@ yeccpars2_77_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_78_/1}).
--file("src/dfs_parser.yrl", 67).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 67).
 yeccpars2_78_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1972,7 +1972,7 @@ yeccpars2_78_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_79_/1}).
--file("src/dfs_parser.yrl", 34).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 34).
 yeccpars2_79_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1980,7 +1980,7 @@ yeccpars2_79_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_80_/1}).
--file("src/dfs_parser.yrl", 33).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 33).
 yeccpars2_80_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1988,7 +1988,7 @@ yeccpars2_80_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_83_/1}).
--file("src/dfs_parser.yrl", 17).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 17).
 yeccpars2_83_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1996,7 +1996,7 @@ yeccpars2_83_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_85_/1}).
--file("src/dfs_parser.yrl", 24).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 24).
 yeccpars2_85_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -2004,7 +2004,7 @@ yeccpars2_85_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_87_/1}).
--file("src/dfs_parser.yrl", 69).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 69).
 yeccpars2_87_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -2012,7 +2012,7 @@ yeccpars2_87_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_90_/1}).
--file("src/dfs_parser.yrl", 51).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 51).
 yeccpars2_90_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -2020,7 +2020,7 @@ yeccpars2_90_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_91_/1}).
--file("src/dfs_parser.yrl", 70).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 70).
 yeccpars2_91_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -2028,7 +2028,7 @@ yeccpars2_91_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_92_/1}).
--file("src/dfs_parser.yrl", 20).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 20).
 yeccpars2_92_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -2036,7 +2036,7 @@ yeccpars2_92_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_93_/1}).
--file("src/dfs_parser.yrl", 12).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 12).
 yeccpars2_93_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -2044,4 +2044,4 @@ yeccpars2_93_(__Stack0) ->
   end | __Stack].
 
 
--file("src/dfs_parser.yrl", 103).
+-file("/home/heyoka/workspace/dfs/src/dfs_parser.yrl", 103).

@@ -7,6 +7,7 @@ def number3 = -556595895
 def string1 = 'this is my string'
 def string2 = 'string2'
 %def string2 = 'this string should not be touched'
+def bool1 = false
 %% text
 def text1 = <<<This is my text !>>>
 def text2 = <<< this is also a text, but will not change >>>
@@ -16,6 +17,7 @@ def dur2 = 12h
 %% lambda expressions
 def lambda1 = lambda: "answer" != (42 * 1)
 
+def inline1 = e: max(15516161, 168161861)
 
 |eval(
     lambda1
@@ -24,3 +26,5 @@ def lambda1 = lambda: "answer" != (42 * 1)
 .message(text1)
 .timeouts(dur1)
 .after(dur2)
+.bool(bool1)
+.inline(inline1)

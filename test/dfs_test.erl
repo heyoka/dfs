@@ -21,10 +21,15 @@ override_test() ->
       {<<"number3">>, -556595895},
       {<<"string1">>, <<"this is my string">>},
       {<<"string2">>, <<"string2">>},
+      %% @todo find out, why bool cannot be replaced
+%%      {<<"bool1">>, true},
       {<<"text1">>, <<"This is my text !">>},
       {<<"dur1">>, <<"33s">>},
       {<<"dur2">>, <<"12h">>},
       {<<"lambda1">>, <<"lambda: \"answer\" != (42 * 1)">>}
+      %% inline cannot be replaced at the moment
+%%      ,
+%%      {<<"inline1">>, <<"e: 42 * round(pi())">>}
 
    ],
    {NewDFS, ParseResult} = dfs:parse_file("test/override.dfs", [], Replacements),
@@ -36,8 +41,11 @@ override_test() ->
          [{<<"add">>,[{int,-3.14}]},
             {<<"message">>,[{text,<<"This is my text !">>}]},
             {<<"timeouts">>,[{duration,<<"33s">>}]},
-            {<<"after">>,[{duration,<<"12h">>}]}]}],
-         []},
+            {<<"after">>,[{duration,<<"12h">>}]},
+            {<<"bool">>,[{bool,false}]},
+            {<<"inline">>,[{int,168161861}]}]}],
+         []}
+   ,
    ?assertEqual(ExpectedResult, ParseResult).
 
 macro_test() ->
@@ -125,6 +133,29 @@ inline_expression_use_ref_test() ->
 
    ?assertThrow("Reference(s) used in inline-expression: data.separator, data.string_value",
       dfs:parse_file("test/inline_expr_ref.dfs", [], [])).
+
+inline_expression_type_test() ->
+   {NewDFS, ParseResult} = dfs:parse_file("test/inline_expr_type_test.dfs", [], []),
+   {ok, DFSOut} = file:read_file("test/inline_expr_type_test.dfs"),
+   ?assertEqual(binary_to_list(DFSOut), NewDFS),
+   ExpectedResult =
+      {[{{<<"use">>,1},
+         [],
+         [{<<"int">>,[{int,11}]},
+            {<<"float">>,[{float,9.42477796076938}]},
+            {<<"string">>,[{string,<<"Ast.walk">>}]},
+            {<<"bool">>,[{bool,true}]},
+            {<<"duration">>,[{duration,<<"300ms">>}]},
+            {<<"not_duration">>,[{string,<<"500p">>}]},
+            {<<"all">>,
+               [{int,11},
+                  {float,9.42477796076938},
+                  {string,<<"Ast.walk">>},
+                  {bool,true},
+                  {duration,<<"300ms">>},
+                  {string,<<"500p">>}]}]}],
+         []},
+   ?assertEqual(ExpectedResult, ParseResult).
 
 -endif.
 

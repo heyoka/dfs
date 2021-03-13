@@ -26,8 +26,8 @@ expression        -> chain  : {chain, '$1'}.
 expression        -> primary  : '$1'.
 expression        -> primaryExpr : '$1'.
 expression        -> '[' parameters ']' : {list, unwrap('$2')}.
-expression         -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
-expression         -> inline primaryExpr : {inline, lists:flatten([unwrap('$2')])}.
+expression        -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
+expression        -> inline primaryExpr : {inline, lists:flatten([unwrap('$2')])}.
 
 %chain             -> user_node function chain : [{unwrap('$1'), unwrap1('$2')}] ++ '$3'.
 
