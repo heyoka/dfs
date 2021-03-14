@@ -157,9 +157,6 @@ simple_macro_test() ->
    ,
    ?assertEqual(Expected, Res).
 
-
-
-
 -endif.
 
 

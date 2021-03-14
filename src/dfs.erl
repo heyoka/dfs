@@ -1,21 +1,16 @@
 %% Date: 04.01.17 - 16:01
-%% Ⓒ 2017 heyoka
+%% Ⓒ 2017 -2021 heyoka
 -module(dfs).
 -author("Alexander Minichmair").
 
 %% API
 -export([parse/1, parse/2, parse/4, parse_file/1, parse_file/2, parse_file/3, parse_file/4]).
 
--export([test/0
-   , user_node/1, test/1, test_macro/1]).
+-export([test/0, user_node/1, test/1]).
 
-test_macro(FileName) ->
-   {ok, Data1} = file:read_file("src/ctc_module_condition.dfs"),
-   StringData1 = binary_to_list(binary:replace(Data1, <<"\\">>, <<>>, [global])),
-   {ok, Data2} = file:read_file("src/publish_macro.dfs"),
-   StringData2 = binary_to_list(binary:replace(Data2, <<"\\">>, <<>>, [global])),
-   parse_file(FileName, [], [], [{<<"ctc_module_condition">>, StringData1}, {<<"publish_macro">>, StringData2}]).
+-define(ETS_TABLE(), get(ets_table_id)).
 
+%% manually testing
 test(FileName) ->
    parse_file(FileName, [], [
       {<<"emit_every">>, <<"3s">>},
@@ -29,6 +24,9 @@ test(FileName) ->
 test() ->
    test("src/test_script.dfs").
 
+
+%% DFS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 -spec parse(list()) -> list().
 parse_file(FileName) when is_list(FileName) ->
    parse_file(FileName, [], []).
@@ -39,6 +37,9 @@ parse_file(FileName, Libs, Replacements) ->
 parse_file(FileName, Libs, Replacements, Macros) ->
    {ok, Data} = file:read_file(FileName),
    StringData = binary_to_list(binary:replace(Data, <<"\\">>, <<>>, [global])),
+%%   {Time, Res} = timer:tc(?MODULE, parse, [StringData, Libs, Replacements, Macros]),
+%%   io:format("~n ##++++## time to parse: ~p :: ~p ms~n", [FileName, round(Time/1000)]),
+%%   Res.
    parse(StringData, Libs, Replacements, Macros).
 
 parse(StringData) ->
@@ -53,17 +54,24 @@ parse(Binary, Libs, Replacements, Macros) when is_binary(Binary) ->
 parse(String, Libs, Replacements, Macros)
       when is_list(String) andalso is_list(Libs) andalso (is_list(Macros) orelse is_function(Macros)) ->
 
-   catch ets:delete(?MODULE),
    LambdaLibs = [dfs_std_lib, estr, math] ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
    %% ensure libs are there for us
    lists:foreach(fun(E) -> code:ensure_loaded(E) end, FLibs),
-   ets:new(?MODULE, [set, public, named_table]),
+   TableId = ets:new(?MODULE, [set, private, {write_concurrency,false}, {read_concurrency,false}]),
+   %% store the table id in the caller's process dictionary
+   put(ets_table_id, TableId),
    %% counter ets for node_ids
-   ets:insert(?MODULE, {node_id, 0}),
-   ets:insert(?MODULE, {lfunc, FLibs}),
+   ets:insert(TableId, {node_id, 0}),
+   %% library functions
+   ets:insert(TableId, {lfunc, FLibs}),
    Res = do_parse(String, Replacements, Macros),
-   ets:delete(?MODULE),
+
+   %% CLEANUP
+   ets:delete(TableId),
+   %% delete our entry from the caller's process dictionary
+   erase(ets_table_id),
+
    Res.
 
 do_parse(Binary, Replacements, Macros) when is_binary(Binary) ->
@@ -72,22 +80,21 @@ do_parse(String, Replacements, Macros)
    when is_list(String) andalso (is_list(Macros) orelse is_function(Macros)) ->
 
    %% clean up ets table here
-   TabList0 = ets:tab2list(?MODULE),
+   TabList0 = ets:tab2list(?ETS_TABLE()),
    NewTabList = lists:filter(fun({Key, _V}) -> lists:member(Key, [node_id, lfunc, replace_def]) end, TabList0),
-%%   io:format("enter tab: ~p~n",[NewTabList]),
-   ets:delete_all_objects(?MODULE),
-   ets:insert(?MODULE, NewTabList),
+   ets:delete_all_objects(?ETS_TABLE()),
+   ets:insert(?ETS_TABLE(), NewTabList),
 
    Rep = [{RName, prepare_replacement(RName, Repl)} || {RName, Repl} <- Replacements],
 %%   logger:notice("all replacemens: ~p~n" ,[Rep]),
-   ets:insert(?MODULE, {replace_def, Rep} ),
+   ets:insert(?ETS_TABLE(), {replace_def, Rep} ),
    Res =
       case dfs_lexer:string(String) of
          {ok, Tokens, _EndLine} ->
 %%         io:format("~nTokens: ~p~n",[Tokens]),
             case dfs_parser:parse(Tokens) of
                {ok, Data} ->
-               io:format("~nDATA: ~p~n",[Data]),
+%%               io:format("~nDATA: ~p~n",[Data]),
 %%               try eval(Data) of
 %%                  Result -> Result
 %%               catch
@@ -102,7 +109,7 @@ do_parse(String, Replacements, Macros)
          Err -> Err
       end,
    %% now maybe rewrite the DFS script with replacements
-   TabList = ets:tab2list(?MODULE),
+   TabList = ets:tab2list(?ETS_TABLE()),
 %%   io:format("done do_parse tab: ~p~n",[TabList]),
    NewDFS = dfs_rewriter:execute(Replacements, TabList, String),
    %% check for macros in the script
@@ -374,7 +381,7 @@ chain(ChainElements) when is_list(ChainElements) ->
    {{nodes, AllNodes}, {connections, Connections}}.
 
 node_id() ->
-   ets:update_counter(?MODULE, node_id, 1).
+   ets:update_counter(?ETS_TABLE(), node_id, 1).
 
 params(Params) when is_list(Params)->
    lists:flatten([param(P) || P <- Params]).
@@ -629,7 +636,7 @@ lexp({list, List}) ->
 %%   save_declaration(Ident, [{VTy, 0, V} || {VTy, V} <- Vals]);
 save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
    check_new_declaration(Ident),
-   [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
+   [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
    io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
    NewValue =
@@ -637,10 +644,10 @@ save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
          norepl -> Vals;
          NVal  -> [{VType, VLine, V} || V <- NVal]
       end,
-   ets:insert(?MODULE, {Ident, NewValue});
+   ets:insert(?ETS_TABLE(), {Ident, NewValue});
 save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
    check_new_declaration(Ident),
-   [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
+   [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
 %%   io:format("~nReplacements ~p~n~nKey: ~p~nreplacement-value: ~p~nOriginal-Value~p~n~n",[Replacements, Ident, RVal, Value]),
    NewValue =
@@ -648,14 +655,14 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
          norepl -> Value;
          _  -> RVal
       end,
-   ets:insert(?MODULE, {Ident, NewValue});
+   ets:insert(?ETS_TABLE(), {Ident, NewValue});
 save_declaration(Ident, {VType, Val} = _V) ->
 %%   io:format("~nsave_declaration: ~p : ~p~n",[Ident, V]),
    save_declaration(Ident, {VType, 1, Val});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
 %%   io:format("~nsave_declaration single: ~p: ~p~n",[Ident, Value]),
    check_new_declaration(Ident),
-   [{replace_def, Replacements}] = ets:lookup(?MODULE, replace_def),
+   [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
 %%   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
    NewValue =
@@ -663,15 +670,15 @@ save_declaration(Ident, {VType, VLine, _Val}=Value) ->
       norepl -> Value;
       NVal  -> {VType, VLine, NVal}
    end,
-   ets:insert(?MODULE, {Ident, NewValue}).
+   ets:insert(?ETS_TABLE(), {Ident, NewValue}).
 save_chain_declaration(Ident, Nodes) when is_list(Nodes) ->
    check_new_declaration(Ident),
    LastNode = lists:last(Nodes),
    {NodeName, _Np, _NCP} = LastNode,
-   ets:insert(?MODULE, {Ident, {connect, NodeName}}).
+   ets:insert(?ETS_TABLE(), {Ident, {connect, NodeName}}).
 get_declaration(Ident) ->
 %%   io:format("~nget_declaration: ~p~n",[ets:lookup(dfs_parser, Ident)]),
-   case ets:lookup(?MODULE, Ident) of
+   case ets:lookup(?ETS_TABLE(), Ident) of
       [] -> nil;
       [{Ident, {connect, {_Name, _Connection}=N}}] -> {connect, N};
       [{Ident, Value}] -> %io:format("get_declaration value: ~p~n",[Value]),
@@ -776,7 +783,7 @@ is_duration(Binary) when is_binary(Binary) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%% LAMBDA FUNCTIONS %%%%%%%%%%%%%%%%%%%
 pfunction(FName, Arity) when is_list(FName) ->
    NameAtom = list_to_atom(FName),
-   [{lfunc, Modules}] = ets:lookup(?MODULE, lfunc),
+   [{lfunc, Modules}] = ets:lookup(?ETS_TABLE(), lfunc),
 %%   io:format("models are ~p~n",[Modules]),
    NN0 = lists:foldl(
      fun
