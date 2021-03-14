@@ -8,7 +8,8 @@
 
 -export([test/0, user_node/1, test/1]).
 
--define(ETS_TABLE(), get(ets_table_id)).
+-define(TABLE_KEY, ets_table_id).
+-define(ETS_TABLE(), get(?TABLE_KEY)).
 
 %% manually testing
 test(FileName) ->
@@ -59,8 +60,8 @@ parse(String, Libs, Replacements, Macros)
    %% ensure libs are there for us
    lists:foreach(fun(E) -> code:ensure_loaded(E) end, FLibs),
    TableId = ets:new(?MODULE, [set, private, {write_concurrency,false}, {read_concurrency,false}]),
-   %% store the table id in the caller's process dictionary
-   put(ets_table_id, TableId),
+   %% store the table id in the caller's process dictionary for later use
+   put(?TABLE_KEY, TableId),
    %% counter ets for node_ids
    ets:insert(TableId, {node_id, 0}),
    %% library functions
@@ -70,7 +71,7 @@ parse(String, Libs, Replacements, Macros)
    %% CLEANUP
    ets:delete(TableId),
    %% delete our entry from the caller's process dictionary
-   erase(ets_table_id),
+   erase(?TABLE_KEY),
 
    Res.
 
