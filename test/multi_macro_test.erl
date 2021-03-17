@@ -144,9 +144,6 @@ multi_2_test() ->
    ?assertEqual(Expected, Res).
 
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 simple_macro_test() ->
    FileName = "test/multi_macro3.dfs",
    MacroData = test_helper:string_data("test/simple_macro.dfs"),
@@ -159,9 +156,6 @@ simple_macro_test() ->
          {{<<"where">>,3},{<<"consume">>,4}}]}
    ,
    ?assertEqual(Expected, Res).
-
-
-
 
 -endif.
 

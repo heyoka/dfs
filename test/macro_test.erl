@@ -75,4 +75,31 @@ macro_bridge_test() ->
 
   ,
   ?assertEqual(Expected, Res).
+
+inline_expr_macro_test() ->
+  FileName = "test/inline_expr_macro_test.dfs",
+  MacroData = test_helper:string_data("test/inline_expr_type_test.dfs"),
+  {_, Res} = dfs:parse_file(FileName, [test_lib], [],
+    [{<<"inline_expr_type_test">>, MacroData}]),
+
+  Expected = {[{{<<"use">>,2},
+    [],
+    [{<<"int">>,[{int,11}]},
+      {<<"float">>,[{float,9.42477796076938}]},
+      {<<"string">>,[{string,<<"Ast.walk">>}]},
+      {<<"bool">>,[{bool,false}]},
+      {<<"duration">>,[{duration,<<"12s">>}]},
+      {<<"not_duration">>,[{string,<<"500p">>}]},
+      {<<"all">>,
+        [{int,11},
+          {float,9.42477796076938},
+          {string,<<"Ast.walk">>},
+          {bool,true},
+          {duration,<<"12s">>},
+          {string,<<"500p">>}]}]}],
+    []}
+  ,
+  ?assertEqual(Expected, Res).
+
+
 -endif.

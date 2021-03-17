@@ -1,0 +1,26 @@
+def int_exp = e: 3 * round(pi()) + 2
+def float_exp = e: 3 * pi()
+def string = 'ast.walk'
+def string_exp = e: str_capitalize(string)
+def bool_exp = e: str_starts_with(string_exp, 'A')
+def dur_num = '300'
+def dur_unit = 'ms'
+def dur_base = '_{{dur_unit}}'
+def duration_exp = e: str_replace(dur_base, '_', dur_num)
+def not_duration_exp = e: str_downcase('500p')
+
+|use()
+.int(int_exp)
+.float(float_exp)
+.string(string_exp)
+.bool(bool_exp)
+.duration(duration_exp)
+.not_duration(not_duration_exp)
+.all(
+    e: 3 * round(pi()) + 2,
+    e: 3 * pi(),
+    e: str_capitalize(string),
+    e: str_starts_with(string_exp, 'A'),
+    e: str_replace(dur_base, '_', dur_num),
+    e: str_downcase('500p')
+    )

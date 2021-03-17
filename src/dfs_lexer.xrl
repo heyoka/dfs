@@ -2,6 +2,7 @@
 Definitions.
 
 Lambda          = lambda:(\s|\t|\n)*
+Expression      = e:(\s|\t|\n)*
 StreamId        = [\'][0-9]\.[0-9]{3}\.[0-9a-zA-Z]*[\']
 Reference       = \"(\"\"|[^\"\n]|[\.])*\"
 Operator        = (\+|-|\*|\/|==|!=|<|<=|>|>=|=~|!~|!|AND|OR|div|rem)
@@ -28,6 +29,9 @@ def             :   {token, {def, TokenLine, list_to_atom(TokenChars)}}.
 {Operator}      :   {token, {operator,TokenLine,list_to_atom(TokenChars)}}.
 {StreamId}      :   {token, {stream_id, TokenLine, list_to_binary(TokenChars)}}.
 {Lambda}        :   {token, {lambda, TokenLine, list_to_binary(lists:sublist(TokenChars,9,length(TokenChars)))}}.
+{Expression}    :   {token, {inline, TokenLine, list_to_binary(lists:sublist(TokenChars,3,length(TokenChars)))}}.
+{True}          :   {token, {bool,TokenLine,true}}.
+{False}         :   {token, {bool,TokenLine,false}}.
 {UserNode}      :   {token, {user_node, TokenLine, 'user_node'}}.
 {Node}          :   {token, {node, TokenLine, 'node'}}.
 {Macro}         :   {token, {macro, TokenLine, 'macro'}}.
@@ -40,8 +44,6 @@ def             :   {token, {def, TokenLine, list_to_atom(TokenChars)}}.
 {Text}          :   {token, {text,TokenLine,list_to_binary(strip_text(TokenChars, length(TokenChars)))}}.
 {String}        :   {token, {string,TokenLine, list_to_binary(strip(TokenChars, length(TokenChars)))}}.
 {Regex}         :   {token, {regex,TokenLine,prep_regex(TokenChars)}}.
-{True}          :   {token, {bool,TokenLine,true}}.
-{False}         :   {token, {bool,TokenLine,false}}.
 %{Digit}        :   {token, {digit,TokenLine,TokenChars}}.
 [(),\.=:\[\]]   :   {token, {list_to_atom(TokenChars),TokenLine}}.
 \%.*            :   skip_token.

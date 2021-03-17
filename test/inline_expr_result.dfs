@@ -1,0 +1,16 @@
+def new_id = 3
+def def_inline = e: string(3 + 5 + sqrt(new_id))
+def i_string = 'this is my string'
+def def_inline_string = e: str_replace(i_string, 'i', 'a')
+def zahl = 5
+def float = 12.15151
+
+def str1 = 'hans'
+
+|use_id()
+.use_inline(def_inline)
+.use_inline_string(def_inline_string)
+.inline_expression(e: zahl * 3 + round(float))
+.inline_expression_string(e: str_upcase('Gestatten: {{str1}} wurscht'))
+.lambda(lambda: zahl * 4 + round(float))
+.lambda_string(lambda: str_upcase('Gestatten: {{str1}} wurscht'))

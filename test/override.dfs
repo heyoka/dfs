@@ -9,6 +9,7 @@ def string1 = 'this is my original string'
 def string2 =
     'this is the original multiline string'
 %def string2 = 'this string should not be touched'
+def bool1 = false
 %% text
 def text1 =
     <<<
@@ -21,6 +22,7 @@ def dur2 = -6h
 %% lambda expressions
 def lambda1 = lambda:  max("val1", "val2")
 
+def inline1 = e: max(15516161, 168161861)
 
 |eval(
     lambda1
@@ -29,3 +31,5 @@ def lambda1 = lambda:  max("val1", "val2")
 .message(text1)
 .timeouts(dur1)
 .after(dur2)
+.bool(bool1)
+.inline(inline1)
