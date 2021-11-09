@@ -520,11 +520,17 @@ param_pfunc({identifier, _LN, Ident}) ->
 %%param_pfunc({identifier, {identifier, 0, Ident}}) ->
 %%   param_pfunc({identifier, Ident});
 param_pfunc({identifier, Ident}) ->
+%%   io:format("get identifier for ~p : ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
       nil -> binary_to_list(Ident);
       {connect, _} -> binary_to_list(Ident);
       {string, _LN, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
+      {text, _LN, <<"\"", String0/binary >>} ->
+         String = binary:replace(String0, <<"\"">>, <<>>),
+         "<<\"\\\"" ++ binary_to_list(String) ++ "\\\"" ++ "\">>";
+      {text, _LN, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
       {string, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
+      {text, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
       {duration, _LN, Dur} -> "<<\"" ++ binary_to_list(Dur) ++ "\">>";
       {bool, _LN, Bool} -> atom_to_list(Bool);
       {int, _LN, Int} -> integer_to_list(Int);
@@ -840,6 +846,7 @@ eval_inline_expression({inline, InlineList}) ->
             {L++[lexp(E)], Refs0}
          end,{[], []},InlineList), %% foldl
    Expr = lists:concat(Lambda),
+   io:format("the EXPRESSION: ~p~n",[Expr]),
    Fun = make_fun(Expr),
    Result = Fun(),
    Out = case Result of

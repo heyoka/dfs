@@ -1,4 +1,4 @@
--file("/home/heyoka/.asdf/installs/erlang/23.2.6/lib/parsetools-2.2/include/leexinc.hrl", 0).
+-file("/home/heyoka/.asdf/installs/erlang/24.0.6/lib/parsetools-2.3/include/leexinc.hrl", 0).
 %% The source of this file is part of leex distribution, as such it
 %% has the same Copyright as the other files in the leex
 %% distribution. The Copyright is defined in the accompanying file
@@ -22,7 +22,7 @@ strip(TokenChars,TokenLen) -> lists:sublist(TokenChars, 2, TokenLen - 2).
 %strip_ref(TokenChars,TokenLen) -> lists:sublist(TokenChars, 3, TokenLen - 3).
 unquote(TokenChars) -> binary:replace(list_to_binary(TokenChars),<<"\"">>, <<>>, [global]).
 prep_regex(TokenChars) -> binary:replace(list_to_binary(TokenChars),<<"?">>, <<>>, [global]).
--file("/home/heyoka/.asdf/installs/erlang/23.2.6/lib/parsetools-2.2/include/leexinc.hrl", 14).
+-file("/home/heyoka/.asdf/installs/erlang/24.0.6/lib/parsetools-2.3/include/leexinc.hrl", 14).
 
 format_error({illegal,S}) -> ["illegal characters ",io_lib:write_string(S)];
 format_error({user,S}) -> S.
@@ -1617,4 +1617,4 @@ yyaction_20() ->
 yyaction_21() ->
      skip_token .
 
--file("/home/heyoka/.asdf/installs/erlang/23.2.6/lib/parsetools-2.2/include/leexinc.hrl", 313).
+-file("/home/heyoka/.asdf/installs/erlang/24.0.6/lib/parsetools-2.3/include/leexinc.hrl", 313).
