@@ -19,19 +19,6 @@
 
 ).
 
--export([str_concat/1, str_concat/2, str_trim/1, hour/1, sigma/0, sigma/1, day_of_week/1]).
-
-%%%
-str_concat(String1, String2) ->
-   unicode:characters_to_binary([String1, String2]).
-str_concat(Strings) when is_list(Strings) ->
-   unicode:characters_to_binary(Strings).
-str_trim(A) -> A.
-hour(A) -> A.
-sigma() -> 32982743927.
-sigma(_) -> 32982743927.
-day_of_week(_) -> 2.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Data Type Conversions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

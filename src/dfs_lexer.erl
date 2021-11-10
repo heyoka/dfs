@@ -19,8 +19,6 @@
 reserved_word('def') -> true.
 strip_text(TokenChars,TokenLen) -> string:trim(lists:sublist(TokenChars, 4, TokenLen - 6)).
 strip(TokenChars,TokenLen) ->
-    io:format("strip string: ~p ~p UNQ: ~p ~n",[TokenChars, TokenLen, unquote(TokenChars)]),
-    io:format("stripped : ~p ~n",[lists:sublist(TokenChars, 2, TokenLen - 2)]),
     lists:sublist(TokenChars, 2, TokenLen - 2).
 %strip_ref(TokenChars,TokenLen) -> lists:sublist(TokenChars, 3, TokenLen - 3).
 unquote(TokenChars) -> binary:replace(list_to_binary(TokenChars),<<"\"">>, <<>>, [global]).
@@ -332,7 +330,7 @@ adjust_line(T, A, [_|Cs], L) ->
 %% return signal either an unrecognised character or end of current
 %% input.
 
--file("src/dfs_lexer.erl", 334).
+-file("src/dfs_lexer.erl", 332).
 yystate() -> 80.
 
 yystate(83, [68|Ics], Line, Tlen, Action, Alen) ->

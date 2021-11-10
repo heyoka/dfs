@@ -9,8 +9,8 @@ def string2 = 'string2'
 %def string2 = 'this string should not be touched'
 def bool1 = false
 %% text
-def text1 = <<<This is my text !>>>
-def text2 = <<< this is also a text, but will not change >>>
+def text1 = 'This is my text !'
+def text2 = ' this is also a text, but will not change '
 %% duration literals
 def dur1 = 33s
 def dur2 = 12h

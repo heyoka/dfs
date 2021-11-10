@@ -39,7 +39,7 @@ override_test() ->
       {[{{<<"eval">>,1},
          [{lambda,"Answer /= (42 * 1)",[<<"answer">>],["Answer"]}],
          [{<<"add">>,[{int,-3.14}]},
-            {<<"message">>,[{text,<<"This is my text !">>}]},
+            {<<"message">>,[{string,<<"This is my text !">>}]},
             {<<"timeouts">>,[{duration,<<"33s">>}]},
             {<<"after">>,[{duration,<<"12h">>}]},
             {<<"bool">>,[{bool,false}]},
@@ -156,6 +156,36 @@ inline_expression_type_test() ->
                   {string,<<"500p">>}]}]}],
          []},
    ?assertEqual(ExpectedResult, ParseResult).
+
+
+text_new_test() ->
+   {NewDFS, ParseResult} = dfs:parse_file("test/text_new.dfs", [test_lib], []),
+   {ok, DFSOut} = file:read_file("test/text_new.dfs"),
+   ?assertEqual(binary_to_list(DFSOut), NewDFS),
+   ExpectedResult =
+      {[{{<<"amqp_consume">>,1},
+         [],
+         [{<<"hop">>,[{string,<<"\"_1202.0014\"">>}]},
+            {<<"hap">>,[{string,<<"\"1202.0014\"\"1202_0014\"">>}]},
+            {<<"sql">>,
+               [{string,<<"\n    SELECT *\n    FROM table\n    WHERE\n    $__timefilter\n    AND a > 33\n    AND data['obj1']['obj2'] < 2232\n    ">>}]},
+            {<<"bindings">>,
+               [{string,<<"tgw.data.0x000a.1202.0014.TESTSIM.#">>}]},
+            {<<"exchange">>,[{string,<<"x_1202.0014">>}]},
+            {<<"queue">>,[{string,<<"q_1202.0014">>}]},
+            {<<"topic_as">>,[{string,<<"stream_id">>}]}]},
+         {{<<"macro_crate_firehose_batch">>,2},
+            [],
+            [{<<"site_id">>,[{string,<<"\"0x000a\"">>}]},
+               {<<"data_format">>,[{string,<<"\"1202_0014\"">>}]},
+               {<<"batch_size">>,[{int,70}]},
+               {<<"batch_timeframe">>,[{duration,<<"5s">>}]}]}],
+         [{{<<"macro_crate_firehose_batch">>,2},
+            {<<"amqp_consume">>,1}}]}
+   ,
+
+?assertEqual(ExpectedResult, ParseResult).
+
 
 -endif.
 

@@ -95,7 +95,7 @@ do_parse(String, Replacements, Macros)
 %%         io:format("~nTokens: ~p~n",[Tokens]),
             case dfs_parser:parse(Tokens) of
                {ok, Data} ->
-               io:format("~nDATA: ~p~n",[Data]),
+%%               io:format("~nDATA: ~p~n",[Data]),
 %%               try eval(Data) of
 %%                  Result -> Result
 %%               catch
@@ -507,7 +507,7 @@ l_params([P|Ps], Acc) ->
   l_params(Ps, Acc ++ P ++ ", ").
 
 params_pfunc(Params) when is_list(Params) ->
-   io:format("params_pfunc: ~p~n",[Params]),
+%%   io:format("params_pfunc: ~p~n",[Params]),
    P = lists:map(
       fun(E) -> param_pfunc(E) end,
       Params
@@ -551,7 +551,7 @@ param_pfunc({string, _LN, Ref}) ->
 %%   io:format("PARAM_PFUNC: string TEMPLATED ~p~n",[S]),
 %%   "<<\"\\\"" ++ binary_to_list(S) ++ "\\\"" ++ "\">>";
 param_pfunc({string, Ref}) ->
-   io:format("PARAM_PFUNC: string ~p~n",[Ref]),
+%%   io:format("PARAM_PFUNC: string ~p~n",[Ref]),
    {text, S} = find_text_template({text, Ref}),
    "<<\"" ++ binary_to_list(S) ++ "\">>";
 param_pfunc({pexp, Elements}) ->
@@ -653,7 +653,7 @@ save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
-   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
+%%   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
    NewValue =
       case RVal of
          norepl -> Vals;
@@ -854,7 +854,7 @@ eval_inline_expression({inline, InlineList}) ->
             {L++[lexp(E)], Refs0}
          end,{[], []},InlineList), %% foldl
    Expr = lists:concat(Lambda),
-   io:format("the EXPRESSION: ~p~n",[Expr]),
+%%   io:format("the EXPRESSION: ~p~n",[Expr]),
    Fun = make_fun(Expr),
    Result = Fun(),
    Out = case Result of

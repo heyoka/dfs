@@ -1,0 +1,44 @@
+%% -------------------------------------------------
+%% Subscribe to RabbitMQ broker
+%% Publish messages to CrateDB
+%% -------------------------------------------------
+def topic = 'tgw/data/0x000a/1202.0014/TESTSIM'
+def rabbitmq_subscription_topic = '{{topic}}/#'
+def binding = e: str_replace(rabbitmq_subscription_topic, '/', '.')
+
+def char_test =
+'12349023!"$"§$"%$??=[]&$/%/((/'''
+
+def a =
+'
+    SELECT *
+    FROM table
+    WHERE
+    $__timefilter
+    AND a > 33
+    AND data[''obj1''][''obj2''] < 2232
+    '
+def c = '"1202.0014"'
+def column_val = e: str_replace(c, '.', '_')
+
+def postfix = '_1202.0014'
+def xchange = 'x{{postfix}}'
+def rabbit_queue = 'q{{postfix}}'
+
+def table = '"0x000a"'
+def column = '"1202_0014"'
+
+|amqp_consume()
+.hop('"{{postfix}}"')
+.hap(e: str_concat([c, column_val]))
+.sql(a)
+.bindings(binding)
+.exchange(xchange)
+.queue(rabbit_queue)
+.topic_as('stream_id')
+
+|macro_crate_firehose_batch()
+.site_id(table)
+.data_format(column_val)
+.batch_size(70)
+.batch_timeframe(5s)
