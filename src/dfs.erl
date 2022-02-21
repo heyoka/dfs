@@ -550,10 +550,13 @@ param_pfunc({string, _LN, Ref}) ->
 %%   {text, S} = find_text_template({text, String}),
 %%   io:format("PARAM_PFUNC: string TEMPLATED ~p~n",[S]),
 %%   "<<\"\\\"" ++ binary_to_list(S) ++ "\\\"" ++ "\">>";
+%%param_pfunc({string, <<"\"">>=S}) ->
+%%   "<<\""++ "\\\"" ++ "\">>";
 param_pfunc({string, Ref}) ->
 %%   io:format("PARAM_PFUNC: string ~p~n",[Ref]),
    {text, S} = find_text_template({text, Ref}),
-   "<<\"" ++ binary_to_list(S) ++ "\">>";
+   S1 = string:replace(binary_to_list(S), "\"", "\\\"", all),
+   "<<\"" ++ S1 ++ "\">>";
 param_pfunc({pexp, Elements}) ->
    [param_pfunc(E) || E <- Elements ];
 param_pfunc(Other) ->
