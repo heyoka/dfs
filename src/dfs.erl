@@ -555,8 +555,7 @@ param_pfunc({string, _LN, Ref}) ->
 param_pfunc({string, Ref}) ->
 %%   io:format("PARAM_PFUNC: string ~p~n",[Ref]),
    {text, S} = find_text_template({text, Ref}),
-   S1 = string:replace(binary_to_list(S), "\"", "\\\"", all),
-   "<<\"" ++ S1 ++ "\">>";
+   "<<\"" ++ binary_to_list(S) ++ "\">>";
 param_pfunc({pexp, Elements}) ->
    [param_pfunc(E) || E <- Elements ];
 param_pfunc(Other) ->
