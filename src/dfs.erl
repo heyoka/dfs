@@ -507,6 +507,7 @@ l_params([P|Ps], Acc) ->
   l_params(Ps, Acc ++ P ++ ", ").
 
 params_pfunc(Params) when is_list(Params) ->
+%%   io:format("params_pfunc: ~p~n",[Params]),
    P = lists:map(
       fun(E) -> param_pfunc(E) end,
       Params
@@ -517,13 +518,14 @@ params_pfunc(Params) when is_list(Params) ->
 param_pfunc({identifier, _LN, Ident}) ->
    %io:format("identifier lookup for: ~p", [Ident]),
    param_pfunc({identifier, Ident});
-%%param_pfunc({identifier, {identifier, 0, Ident}}) ->
-%%   param_pfunc({identifier, Ident});
 param_pfunc({identifier, Ident}) ->
 %%   io:format("get identifier for ~p : ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
       nil -> binary_to_list(Ident);
       {connect, _} -> binary_to_list(Ident);
+      {string, _LN, <<"\"", String0/binary >>} ->
+         String = binary:replace(String0, <<"\"">>, <<>>),
+         "<<\"\\\"" ++ binary_to_list(String) ++ "\\\"" ++ "\">>";
       {string, _LN, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
       {text, _LN, <<"\"", String0/binary >>} ->
          String = binary:replace(String0, <<"\"">>, <<>>),
@@ -542,6 +544,14 @@ param_pfunc({reference, Ref}) ->
    param_from_ref(Ref);
 param_pfunc({string, _LN, Ref}) ->
    param_pfunc({string, Ref});
+%%param_pfunc({string, <<"\"", String0/binary >>}) ->
+%%   io:format("PARAM_PFUNC: string ESCAPED ~p~n",[String0]),
+%%   String = binary:replace(String0, <<"\"">>, <<>>),
+%%   {text, S} = find_text_template({text, String}),
+%%   io:format("PARAM_PFUNC: string TEMPLATED ~p~n",[S]),
+%%   "<<\"\\\"" ++ binary_to_list(S) ++ "\\\"" ++ "\">>";
+%%param_pfunc({string, <<"\"">>=S}) ->
+%%   "<<\""++ "\\\"" ++ "\">>";
 param_pfunc({string, Ref}) ->
 %%   io:format("PARAM_PFUNC: string ~p~n",[Ref]),
    {text, S} = find_text_template({text, Ref}),
@@ -645,7 +655,7 @@ save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
-   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
+%%   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
    NewValue =
       case RVal of
          norepl -> Vals;
@@ -846,7 +856,7 @@ eval_inline_expression({inline, InlineList}) ->
             {L++[lexp(E)], Refs0}
          end,{[], []},InlineList), %% foldl
    Expr = lists:concat(Lambda),
-   io:format("the EXPRESSION: ~p~n",[Expr]),
+%%   io:format("the EXPRESSION: ~p~n",[Expr]),
    Fun = make_fun(Expr),
    Result = Fun(),
    Out = case Result of

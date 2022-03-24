@@ -14,7 +14,8 @@ Float           = (\+|-)?[0-9]+[\.]+[0-9]+
 Digit           = [0-9]+
 WhiteSpace      = ([\000-\s]|%.*)
 Text            = (<<<)[\s\t\n.]*[^<<<][^>>>]+(>>>)
-String          = [\'][\[\]({{)(}})A-Za-z_0-9_\.:\%&#\+-\/!~=~><=~\*\s]*[\']
+String          = (\'([^\']|(\'\'))*\')
+%String          = [\'][\[\]({{)(}})A-Za-z_0-9_\.:\%&#\+-\/!~=~><=~\*\s]*[\']
 Regex           = [\?][A-Za-z_]*[\?]
 True            = (T|t)(R|r)(U|u)(E|e)
 False           = (F|f)(A|a)(L|l)(S|s)(E|e)
@@ -42,7 +43,7 @@ def             :   {token, {def, TokenLine, list_to_atom(TokenChars)}}.
 {Float}         :   {token, {float,TokenLine,list_to_float(TokenChars)}}.
 {Int}           :   {token, {int,TokenLine,list_to_integer(TokenChars)}}.
 {Text}          :   {token, {text,TokenLine,list_to_binary(strip_text(TokenChars, length(TokenChars)))}}.
-{String}        :   {token, {string,TokenLine, list_to_binary(strip(TokenChars, length(TokenChars)))}}.
+{String}        :   {token, {string,TokenLine, clean_up_string(TokenChars)}}.
 {Regex}         :   {token, {regex,TokenLine,prep_regex(TokenChars)}}.
 %{Digit}        :   {token, {digit,TokenLine,TokenChars}}.
 [(),\.=:\[\]]   :   {token, {list_to_atom(TokenChars),TokenLine}}.
@@ -56,7 +57,23 @@ Erlang code.
 
 reserved_word('def') -> true.
 strip_text(TokenChars,TokenLen) -> string:trim(lists:sublist(TokenChars, 4, TokenLen - 6)).
-strip(TokenChars,TokenLen) -> lists:sublist(TokenChars, 2, TokenLen - 2).
+strip(TokenChars,TokenLen) ->
+    lists:sublist(TokenChars, 2, TokenLen - 2).
 %strip_ref(TokenChars,TokenLen) -> lists:sublist(TokenChars, 3, TokenLen - 3).
 unquote(TokenChars) -> binary:replace(list_to_binary(TokenChars),<<"\"">>, <<>>, [global]).
 prep_regex(TokenChars) -> binary:replace(list_to_binary(TokenChars),<<"?">>, <<>>, [global]).
+clean_up_string(String) ->
+    RemovedOutsideQuotes = accurate_strip(String, $'),
+    DeDoubledInternalQuotes = re:replace(RemovedOutsideQuotes,
+                                         "''", "'",
+                                         [global, {return, list}]),
+    list_to_binary(DeDoubledInternalQuotes).
+%% only strip one quote, to accept Literals ending in the quote
+%% character being stripped
+accurate_strip(S, C) ->
+    case {hd(S), lists:last(S), length(S)} of
+        {C, C, Len} when Len > 1 ->
+            string:substr(S, 2, Len - 2);
+        _ ->
+            S
+    end.

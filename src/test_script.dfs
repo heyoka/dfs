@@ -6,34 +6,34 @@ def table = 'doc.mytable'
 def string = 'schtringg'
 def tname = 'text_template'
 
-def template_declaration = <<<This is my super {{string}}>>>
+def template_declaration = 'This is my super {{string}}'
 
 def  sql0 =
-    <<<
-    SELECT COUNT(*) FROM "{{table }}" WHERE data['WasId'] = {{"wasid"}} AND value < {{threshold}}
-    >>>
+    '
+    SELECT COUNT(*) FROM "{{table }}" WHERE data[''WasId''] = {{"wasid"}} AND value < {{threshold}}
+    '
 
 
-def text_list = [<<<alles>>>, <<<ist>>>, <<<wurscht>>>, <<<{{string}}>>>]
+def text_list = ['alles', 'ist', 'wurscht', '{{string}}']
 
 |db()
 .query(sql0)
 .host('127.0.0.1')
 .port(4456)
 .as(template_declaration)
-.ttemplate(<<<Try this template it is called: {{tname}}>>>)
+.ttemplate('Try this template it is called: {{tname}}')
 .list(text_list)
 
 def duration_zero = 0h
 
 |where(lambda: "action_ts" < int('last_ts') )
 
-def q = <<<
+def q = '
 SELECT AISLE, COUNT (*) AS COUNT,
->>>
+'
 
-def query = <<<
-SELECT AISLE, COUNT (*) AS COUNT, '{ id:'||PS.CONST||',name:'||PS.NAME||'}' AS STATUS
+def query = '
+SELECT AISLE, COUNT (*) AS COUNT, ''{ id:''||PS.CONST||'',name:''||PS.NAME||''}'' AS STATUS
     FROM PATTERN_POSITION_ROLE PPR
        INNER JOIN POSITION_STATUS PS ON (POSITION_STATUS = CONST)
        INNER JOIN STORAGE_ROLE SR ON (SR.ID = PPR.ID)
@@ -42,7 +42,7 @@ SELECT AISLE, COUNT (*) AS COUNT, '{ id:'||PS.CONST||',name:'||PS.NAME||'}' AS S
        INNER JOIN PATTERN_POSITION PP ON (PP.ID = PATTERN_POSITION_ID)
     GROUP BY WG.AISLE,  PS.CONST, PS.NAME
     ORDER BY WG.AISLE
->>>
+'
 
 
 
@@ -54,7 +54,7 @@ def list = ['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse']
 |node()
 .host(['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse'], ['more', 5, 'lists'])
 .alist(list)
-.lamb(lambda: avg("e" * 2, "holymoly"))
+%.lamb(lambda: avg("e" * 2, "holymoly"))
 .eval(lambda: str_concat(['alle', 'kinder'], ['ueber', str_last("die"), prefix, "strasse"]) )
 
 |eval()
@@ -78,7 +78,7 @@ def list = ['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse']
    def deadman_period = 15m
    def bool = TRUE
    def number = 33.4434
-   def sql = <<< SELECT COUNT(*) FROM table % WHERE "data_obj"['a']['b'] = c GROUP BY c LIMIT 3>>>
+   def sql = ' SELECT COUNT(*) FROM table % WHERE "data_obj"[''a''][''b''] = c GROUP BY c LIMIT 3'
 
     |eval()
     .lambdas(lambda: round( (float("UTC-Time")*1000) ) )
@@ -87,7 +87,7 @@ def list = ['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse']
     def qry =
     |postgre_query()
     .query(sql)
-    .stmt( <<< trag.wack[2].sack >>> )
+    .stmt( ' trag.wack[2].sack ' )
     .string('trag.wack[2].sack')
     .level('interface::WmsInterface::logTelegram')
 
@@ -123,7 +123,7 @@ def list = ['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse']
         lambda: string("max") == '5',
         lambda: str_ends_with(inStreamId, 'fwef'),
         lambda: str_ends_with("muxolo", 'olo'),
-        lambda: lookup(deadman_period) + number,
+        %lambda: lookup(deadman_period) + number,
         lambda: string(bool)
         )
 
@@ -182,10 +182,10 @@ def list = ['alle', 'kinder', 'gehen', 'ueber', 'die', 'strasse']
   def lambda_output = 'data.l_out'
 
 
-  |eval(lambda: str_concat('and', <<<{{here_we_are}}>>>))
-  |eval(lambda: str_concat(['and', <<<{{here_we_are}}>>>, now_string]))
-  .as(<<<{{lambda_output}}>>>)
+  |eval(lambda: str_concat('and', '{{here_we_are}}'))
+  |eval(lambda: str_concat(['and', '{{here_we_are}}', now_string]))
+  .as('{{lambda_output}}')
   |keep('data')
-  .vars(<<<one->>>, <<<-two>>>, <<<three 3>>>)
-  |eval(lambda: if(( "room_qm3" > threshold), <<<Yes, {{big_room}}>>>, <<<No, {{small_room}}>>>) )
+  .vars('one-', '-two', 'three 3')
+  |eval(lambda: if(( "room_qm3" > threshold), 'Yes, {{big_room}}', 'No, {{small_room}}') )
 
