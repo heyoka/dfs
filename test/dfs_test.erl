@@ -168,7 +168,7 @@ text_new_test() ->
          [{<<"hop">>,[{string,<<"\"_1202.0014\"">>}]},
             {<<"hap">>,[{string,<<"\"1202.0014\"\"1202_0014\"">>}]},
             {<<"sql">>,
-               [{string,<<"\n    SELECT *\n    FROM table\n    WHERE\n    $__timefilter\n    AND a > 33\n    AND data['obj1']['obj2'] < 2232\n    ">>}]},
+               [{string,<<"\n    SELECT *\n    FROM mytable\n    WHERE\n    $__timefilter\n    AND a > 33\n    AND data['obj1']['3442-5542'] < 2232\n    ">>}]},
             {<<"bindings">>,
                [{string,<<"tgw.data.0x000a.1202.0014.TESTSIM.#">>}]},
             {<<"exchange">>,[{string,<<"x_1202.0014">>}]},
@@ -182,6 +182,7 @@ text_new_test() ->
                {<<"batch_timeframe">>,[{duration,<<"5s">>}]}]}],
          [{{<<"macro_crate_firehose_batch">>,2},
             {<<"amqp_consume">>,1}}]}
+
    ,
 
 ?assertEqual(ExpectedResult, ParseResult).

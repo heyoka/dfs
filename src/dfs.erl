@@ -286,6 +286,14 @@ eval({statement, {declarate, DecName, {text, LN, V}}}) ->
 eval({statement, {declarate, DecName, {string, LN, V}}}) ->
    Val = text_template(V),
    save_declaration(DecName, {string, LN, Val});
+eval({statement, {declarate, DecName, {identifier, LN, Identifier}}}) ->
+   DecValue =
+   case get_declaration(Identifier) of
+      nil -> throw("Undefined Identifier \"" ++ binary_to_list(Identifier) ++
+         "\" used in declaration expression '" ++ binary_to_list(DecName) ++ "' on line " ++ integer_to_list(LN));
+      Val -> Val
+   end,
+   save_declaration(DecName, {string, LN, DecValue});
 eval({statement, {declarate, DecName, DecValue}}) ->
    save_declaration(DecName, DecValue);
 eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
@@ -724,15 +732,13 @@ text_template(Text) ->
 
 extract_template(Template) when is_binary(Template) ->
    Matches = re:run(Template, "{{([a-zA-Z0-9\\+\\-\s\.\\[\\]_-]*)}}", [global, {capture, all, binary}]),
-%%   io:format("~nMatches for Template: ~p~n", [Matches]),
+%%   io:format("~nMatches for Template ~p : ~p~n", [Template, Matches]),
    case Matches of
       nomatch -> Template;
       {match, Matched} ->
          Res0 = [{TVar, clean_identifier_name(Var)} || [TVar, Var] <- Matched],
          {Replace, Vars} = lists:unzip(Res0),
          Format = binary_to_list(binary:replace(Template, Replace, <<"~s">>, [global])),
-%%         io:format("FORMAT: ~p~nVars: ~p~n",[Format, Vars]),
-%%         io:format("get declarations for vars: ~p~n",[get_template_vars(Vars)]),
          Subst = get_template_vars(Vars),
          list_to_binary(io_lib:format(Format, conv_template_vars(Subst)))
    end.
