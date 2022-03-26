@@ -6,15 +6,15 @@ def topic = 'tgw/data/0x000a/1202.0014/TESTSIM'
 def rabbitmq_subscription_topic = '{{topic}}/#'
 def binding = e: str_replace(rabbitmq_subscription_topic, '/', '.')
 
-def firstc = '3442'
-
-def the_column = '{{firstc}}-5542'
-
 def char_test =
 '12349023!"$"§$"%$??=[]&$/%/((/'''
 
-def stable = 'mytable'
+def firstc = '3442'
+def the_column0 = '{{firstc}}'
+def the_column = e: str_concat('{{the_column0}}', '-5542')
 def obj2 = the_column
+
+def stable = 'mytable'
 def a =
 '
     SELECT *
