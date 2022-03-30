@@ -92,10 +92,10 @@ do_parse(String, Replacements, Macros)
    Res =
       case dfs_lexer:string(String) of
          {ok, Tokens, _EndLine} ->
-%%         io:format("~nTokens: ~p~n",[Tokens]),
+         io:format("~nTokens: ~p~n",[Tokens]),
             case dfs_parser:parse(Tokens) of
                {ok, Data} ->
-%%               io:format("~nDATA: ~p~n",[Data]),
+               io:format("~nDATA: ~p~n",[Data]),
 %%               try eval(Data) of
 %%                  Result -> Result
 %%               catch
@@ -274,6 +274,12 @@ eval({statement, {declarate, DecName, {list, DecValues}}}) ->
    check_list_types(DecName, DecValues),
    NewValues = params(DecValues),
    save_declaration(DecName, NewValues);
+eval({statement, {declarate, DecName, {tuple, DecValues}}}) ->
+%%   check_list_types(DecName, DecValues),
+   io:format("declaration TUPLE: ~p :: ~p~n",[DecName, DecValues]),
+   NewValues = params(DecValues),
+   io:format("after tuple got paramed: ~p~n",[list_to_tuple(NewValues)]),
+   save_declaration(DecName, list_to_tuple(NewValues));
 eval({statement, {declarate, DecName, {lambda, _DecValue}=L}}) ->
    save_declaration(DecName, param(L));
 %% @todo eval inline expression
@@ -396,14 +402,26 @@ params(Params) when is_list(Params)->
    lists:flatten([param(P) || P <- Params]).
 
 param({identifier, Ident}) ->
-%%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
+   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
       nil -> {identifier, Ident};
       {connect, _} = C -> C;
-      List when is_list(List) -> [{Type, Val} || {Type, _LN, Val} <- List];
+      List when is_list(List) ->
+         io:format("param identifier LIST: ~p~n",[List]),
+         [{Type, Val} || {Type, _LN, Val} <- List];
+      Tuple when is_tuple(Tuple) ->
+         io:format("param identifier TUPLE: ~p~n",[Tuple]),
+         R0 = lists:map(fun
+                      ({Type, _LN, Val}) -> {Type, Val};
+                      ({Type, Val}=C) -> C
+                   end,
+            tuple_to_list(Tuple)),
+         list_to_tuple(R0);
       {lambda, _, _, _} = Lambda -> Lambda;
       {inline, _, _, _} = Inline -> Inline;
-      Other -> find_text_template(Other)
+      Other ->
+         io:format("param identifier other:~p~n",[Other]),
+         find_text_template(Other)
    end;
 param({pfunc, {_N, {params, _Ps}}}=L) ->
    param({lambda, [L]});
@@ -450,6 +468,16 @@ param({list, List}) ->
    List;
 param({list, _LN, List}) ->
    List;
+param({tuple, List}) ->
+   io:format("param tuple: ~p~n",[List]),
+   R0 = lists:map(fun
+                     ({Type, _LN, Val}) -> {Type, Val};
+                     ({_Type, _Val}=C) -> C
+                  end,
+      List),
+   list_to_tuple(R0);
+%%   {tuple, list_to_tuple(R0)};
+%%   List;
 param({text, _T}=V) ->
    find_text_template(V);
 param({text, _LN, _T}=V) ->
@@ -461,7 +489,12 @@ param({string, S}) ->
 param({string, LN, S}=_V) ->
    {text, T} = find_text_template({text, LN, S}),
    {string, LN, T};
+param({int, _LN, V}) ->
+   {int, V};
+param({float, _LN, V}) ->
+   {float, V};
 param(P) ->
+   io:format("PARAM: ~p~n",[P]),
    P.
 
 
@@ -476,9 +509,10 @@ extract_refs(Elements) when is_list(Elements) ->
             {pexp, Eles} -> lists:flatten([extract_refs(Eles)|Acc]);
             {paren, Exp} -> lists:flatten([extract_refs(Exp)|Acc]);
             {list, List} -> lists:flatten([extract_refs(List)|Acc]);
+            {tuple, List} -> lists:flatten([extract_refs(List)|Acc]);
             [Other] -> lists:flatten([extract_refs(Other)|Acc]);
             List when is_list(List) -> lists:flatten([extract_refs(List)|Acc]);
-            _O -> Acc %io:format("extract_refs OTHER: ~p~n",[_O]),Acc
+            _O -> io:format("extract_refs OTHER: ~p~n",[_O]),Acc
          end
       end,
       [],
@@ -545,6 +579,13 @@ param_pfunc({identifier, Ident}) ->
       {bool, _LN, Bool} -> atom_to_list(Bool);
       {int, _LN, Int} -> integer_to_list(Int);
       {float, _LN, F} -> float_to_list(F);
+      Tuple when is_tuple(Tuple)->
+         TupleCont = lists:map(fun
+                                       ({Type, _LN, Val}) -> {Type, Val};
+                                       ({Type, Val}=C) -> C
+                                    end,
+            tuple_to_list(Tuple)),
+         lexp({tuple, TupleCont});
       Other -> binary_to_list(unwrap(Other))
    end;
 param_pfunc({reference, Ref}) ->
@@ -564,10 +605,17 @@ param_pfunc({string, Ref}) ->
 %%   io:format("PARAM_PFUNC: string ~p~n",[Ref]),
    {text, S} = find_text_template({text, Ref}),
    "<<\"" ++ binary_to_list(S) ++ "\">>";
+param_pfunc({tuple, _LN, Ref}) ->
+   param_pfunc({tuple, Ref});
+param_pfunc({tuple, Refs}) ->
+   io:format("PARAM_PFUNC: tuple ~p~n",[Refs]),
+%%   {text, S} = find_text_template({text, Ref}),
+   TupleCont = [param_pfunc(E) || E <- Refs ],
+   "{" ++ lists:join(",", TupleCont) ++ "}";
 param_pfunc({pexp, Elements}) ->
    [param_pfunc(E) || E <- Elements ];
 param_pfunc(Other) ->
-%%   io:format("[param_pfunc] ~p~n",[Other]),
+%%   io:format("[param_pfunc other] ~p~n",[Other]),
    lexp(Other).
 
 
@@ -651,6 +699,11 @@ lexp({list, List}) ->
    L1 = [param_pfunc(LEle) || LEle <- List],
 %%   io:format("~nL1 : ~p~n", [L1]),
    L2 = "[" ++ lists:flatten(lists:join(", ", L1)) ++ "]",
+   L2;
+lexp({tuple, ValList}) ->
+   L1 = [param_pfunc(LEle) || LEle <- ValList],
+   io:format("~nL1 : ~p~n", [L1]),
+   L2 = "{" ++ lists:flatten(lists:join(", ", L1)) ++ "}",
    L2.
 
 %% save a simple declaration,
@@ -670,6 +723,17 @@ save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
          NVal  -> [{VType, VLine, V} || V <- NVal]
       end,
    ets:insert(?ETS_TABLE(), {Ident, NewValue});
+save_declaration(Ident, TupleContents) when is_tuple(TupleContents) ->
+   check_new_declaration(Ident),
+   [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
+   RVal = proplists:get_value(Ident, Replacements, norepl),
+%%   io:format("~nReplacements ~p~n~nKey: ~p~nreplacement-value: ~p~nOriginal-Value~p~n~n",[Replacements, Ident, RVal, Value]),
+   NewValue =
+      case RVal of
+         norepl -> TupleContents;
+         _  -> RVal
+      end,
+   ets:insert(?ETS_TABLE(), {Ident, NewValue});
 save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
@@ -682,10 +746,10 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
       end,
    ets:insert(?ETS_TABLE(), {Ident, NewValue});
 save_declaration(Ident, {VType, Val} = _V) ->
-%%   io:format("~nsave_declaration: ~p : ~p~n",[Ident, V]),
+   io:format("~nsave_declaration: ~p : ~p~n",[Ident, _V]),
    save_declaration(Ident, {VType, 1, Val});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
-%%   io:format("~nsave_declaration single: ~p: ~p~n",[Ident, Value]),
+   io:format("~nsave_declaration single: ~p: ~p~n",[Ident, Value]),
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),

@@ -46,7 +46,7 @@ def             :   {token, {def, TokenLine, list_to_atom(TokenChars)}}.
 {String}        :   {token, {string,TokenLine, clean_up_string(TokenChars)}}.
 {Regex}         :   {token, {regex,TokenLine,prep_regex(TokenChars)}}.
 %{Digit}        :   {token, {digit,TokenLine,TokenChars}}.
-[(),\.=:\[\]]   :   {token, {list_to_atom(TokenChars),TokenLine}}.
+[(),\.=:\[\]{}] :   {token, {list_to_atom(TokenChars),TokenLine}}.
 \%.*            :   skip_token.
 {WhiteSpace}+   :   skip_token.
 {Slash}         :   skip_token.

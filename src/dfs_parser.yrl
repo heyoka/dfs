@@ -4,7 +4,7 @@ dfscript statement statements declaration expression chain primary
 primaryExpr function parameters parameter  .
 
 Terminals
-'=' '(' ')' ',' '[' ']' '.' '-' '!'
+'=' '(' ')' ',' '[' ']' '{' '}' '.' '-' '!'
 def node macro user_node string text identifier number bool
 duration regex int stream_id float operator lambda inline reference.
 
@@ -26,6 +26,7 @@ expression        -> chain  : {chain, '$1'}.
 expression        -> primary  : '$1'.
 expression        -> primaryExpr : '$1'.
 expression        -> '[' parameters ']' : {list, unwrap('$2')}.
+expression        -> '{' parameters '}' : {tuple, unwrap('$2')}.
 expression        -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
 expression        -> inline primaryExpr : {inline, lists:flatten([unwrap('$2')])}.
 
@@ -76,6 +77,7 @@ primary          -> operator : '$1'.
 parameters       -> parameter : ['$1'] .
 parameters       -> parameter ',' parameters : ['$1'] ++ '$3'.
 parameter        -> '[' parameters ']' : {list, unwrap('$2')}.
+parameter        -> '{' parameters '}' : {tuple, unwrap('$2')}.
 parameter        -> primaryExpr : '$1'.
 parameter        -> primary : '$1'.
 parameter        -> lambda primaryExpr : {lambda, lists:flatten([unwrap('$2')])}.
@@ -96,7 +98,8 @@ unwrap1({_,Name,{params,Params}}) -> {Name, {params, Params}}.
 unwrap({primary_exp,V}) -> V;
 unwrap({pexp,_V}=P) -> P;
 unwrap({_,_,V}) -> V;
-unwrap(V) when is_list(V) -> lists:flatten(V).
+unwrap(V) when is_list(V) -> lists:flatten(V);
+unwrap(V) when is_tuple(V) -> V.
 unwrap_node_func({node, {N, P}}) -> {node, N, P};
 unwrap_node_func({user_node, {N, P}}) -> {user_node, N, P};
 unwrap_node_func({macro, {N, P}}) -> {macro, N, P};

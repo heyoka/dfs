@@ -1,0 +1,10 @@
+def tuple = {'field1', 33}
+def list = ['fi', 'if']
+
+|eval(
+    lambda: test_fun([{'key', 13}, {'stream', "stream_value"}], "args"),
+    lambda: test_fun({'str', 13, 14.2323, "stream_id", tuple})
+    )
+.ptest(tuple, {1,2})
+.ltest(list)
+.b({44, 55})

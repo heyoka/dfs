@@ -1,4 +1,4 @@
--file("/home/heyoka/.asdf/installs/erlang/24.0.6/lib/parsetools-2.3/include/leexinc.hrl", 0).
+-file("/home/heyoka/.asdf/installs/erlang/24.3.2/lib/parsetools-2.3.2/include/leexinc.hrl", 0).
 %% The source of this file is part of leex distribution, as such it
 %% has the same Copyright as the other files in the leex
 %% distribution. The Copyright is defined in the accompanying file
@@ -39,7 +39,7 @@ accurate_strip(S, C) ->
             S
     end.
 
--file("/home/heyoka/.asdf/installs/erlang/24.0.6/lib/parsetools-2.3/include/leexinc.hrl", 14).
+-file("/home/heyoka/.asdf/installs/erlang/24.3.2/lib/parsetools-2.3.2/include/leexinc.hrl", 14).
 
 format_error({illegal,S}) -> ["illegal characters ",io_lib:write_string(S)];
 format_error({user,S}) -> S.
@@ -353,8 +353,12 @@ yystate(82, Ics, Line, Tlen, _, _) ->
     {20,Tlen,Ics,Line,82};
 yystate(81, Ics, Line, Tlen, _, _) ->
     {7,Tlen,Ics,Line};
+yystate(80, [125|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(80, [124|Ics], Line, Tlen, Action, Alen) ->
     yystate(76, Ics, Line, Tlen+1, Action, Alen);
+yystate(80, [123|Ics], Line, Tlen, Action, Alen) ->
+    yystate(6, Ics, Line, Tlen+1, Action, Alen);
 yystate(80, [116|Ics], Line, Tlen, Action, Alen) ->
     yystate(68, Ics, Line, Tlen+1, Action, Alen);
 yystate(80, [115|Ics], Line, Tlen, Action, Alen) ->
@@ -1486,4 +1490,4 @@ yyaction_20() ->
 yyaction_21() ->
      skip_token .
 
--file("/home/heyoka/.asdf/installs/erlang/24.0.6/lib/parsetools-2.3/include/leexinc.hrl", 313).
+-file("/home/heyoka/.asdf/installs/erlang/24.3.2/lib/parsetools-2.3.2/include/leexinc.hrl", 313).
