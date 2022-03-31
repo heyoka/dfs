@@ -196,10 +196,10 @@ is_printable(String) when is_binary(String) ->
 -spec str_replace(estr(), estr(), estr()) -> estr().
 str_replace(Subject, Pattern, Replacement) when is_binary(Subject), is_binary(Pattern), is_binary(Replacement) ->
     binary:replace(Subject, Pattern, Replacement, [global]);
-str_replace(String, [], []) ->
-    String;
-str_replace(String, [Match|MRest], [Replace|RRest]) when is_binary(String), is_binary(Match), is_binary(Replace) ->
-    str_replace(binary:replace(String, Match, Replace, [global]), MRest, RRest).
+str_replace(Subject, [], []) ->
+    Subject;
+str_replace(Subject, [Match|MRest], [Replace|RRest]) when is_binary(Subject), is_binary(Match), is_binary(Replace) ->
+    str_replace(binary:replace(Subject, Match, Replace, [global]), MRest, RRest).
 
 
 %% @doc Replaces all leading occurrences of match by replacement of match in string.
