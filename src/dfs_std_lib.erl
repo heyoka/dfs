@@ -17,12 +17,22 @@
    min/2,
    max/2]).
 
--export([test_fun/1, test_fun/2]).
+%%-export([test_fun/1, test_fun/2, mem_select/3, mem_select_all/2]).
+%%
+%%test_fun(_Any, _Other) ->
+%%   2.
+%%test_fun(_Any) ->
+%%   1.
+%%
+%%mem_select(ReturnField, [{_K, _V}|_]=Where, Mem0) ->
+%%   Mem0.
+%%
+%%
+%%%% @doc
+%%%% given a list of maps, return all entries found at path 'Field'
+%%mem_select_all(Field, Mem0) ->
+%%   Mem0.
 
-test_fun(_Any, _Other) ->
-   2.
-test_fun(_Any) ->
-   1.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Data Type Conversions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
