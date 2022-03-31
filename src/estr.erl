@@ -24,7 +24,7 @@
     , str_pad_leading/3
     , str_pad_trailing/2
     , str_pad_trailing/3
-%%    , str_replace/3
+    , str_replace/3
     , str_replace_leading/3
     , str_replace_prefix/3
     , str_replace_suffix/3
@@ -193,9 +193,14 @@ is_printable(String) when is_binary(String) ->
     'Elixir.String':'printable?'(String).
 
 %% @doc Returns a new binary based on subject by replacing the parts matching pattern by replacement.
-%%-spec str_replace(estr(), estr(), estr()) -> estr().
-%%str_replace(Subject, Pattern, Replacement) when is_binary(Subject), is_binary(Pattern), is_binary(Replacement) ->
-%%    binary:replace(Subject, Pattern, Replacement, [global]).
+-spec str_replace(estr(), estr(), estr()) -> estr().
+str_replace(Subject, Pattern, Replacement) when is_binary(Subject), is_binary(Pattern), is_binary(Replacement) ->
+    binary:replace(Subject, Pattern, Replacement, [global]);
+str_replace(String, [], []) ->
+    String;
+str_replace(String, [Match|MRest], [Replace|RRest]) when is_binary(String), is_binary(Match), is_binary(Replace) ->
+    str_replace(binary:replace(String, Match, Replace, [global]), MRest, RRest).
+
 
 %% @doc Replaces all leading occurrences of match by replacement of match in string.
 -spec str_replace_leading(estr(), estr(), estr()) -> estr().
