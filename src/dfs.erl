@@ -388,7 +388,9 @@ params(Params) when is_list(Params)->
 param({identifier, Ident}) ->
 %%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
-      nil -> {identifier, Ident};
+      nil ->
+         throw("Undefined Identifier \"" ++ binary_to_list(Ident) ++ "\" used in node param");
+%%         {identifier, Ident};
       {connect, _} = C -> C;
       List when is_list(List) ->
 %%         io:format("param identifier LIST: ~p~n",[List]),
@@ -403,8 +405,8 @@ param({identifier, Ident}) ->
       {tuple, _LN, Tuple} when is_tuple(Tuple) ->
 %%         io:format("param identifier TUPLE: ~p~n",[Tuple]),
          R0 = lists:map(fun
-                           ({Type, _LN, Val}) -> {Type, Val};
-                           ({Type, Val}=C) -> C
+                           ({Type1, _Line, Val}) -> {Type1, Val};
+                           ({_Type2, Val}=C) -> C
                         end,
             tuple_to_list(Tuple)),
          list_to_tuple(R0);
@@ -553,18 +555,14 @@ param_pfunc({identifier, _LN, Ident}) ->
 param_pfunc({identifier, Ident}) ->
 %%   io:format("get identifier for ~p : ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
-      nil -> binary_to_list(Ident);
+      nil ->
+         throw("Undefined Identifier \"" ++ binary_to_list(Ident) ++ "\" used in function call!");
+%%         binary_to_list(Ident);
       {connect, _} -> binary_to_list(Ident);
-      {string, _LN, <<"\"", String0/binary >>} ->
-         String = binary:replace(String0, <<"\"">>, <<>>),
-         "<<\"\\\"" ++ binary_to_list(String) ++ "\\\"" ++ "\">>";
-      {string, _LN, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
-      {text, _LN, <<"\"", String0/binary >>} ->
-         String = binary:replace(String0, <<"\"">>, <<>>),
-         "<<\"\\\"" ++ binary_to_list(String) ++ "\\\"" ++ "\">>";
-      {text, _LN, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
-      {string, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
-      {text, String} -> "<<\"" ++ binary_to_list(String) ++ "\">>";
+      {string, _LN, String} -> "<<\"" ++ binary_to_list(escape(String)) ++ "\">>";
+      {text, _LN, String} -> "<<\"" ++ binary_to_list(escape(String)) ++ "\">>";
+      {string, String} -> "<<\"" ++ binary_to_list(escape(String)) ++ "\">>";
+      {text, String} -> "<<\"" ++ binary_to_list(escape(String)) ++ "\">>";
       {duration, _LN, Dur} -> "<<\"" ++ binary_to_list(Dur) ++ "\">>";
       {bool, _LN, Bool} -> atom_to_list(Bool);
       {int, _LN, Int} -> integer_to_list(Int);
@@ -583,18 +581,10 @@ param_pfunc({reference, Ref}) ->
    param_from_ref(Ref);
 param_pfunc({string, _LN, Ref}) ->
    param_pfunc({string, Ref});
-%%param_pfunc({string, <<"\"", String0/binary >>}) ->
-%%   io:format("PARAM_PFUNC: string ESCAPED ~p~n",[String0]),
-%%   String = binary:replace(String0, <<"\"">>, <<>>),
-%%   {text, S} = find_text_template({text, String}),
-%%   io:format("PARAM_PFUNC: string TEMPLATED ~p~n",[S]),
-%%   "<<\"\\\"" ++ binary_to_list(S) ++ "\\\"" ++ "\">>";
-%%param_pfunc({string, <<"\"">>=S}) ->
-%%   "<<\""++ "\\\"" ++ "\">>";
 param_pfunc({string, Ref}) ->
 %%   io:format("PARAM_PFUNC: string ~p~n",[Ref]),
    {text, S} = find_text_template({text, Ref}),
-   "<<\"" ++ binary_to_list(S) ++ "\">>";
+   "<<\"" ++ binary_to_list(escape(S)) ++ "\">>";
 param_pfunc({tuple, _LN, Ref}) ->
    param_pfunc({tuple, Ref});
 param_pfunc({tuple, Refs}) ->
@@ -653,16 +643,12 @@ lexp({duration, S}) ->
 lexp({string, _LN, S}) ->
    lexp({string, S});
 lexp({string, S}) ->
-%%   io:format("~nlexp string ~p~n",[S]),
+   io:format("~n########################################lexp string ~p~n",[S]),
    {text, Text} = find_text_template({text, S}),
-   "<<\"" ++ binary_to_list(Text) ++ "\">>";
+   "<<\"" ++ binary_to_list(escape(Text)) ++ "\">>";
 lexp({text, _LN, S} = _T) ->
-%%   {text, Text} = find_text_template(T),
-%%   io:format("~nlexp text ~p~n",[T]),
    lexp({string, S});
 lexp({text, S} = _T) ->
-%%   {text, Text} = find_text_template(T),
-%%   io:format("~nlexp text ~p~n",[T]),
    lexp({string, S});
 lexp({pexp, Elements}) when is_list(Elements) ->
    lists:concat([lexp(E) || E <- Elements]);
@@ -695,6 +681,10 @@ lexp({tuple, ValList}) ->
 %%   io:format("~nL1 : ~p~n", [L1]),
    L2 = "{" ++ lists:flatten(lists:join(", ", L1)) ++ "}",
    L2.
+
+%% just escaped double quotes for now
+escape(Bin) when is_binary(Bin) ->
+   binary:replace(Bin, <<"\"">>, <<"\\\"">>, [global]).
 
 %% save a simple declaration,
 %% here is where declaration - overwriting happens,

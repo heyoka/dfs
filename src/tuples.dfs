@@ -1,3 +1,4 @@
+%def ans = ###StreamLookup###
 def tuple = {'field1', 33}
 def list = ['fi', 'if']
 

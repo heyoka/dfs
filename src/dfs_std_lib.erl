@@ -17,21 +17,43 @@
    min/2,
    max/2]).
 
-%%-export([test_fun/1, test_fun/2, mem_select/3, mem_select_all/2]).
+-export([test_fun/1, test_fun/2
+%%   , mem_select/3
+%%   , mem_select_all/2
+%%   ,
+%%   list_join/1, surround/2%, str_replace/3
+]).
 %%
-%%test_fun(_Any, _Other) ->
-%%   2.
-%%test_fun(_Any) ->
-%%   1.
+%%-spec list_join(list()) -> string().
+%%list_join(L) when is_list(L) ->
+%%   list_join(<<",">>, L).
 %%
-%%mem_select(ReturnField, [{_K, _V}|_]=Where, Mem0) ->
-%%   Mem0.
-%%
+%%-spec list_join(binary(), list()) -> string().
+%%list_join(Sep, L) when is_list(L) ->
+%%   erlang:iolist_to_binary(lists:join(Sep, L)).
 %%
 %%%% @doc
-%%%% given a list of maps, return all entries found at path 'Field'
+%%%% surround a string or a list of strings with 'Wrapper', perpends and appends Wrapper to every string
+%%-spec surround(binary(), list()|binary()) -> binary()|list().
+%%surround(Wrapper, String) when is_binary(Wrapper) andalso is_binary(String) ->
+%%   <<Wrapper/binary, String/binary, Wrapper/binary>>;
+%%surround(Wrapper, L) when is_binary(Wrapper) andalso is_list(L) ->
+%%   [surround(Wrapper, E) || E <- L].
+%%
+
+test_fun(_Any, _Other) ->
+   2.
+test_fun(_Any) ->
+   1.
+
+
+%% @doc
+%% given a list of maps, return all entries found at path 'Field'
 %%mem_select_all(Field, Mem0) ->
 %%   Mem0.
+%%
+%%mem_select(_, _, _) -> ok.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Data Type Conversions
