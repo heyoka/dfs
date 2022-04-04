@@ -1,5 +1,5 @@
 %% Date: 21.02.17 - 13:45
-%% Ⓒ 2017 LineMetrics GmbH
+%% Ⓒ 2017 heyoka
 -module(dfs_std_lib).
 -author("Alexander Minichmair").
 
@@ -11,49 +11,28 @@
    string/1]).
 
 -export([
+   list_join/2,
+   list_of_strings/1
+   , member/2,
+   not_member/2,
+   size/1,
+   list_join/1,
+   nth/2]).
+
+
+-export([
    abs/1,
    round/1,
    floor/1,
    min/2,
-   max/2]).
+   max/2, head/1]).
 
--export([test_fun/1, test_fun/2
-%%   , mem_select/3
-%%   , mem_select_all/2
-%%   ,
-%%   list_join/1, surround/2%, str_replace/3
-]).
-%%
-%%-spec list_join(list()) -> string().
-%%list_join(L) when is_list(L) ->
-%%   list_join(<<",">>, L).
-%%
-%%-spec list_join(binary(), list()) -> string().
-%%list_join(Sep, L) when is_list(L) ->
-%%   erlang:iolist_to_binary(lists:join(Sep, L)).
-%%
-%%%% @doc
-%%%% surround a string or a list of strings with 'Wrapper', perpends and appends Wrapper to every string
-%%-spec surround(binary(), list()|binary()) -> binary()|list().
-%%surround(Wrapper, String) when is_binary(Wrapper) andalso is_binary(String) ->
-%%   <<Wrapper/binary, String/binary, Wrapper/binary>>;
-%%surround(Wrapper, L) when is_binary(Wrapper) andalso is_list(L) ->
-%%   [surround(Wrapper, E) || E <- L].
-%%
+-export([test_fun/1, test_fun/2]).
 
 test_fun(_Any, _Other) ->
    2.
 test_fun(_Any) ->
    1.
-
-
-%% @doc
-%% given a list of maps, return all entries found at path 'Field'
-%%mem_select_all(Field, Mem0) ->
-%%   Mem0.
-%%
-%%mem_select(_, _, _) -> ok.
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Data Type Conversions
@@ -122,25 +101,61 @@ float(_) ->
 %% @doc type conversion to a binary-string value
 %%
 -spec string(any()) -> binary().
+string(V) when is_binary(V) ->
+   V;
 string(V) when is_integer(V) ->
    integer_to_binary(V);
 string(V) when is_float(V) ->
    float_to_binary(V);
-string(V) when is_binary(V) ->
-   V;
 string(V) when is_atom(V) ->
    list_to_binary(atom_to_list(V));
 string(true) ->
    <<"true">>;
 string(false) ->
-   <<"false">>.
+   <<"false">>;
+string(L) when is_list(L) ->
+   list_join(<<",">>, list_of_strings(L)).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% String Manipulations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% @doc
+%% %% see estr module for str_ functions
+%%
 
-%% see estr module
+%% %%%%%%%%%%%%%%%  string-lists
+-spec list_join(list()) -> string().
+list_join(L) when is_list(L) ->
+   list_join(<<",">>, L).
+
+-spec list_join(binary(), list()) -> string().
+list_join(Sep, L) when is_list(L) ->
+   erlang:iolist_to_binary(lists:join(Sep, L)).
+
+%% convert every entry of a list to a string and return the list of strings
+list_of_strings(L) when is_list(L) ->
+   [string(S) || S <- L].
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% maps and lists
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+head([H|_L]) -> H.
+nth(N, L) when is_list(L) -> lists:nth(N, L).
+
+-spec member(binary()|number(), list()|map()) -> true|false.
+member(Ele, List) when is_list(List) -> lists:member(Ele, List);
+member(Ele, Map) when is_map(Map) andalso is_map_key(Ele, Map) -> true;
+member(_Ele, _) -> false.
+-spec not_member(binary()|number(), list()|map()) -> true|false.
+not_member(Ele, Coll) -> not member(Ele, Coll).
+
+
+-spec size(map()|list()) -> integer().
+size(Map) when is_map(Map) ->
+   maps:size(Map);
+size(List) when is_list(List) ->
+   length(List).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% other number handling or math functions
@@ -157,6 +172,14 @@ max(Val1, Val2) ->
    erlang:max(Val1, Val2).
 
 
+
+
+
+
+
+
+
+
 %%%%%%%%%%%%%%% Internal %%%%%%%%%%%%%%%%%%%%%%%%
 binary_to_number(L) when is_binary(L) ->
    Float = (catch erlang:binary_to_float(L)),
@@ -168,4 +191,6 @@ binary_to_number(L) when is_binary(L) ->
             false -> false
          end
    end.
+
+
 

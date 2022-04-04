@@ -46,7 +46,7 @@
     , str_strip/1
     , str_strip/2
     , str_upcase/1
-    , duplicate/2, graphemes/1, next_grapheme/1, is_printable/1, is_valid/1]).
+    , duplicate/2, graphemes/1, next_grapheme/1, is_printable/1, is_valid/1, str_enclose/1, str_enclose/2]).
 
 -type estr()        :: binary().
 -type grapheme()    :: binary().
@@ -123,6 +123,17 @@ str_downcase(String) when is_binary(String) ->
 -spec duplicate(estr(), non_neg_integer()) -> estr().
 duplicate(Subject, N) when is_binary(Subject), is_integer(N), N >= 0 ->
     'Elixir.String':duplicate(Subject, N).
+
+
+%% prepends and appends Wrapper to a string or each entry of a list of strings
+str_enclose(StringOrList) when is_binary(StringOrList); is_list(StringOrList) ->
+    str_enclose(<<"'">>, StringOrList).
+-spec str_enclose(binary(), list()|binary()) -> binary()|list().
+str_enclose(Wrapper, String) when is_binary(Wrapper) andalso is_binary(String) ->
+    <<Wrapper/binary, String/binary, Wrapper/binary>>;
+str_enclose(Wrapper, L) when is_binary(Wrapper) andalso is_list(L) ->
+    [str_enclose(Wrapper, E) || E <- L].
+
 
 %% @doc Returns true if string ends with any of the suffixes given, otherwise false. suffixes can be either a single suffix or a list of suffixes
 -spec str_ends_with(estr(), estr()) -> boolean().

@@ -252,7 +252,7 @@ eval({statement, {declarate, DecName, {ident_expr, Identifier, {chain, Chain}}}}
    {Node,_,_} = hd(ChainNodes),
    NewConns =
       case get_declaration(Identifier) of
-         nil -> throw("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
+         nil -> throw("Undefined Identifier '" ++ binary_to_list(Identifier) ++ "' used in chain expression");
          {connect, Name} ->
             [{Node,Name}|Connections]
       end,
@@ -279,8 +279,8 @@ eval({statement, {declarate, DecName, {string, LN, V}}}) ->
 eval({statement, {declarate, DecName, {identifier, LN, Identifier}}}) ->
    DecValue =
    case get_declaration(Identifier) of
-      nil -> throw("Undefined Identifier \"" ++ binary_to_list(Identifier) ++
-         "\" used in declaration expression '" ++ binary_to_list(DecName) ++ "' on line " ++ integer_to_list(LN));
+      nil -> throw("Undefined Identifier '" ++ binary_to_list(Identifier) ++
+         "' used in declaration expression '" ++ binary_to_list(DecName) ++ "' on line " ++ integer_to_list(LN));
       Val -> Val
    end,
    save_declaration(DecName, {string, LN, DecValue});
@@ -291,7 +291,7 @@ eval({statement, {ident_expr, Identifier, {chain, Chain}}}) ->
    {Node,_,_} = hd(ChainNodes),
    NewConns =
    case get_declaration(Identifier) of
-          nil -> throw("Undefined Identifier \"" ++ binary_to_list(Identifier) ++ "\" used in chain expression");
+          nil -> throw("Undefined Identifier '" ++ binary_to_list(Identifier) ++ "' used in chain expression");
           {connect, Name} -> [{Node,Name}|Connections]
          end,
    {{nodes, ChainNodes}, {connections, NewConns}};
@@ -389,7 +389,7 @@ param({identifier, Ident}) ->
 %%   io:format("~n(param) identifier lookup for: ~p found: ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
       nil ->
-         throw("Undefined Identifier \"" ++ binary_to_list(Ident) ++ "\" used in node param");
+         throw("Undefined Identifier '" ++ binary_to_list(Ident) ++ "' used in node param");
 %%         {identifier, Ident};
       {connect, _} = C -> C;
       List when is_list(List) ->
@@ -556,7 +556,7 @@ param_pfunc({identifier, Ident}) ->
 %%   io:format("get identifier for ~p : ~p~n",[Ident, get_declaration(Ident)]),
    case get_declaration(Ident) of
       nil ->
-         throw("Undefined Identifier \"" ++ binary_to_list(Ident) ++ "\" used in function call!");
+         throw("Undefined Identifier '" ++ binary_to_list(Ident) ++ "' used in function call!");
 %%         binary_to_list(Ident);
       {connect, _} -> binary_to_list(Ident);
       {string, _LN, String} -> "<<\"" ++ binary_to_list(escape(String)) ++ "\">>";
@@ -643,7 +643,6 @@ lexp({duration, S}) ->
 lexp({string, _LN, S}) ->
    lexp({string, S});
 lexp({string, S}) ->
-   io:format("~n########################################lexp string ~p~n",[S]),
    {text, Text} = find_text_template({text, S}),
    "<<\"" ++ binary_to_list(escape(Text)) ++ "\">>";
 lexp({text, _LN, S} = _T) ->
@@ -778,7 +777,7 @@ get_template_vars(Vars) when is_list(Vars) ->
    lists:map(
       fun(Var) ->
          case get_declaration(Var) of
-            nil -> throw("Undefined Identifier \"" ++ binary_to_list(Var) ++ "\" used in text template");
+            nil -> throw("Undefined Identifier '" ++ binary_to_list(Var) ++ "' used in text template");
             Other -> unwrap(Other)
          end
       end,
