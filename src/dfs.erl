@@ -900,7 +900,11 @@ eval_inline_expression({inline, InlineList}) ->
             _ when is_integer(Result) -> {int, Result};
             _ when is_binary(Result) ->
                case is_duration(Result) of true -> {duration, Result}; false -> {string, Result} end;
-            _ when Result =:= true orelse Result =:= false -> {bool, Result}
+            _ when Result =:= true orelse Result =:= false -> {bool, Result};
+            [] -> throw("Invalid return value '[]' from inline-expression");
+            Other ->
+               Msg = io_lib:format("Invalid return value from inline-expression: ~p",[Other]),
+               throw(Msg)
          end,
    Out.
 
