@@ -406,7 +406,7 @@ param({identifier, Ident}) ->
 %%         io:format("param identifier TUPLE: ~p~n",[Tuple]),
          R0 = lists:map(fun
                            ({Type1, _Line, Val}) -> {Type1, Val};
-                           ({_Type2, Val}=C) -> C
+                           ({_Type2, _V}=C) -> C
                         end,
             tuple_to_list(Tuple)),
          list_to_tuple(R0);
@@ -541,7 +541,7 @@ l_params([P|Ps], Acc) ->
   l_params(Ps, Acc ++ P ++ ", ").
 
 params_pfunc(Params) when is_list(Params) ->
-%%   io:format("params_pfunc: ~p~n",[Params]),
+   io:format("params_pfunc: ~p~n",[Params]),
    P = lists:map(
       fun(E) -> param_pfunc(E) end,
       Params
@@ -569,12 +569,15 @@ param_pfunc({identifier, Ident}) ->
       {float, _LN, F} -> float_to_list(F);
       {tuple, _LN, Tuple}  when is_tuple(Tuple)->
          TupleCont = lists:map(fun
-                                       ({Type, _LN, Val}) -> {Type, Val};
-                                       ({Type, Val}=C) -> C
+                                       ({Type, _Line, Val}) -> {Type, Val};
+                                       ({_Type, _Val}=C) -> C
                                     end,
             tuple_to_list(Tuple)),
          lexp({tuple, TupleCont});
-      Other -> binary_to_list(unwrap(Other))
+      {list, _LN, List} ->
+         lexp({list, List});
+      Other ->
+         binary_to_list(unwrap(Other))
    end;
 param_pfunc({reference, Ref}) ->
 %%   io:format("~n(param_func) found Reference: ~p~n",[Ref]),
@@ -679,7 +682,10 @@ lexp({tuple, ValList}) ->
    L1 = [param_pfunc(LEle) || LEle <- ValList],
 %%   io:format("~nL1 : ~p~n", [L1]),
    L2 = "{" ++ lists:flatten(lists:join(", ", L1)) ++ "}",
-   L2.
+   L2;
+lexp(Bin) when is_binary(Bin) ->
+   {text, Text} = find_text_template({text, Bin}),
+   "<<\"" ++ binary_to_list(escape(Text)) ++ "\">>".
 
 %% just escaped double quotes for now
 escape(Bin) when is_binary(Bin) ->
@@ -901,6 +907,7 @@ eval_inline_expression({inline, InlineList}) ->
             _ when is_binary(Result) ->
                case is_duration(Result) of true -> {duration, Result}; false -> {string, Result} end;
             _ when Result =:= true orelse Result =:= false -> {bool, Result};
+            _ when is_list(Result) -> {list, lists:flatten(Result)};
             [] -> throw("Invalid return value '[]' from inline-expression");
             Other ->
                Msg = io_lib:format("Invalid return value from inline-expression: ~p",[Other]),
