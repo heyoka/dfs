@@ -541,7 +541,6 @@ l_params([P|Ps], Acc) ->
   l_params(Ps, Acc ++ P ++ ", ").
 
 params_pfunc(Params) when is_list(Params) ->
-   io:format("params_pfunc: ~p~n",[Params]),
    P = lists:map(
       fun(E) -> param_pfunc(E) end,
       Params
