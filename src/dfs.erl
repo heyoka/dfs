@@ -429,6 +429,8 @@ param({lambda, LambdaList}) ->
             case E of
                {reference, _LN, Ref}=_R ->
                   [Ref|Rs];
+               {reference, Ref}=_R ->
+                  [Ref|Rs];
                {pexp, Eles} ->
                   NewPs = extract_refs(Eles),
                   NewPs++Rs;
@@ -578,9 +580,12 @@ param_pfunc({identifier, Ident}) ->
       Other ->
          binary_to_list(unwrap(Other))
    end;
+param_pfunc({reference, _Line, Ref}) ->
+   param_pfunc({reference, Ref});
 param_pfunc({reference, Ref}) ->
-%%   io:format("~n(param_func) found Reference: ~p~n",[Ref]),
-   param_from_ref(Ref);
+   %% io:format("~n(param_func) found Reference: ~p~n",[Ref]),
+   {text, S} = find_text_template({text, Ref}),
+   param_from_ref(S);
 param_pfunc({string, _LN, Ref}) ->
    param_pfunc({string, Ref});
 param_pfunc({string, Ref}) ->
