@@ -4,7 +4,7 @@
 -author("Alexander Minichmair").
 
 %% API
--export([parse/1, parse/2, parse/4, parse_file/1, parse_file/2, parse_file/3, parse_file/4]).
+-export([parse/1, parse/2, parse/4, parse_file/1, parse_file/2, parse_file/3, parse_file/4, get_lib_modules/0]).
 
 -export([test/0, user_node/1, test/1]).
 
@@ -27,6 +27,8 @@ test() ->
 
 
 %% DFS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+get_lib_modules() -> [dfs_std_lib, estr, math].
 
 -spec parse(list()) -> list().
 parse_file(FileName) when is_list(FileName) ->
@@ -55,7 +57,7 @@ parse(Binary, Libs, Replacements, Macros) when is_binary(Binary) ->
 parse(String, Libs, Replacements, Macros)
       when is_list(String) andalso is_list(Libs) andalso (is_list(Macros) orelse is_function(Macros)) ->
 
-   LambdaLibs = [dfs_std_lib, estr, math] ++ [Libs],
+   LambdaLibs = get_lib_modules() ++ [Libs],
    FLibs = lists:flatten(LambdaLibs),
    %% ensure libs are there for us
    lists:foreach(fun(E) -> code:ensure_loaded(E) end, FLibs),
