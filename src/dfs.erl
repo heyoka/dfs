@@ -701,7 +701,7 @@ escape(Bin) when is_binary(Bin) ->
 %% here is where declaration - overwriting happens,
 %% you know for templates: every declaration (def keyword) which is not a chain-declaration
 %% can be overwritten with a custom value
-save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
+save_declaration(Ident, [{VType, VLine, _Val}=V|_R]=Vals) when is_list(Vals) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
@@ -712,6 +712,9 @@ save_declaration(Ident, [{VType, VLine, _Val}|_R]=Vals) when is_list(Vals) ->
          NVal  -> [{VType, VLine, V} || V <- NVal]
       end,
    ets:insert(?ETS_TABLE(), {Ident, NewValue});
+save_declaration(Ident, [{_VType, _Val}|_R]=Vals) when is_list(Vals) ->
+   NewVals = [{ValType, 1, ValVal} || {ValType, ValVal} <- Vals],
+   save_declaration(Ident, NewVals);
 save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
@@ -723,10 +726,8 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
       end,
    ets:insert(?ETS_TABLE(), {Ident, NewValue});
 save_declaration(Ident, {VType, Val} = _V) ->
-%%   io:format("~nsave_declaration: ~p : ~p~n",[Ident, _V]),
    save_declaration(Ident, {VType, 1, Val});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
-%%   io:format("~nsave_declaration single: ~p: ~p~n",[Ident, Value]),
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
@@ -737,6 +738,7 @@ save_declaration(Ident, {VType, VLine, _Val}=Value) ->
       NVal  -> {VType, VLine, NVal}
    end,
    ets:insert(?ETS_TABLE(), {Ident, NewValue}).
+
 save_chain_declaration(Ident, Nodes) when is_list(Nodes) ->
    check_new_declaration(Ident),
    LastNode = lists:last(Nodes),
