@@ -44,6 +44,36 @@ SELECT AISLE, COUNT (*) AS COUNT, ''{ id:''||PS.CONST||'',name:''||PS.NAME||''}'
     ORDER BY WG.AISLE
 '
 
+def streamLookup =   '[{"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation13","StreamId":"6c9ca2da-9282-456e-9be4-af780c430c9a","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/6c9ca2da-9282-456e-9be4-af780c430c9a"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation14","StreamId":"fde086a3-e09a-43ea-a085-98aa68ebe580","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/fde086a3-e09a-43ea-a085-98aa68ebe580"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation15","StreamId":"7cc412f2-2a5d-49d3-af8d-ca4b6cd282f4","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/7cc412f2-2a5d-49d3-af8d-ca4b6cd282f4"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation16","StreamId":"8a51c95b-ea78-455c-a2a0-a5faca94ffa4","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/8a51c95b-ea78-455c-a2a0-a5faca94ffa4"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation17","StreamId":"b44247c7-cbf4-4f48-be65-17e7c9ac9d1a","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/b44247c7-cbf4-4f48-be65-17e7c9ac9d1a"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation18","StreamId":"e2d8473c-fc5b-47fb-9f42-dde20d850512","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/e2d8473c-fc5b-47fb-9f42-dde20d850512"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation19","StreamId":"4ba49289-f451-4bea-9056-b5afd6cf07d3","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/4ba49289-f451-4bea-9056-b5afd6cf07d3"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation20","StreamId":"9d3ff2cb-5aa0-465f-a994-7da8756429fc","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/9d3ff2cb-5aa0-465f-a994-7da8756429fc"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation21","StreamId":"94d1881f-314c-4bb2-a7e7-56d354d0a71c","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/94d1881f-314c-4bb2-a7e7-56d354d0a71c"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation22","StreamId":"de8c8a1e-a6b4-4ab6-bf8b-7ccea0b9f572","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/de8c8a1e-a6b4-4ab6-bf8b-7ccea0b9f572"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation23","StreamId":"4c20ae15-e73f-47d3-8780-87fee290a9f0","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/4c20ae15-e73f-47d3-8780-87fee290a9f0"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation24","StreamId":"d7e8f460-7822-42f0-9357-50749de75115","Dataformat":"6001.0002","Topic":"tgw/data/0x330f/6001.0002/d7e8f460-7822-42f0-9357-50749de75115"}]'
+def inputStreamLookup = '[{"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation13","StreamId":"fa0fcdf8-c60e-41a7-a7e1-3c92fc06cfe6","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/fa0fcdf8-c60e-41a7-a7e1-3c92fc06cfe6"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation14","StreamId":"a6121d9f-ac83-4a6c-9260-92a58cb33e9e","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/a6121d9f-ac83-4a6c-9260-92a58cb33e9e"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation15","StreamId":"13a17509-7f01-483d-aff9-69244bb482a1","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/13a17509-7f01-483d-aff9-69244bb482a1"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation16","StreamId":"6ba64078-3b00-4626-88d8-cfa9a899053c","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/6ba64078-3b00-4626-88d8-cfa9a899053c"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation17","StreamId":"69a52682-81f9-4c5b-bed0-651a00f43deb","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/69a52682-81f9-4c5b-bed0-651a00f43deb"}, {"Key":"/Tgw/FlashPickDoubleLoop/Lower/Workstations/PickStation18","StreamId":"650a6078-da1f-471e-8e48-c77607ed38e2","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/650a6078-da1f-471e-8e48-c77607ed38e2"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation19","StreamId":"71f10a23-4b72-4700-892b-d929f3519b9f","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/71f10a23-4b72-4700-892b-d929f3519b9f"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation20","StreamId":"529b1daf-9efa-489f-8278-83d88bcde3dc","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/529b1daf-9efa-489f-8278-83d88bcde3dc"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation21","StreamId":"9e250d07-8ab8-4c0a-b28f-0d1f9e274c73","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/9e250d07-8ab8-4c0a-b28f-0d1f9e274c73"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation22","StreamId":"9e6905b1-ee7b-409e-afac-0436f669bb53","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/9e6905b1-ee7b-409e-afac-0436f669bb53"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation23","StreamId":"1bc69ccd-7f57-48ea-8097-fd280fe59a30","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/1bc69ccd-7f57-48ea-8097-fd280fe59a30"}, {"Key":"/Tgw/FlashPickDoubleLoop/Upper/Workstations/PickStation24","StreamId":"2649ef64-5ad4-4e89-a50a-728dbbaf0f57","Dataformat":"1202.0015","Topic":"tgw/data/0x330f/1202.0015/2649ef64-5ad4-4e89-a50a-728dbbaf0f57"}]'
+def source_stream_ids =
+    e: string(str_enclose('''', select('StreamId', [{'Dataformat', dataFormat_src}], inputStreamLookup)))
+
+def dest_stream_ids =
+    e: string(str_enclose('''', select('StreamId', [{'Dataformat', dataFormat_dst_f}], streamLookup)))
+
+
+def start_sql = '
+SELECT COALESCE(
+    (SELECT DATE_FORMAT(ts) as time_stamp_query
+        FROM debug.{{table_dst}}
+        WHERE {{column}} IS NOT NULL
+        AND stream_id IN (#dest_streamIds)
+        ORDER BY ts DESC LIMIT 1) ,
+    (SELECT DATE_FORMAT(ts) as time_stamp_query
+            FROM debug.{{table_src}}
+            WHERE {{column_src}} IS NOT NULL
+            AND stream_id IN (#source_streamIds)
+            ORDER BY ts DESC LIMIT 1) ,
+    ''{{startTime}}''
+    )
+AS ts'
+
+def start_query =
+    e: str_replace(
+        start_sql,
+        ['#dest_streamIds', '#source_streamIds'],
+        [dest_stream_ids, source_stream_ids])
 
 
 

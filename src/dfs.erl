@@ -268,7 +268,6 @@ eval({statement, {declarate, DecName, {tuple, DecValues}}}) ->
    save_declaration(DecName, {tuple, list_to_tuple(NewValues)});
 eval({statement, {declarate, DecName, {lambda, _DecValue}=L}}) ->
    save_declaration(DecName, param(L));
-%% @todo eval inline expression
 eval({statement, {declarate, DecName, {inline, _DecValue}=L}}) ->
    Res = eval_inline_expression(L),
    save_declaration(DecName, Res);
@@ -701,7 +700,7 @@ escape(Bin) when is_binary(Bin) ->
 %% here is where declaration - overwriting happens,
 %% you know for templates: every declaration (def keyword) which is not a chain-declaration
 %% can be overwritten with a custom value
-save_declaration(Ident, [{VType, VLine, _Val}=V|_R]=Vals) when is_list(Vals) ->
+save_declaration(Ident, [{VType, VLine, _Val}=_V|_R]=Vals) when is_list(Vals) ->
    check_new_declaration(Ident),
    [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
    RVal = proplists:get_value(Ident, Replacements, norepl),
@@ -904,9 +903,18 @@ eval_inline_expression({inline, InlineList}) ->
                end,
 %%            io:format("~nparam lexp(~p ++ ~p~n): ~n",[L, lexp(E)]),
             {L++[lexp(E)], Refs0}
-         end,{[], []},InlineList), %% foldl
+         end,{[], []}, InlineList), %% foldl
    Expr = lists:concat(Lambda),
 %%   io:format("the EXPRESSION: ~p~n",[Expr]),
+   try do_eval_inline_expression(Expr) of
+      Res -> Res
+   catch
+      _:What ->
+         Msg1 = io_lib:format("error in inline expression ' ~s ': ~p",[Expr, What]),
+         throw(Msg1)
+   end.
+
+do_eval_inline_expression(Expr) ->
    Fun = make_fun(Expr),
    Result = Fun(),
    Out = case Result of
@@ -916,10 +924,14 @@ eval_inline_expression({inline, InlineList}) ->
                case is_duration(Result) of true -> {duration, Result}; false -> {string, Result} end;
             _ when Result =:= true orelse Result =:= false -> {bool, Result};
             _ when is_list(Result) -> {list, lists:flatten(Result)};
-            [] -> throw("Invalid return value '[]' from inline-expression");
-            Other ->
-               Msg = io_lib:format("Invalid return value from inline-expression: ~p",[Other]),
-               throw(Msg)
+            [] -> throw("Invalid return value '[]' from inline-expression")
+%%            ;
+%%            _:Other ->
+%%               Msg = io_lib:format("Invalid return value from inline-expression: ~p",[Other]),
+%%               throw(Msg);
+%%            Other1 ->
+%%               Msg1 = io_lib:format("Invalid return value from inline-expression: ~p",[Other1]),
+%%               throw(Msg1)
          end,
    Out.
 
