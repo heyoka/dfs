@@ -869,7 +869,13 @@ pfunction(FName, Arity) when is_list(FName) ->
    case NN0 of
       nil -> case erlang:function_exported(math, NameAtom, Arity) of
                 true -> "math:" ++ FName;
-                false -> throw("Function '" ++ FName ++ "/" ++ integer_to_list(Arity) ++ "' not found in library!")
+                false ->
+                   %% restrict auto use of the erlang module to functions of arity 1 only
+                   case (Arity == 1) andalso (erlang:function_exported(erlang, NameAtom, Arity)) of
+                      true -> "erlang:" ++ FName;
+                      false ->
+                         throw("Function '" ++ FName ++ "/" ++ integer_to_list(Arity) ++ "' not found in library!")
+                   end
              end;
       {done, Else} -> Else
    end,

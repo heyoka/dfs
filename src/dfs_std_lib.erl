@@ -8,7 +8,7 @@
    bool/1,
    int/1,
    float/1,
-   string/1]).
+   string/1, is_string/1]).
 
 -export([
    list_join/2,
@@ -21,11 +21,9 @@
 
 
 -export([
-   abs/1,
-   round/1,
-   floor/1,
    min/2,
-   max/2, head/1]).
+   max/2,
+   head/1]).
 
 -export([
    crc32/1,
@@ -123,6 +121,12 @@ string(L) when is_list(L) ->
    list_join(<<",">>, list_of_strings(L)).
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TYPE check
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% type checks is_x will be used from the erlang module except for the following:
+is_string(BinString) -> erlang:is_binary(BinString).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% String Manipulations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -166,12 +170,6 @@ size(List) when is_list(List) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% other number handling or math functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-abs(Val) ->
-   erlang:abs(Val).
-round(Val) when is_number(Val) ->
-   erlang:round(Val).
-floor(Val) when is_number(Val) ->
-   erlang:trunc(Val).
 min(Val1, Val2) ->
    erlang:min(Val1, Val2).
 max(Val1, Val2) ->

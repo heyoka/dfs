@@ -121,7 +121,7 @@ inline_expression_test() ->
             {<<"inline_expression_string">>,
                [{string,<<"GESTATTEN: HANS WURSCHT">>}]},
             {<<"lambda">>,
-               [{lambda,"5 * 4 + dfs_std_lib:round(1.21515100000000000335e+01)",
+               [{lambda,"5 * 4 + erlang:round(1.21515100000000000335e+01)",
                   [],[]}]},
             {<<"lambda_string">>,
                [{lambda,"estr:str_upcase(<<\"Gestatten: hans wurscht\">>)",
