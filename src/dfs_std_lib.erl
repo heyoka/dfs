@@ -17,7 +17,7 @@
    not_member/2,
    size/1,
    list_join/1,
-   nth/2]).
+   nth/2, list_unique/1]).
 
 
 -export([
@@ -151,7 +151,15 @@ list_of_strings(L) when is_list(L) ->
 %%% maps and lists
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 head([H|_L]) -> H.
-nth(N, L) when is_list(L) -> lists:nth(N, L).
+nth(N, L) when is_list(L), is_integer(N), N > 0 -> lists:nth(N, L);
+nth(N, _L) when not is_integer(N) orelse N < 1 -> throw("nth/2: first param must be an integer > 0!");
+nth(_N, _L) -> throw("nth/2: second param is not a list!").
+
+list_unique(L) when is_list(L) ->
+   sets:to_list(sets:from_list(L));
+list_unique(L) ->
+   throw("lists_unique/1: param is not a list!").
+
 
 -spec member(binary()|number(), list()|map()) -> true|false.
 member(Ele, List) when is_list(List) -> lists:member(Ele, List);

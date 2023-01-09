@@ -916,7 +916,8 @@ eval_inline_expression({inline, InlineList}) ->
       Res -> Res
    catch
       _:What ->
-         Msg1 = io_lib:format("error in inline expression ' ~s ': ~p",[Expr, What]),
+         WhatString = io_lib:format("~p", [What]),
+         Msg1 = lists:flatten("error in inline expression '" ++ Expr ++ "': " ++ WhatString),
          throw(Msg1)
    end.
 
