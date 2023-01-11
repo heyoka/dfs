@@ -273,10 +273,7 @@ str_rstrip(String, Char) when is_binary(String), is_integer(Char), Char >= 0 ->
 str_slice(String, Start, Len) when is_binary(String) andalso
                                is_integer(Start) andalso
                                is_integer(Len) andalso
-                               ( (Start >= 0 andalso Len >= Start)
-                                 orelse
-                                 (Start < 0 andalso Len >= 0)
-                               ) ->
+                                Len > 0 ->
     'Elixir.String':slice(String, Start, Len).
 
 %% @doc Divides a string into substrings at each Unicode whitespace occurrence with leading and trailing whitespace ignored
