@@ -1,7 +1,7 @@
 %% testing declaration overriding here
 %% numbers
-def number1 = 2.27889699999999990609e+01
-def number2 = -3.14000000000000012434e+00
+def number1 = 22.78897
+def number2 = -3.14
 def number3 = -556595895
 %% strings
 def string1 = 'this is my string'

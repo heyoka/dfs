@@ -114,9 +114,9 @@ inline_expression_test() ->
    ExpectedResult =
       {[{{<<"use_id">>,1},
          [],
-         [{<<"use_inline">>,
-            [{string,<<"9.73205080756887674909e+00">>}]},
-            {<<"use_inline_string">>,[{string,<<"thas as my strang">>}]},
+         [{<<"use_inline">>,[{string,<<"9.73205081">>}]},
+            {<<"use_inline_string">>,
+               [{string,<<"thas as my strang">>}]},
             {<<"inline_expression">>,[{int,27}]},
             {<<"inline_expression_string">>,
                [{string,<<"GESTATTEN: HANS WURSCHT">>}]},
@@ -187,6 +187,20 @@ text_new_test() ->
 
 ?assertEqual(ExpectedResult, ParseResult).
 
+
+string_embedding_test() ->
+   {_NewDFS, ParseResult} = dfs:parse_file("test/string_embedding.dfs", [test_lib], []),
+   ExpectedResult =
+      {[{{<<"eval">>,1},
+         [{string,<<"{\"alpha\":\"a,b,c,3\"}">>},
+            {string,<<"this is an embedded string">>},
+            {string,<<"this is a float: 2135.554 and this is an integer: 132154654">>},
+            {string,<<"tada: 23,467,44.5,is hello">>}],
+         []}],
+         []}
+   ,
+
+   ?assertEqual(ExpectedResult, ParseResult).
 
 -endif.
 

@@ -1,0 +1,17 @@
+def list = e: list_of_strings(['a', 'b', 'c', 3])
+def json1 = '{"alpha":"{{list}}"}'
+
+def is = 'is'
+def just_a_string = 'this {{is}}'
+def str = ' string'
+def embed1 = '{{just_a_string}} an embedded{{str}}'
+
+def float = 2135.554
+def int = 132154654
+
+def embed_nums1 = '{{just_a_string}} a float: {{float}} and {{just_a_string}} an integer: {{int}}'
+
+def list2 = e: list_of_strings([23, round(466.55), 44.5, '{{is}} hello'])
+def use_list2 = 'tada: {{list2}}'
+
+|eval(json1, embed1, embed_nums1, use_list2)

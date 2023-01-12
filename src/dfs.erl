@@ -804,9 +804,12 @@ conv_template_vars(Vars) when is_list(Vars) ->
    [conv_var(unwrap(Var)) || Var <- Vars].
 
 conv_var(V) when is_float(V) ->
-   float_to_binary(V, [{decimals, 8}]);
+   float_to_binary(V, [{decimals, 8}, compact]);
 conv_var(V) when is_integer(V) ->
    integer_to_binary(V);
+conv_var(VList) when is_list(VList) ->
+   Unwrapped = [unwrap(V) || V <- VList],
+   lists:join(<<",">>, Unwrapped);
 conv_var(V) -> V.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

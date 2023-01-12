@@ -110,7 +110,7 @@ string(V) when is_binary(V) ->
 string(V) when is_integer(V) ->
    integer_to_binary(V);
 string(V) when is_float(V) ->
-   float_to_binary(V);
+   float_to_binary(V, [{decimals, 8}, compact]);
 string(V) when is_atom(V) ->
    list_to_binary(atom_to_list(V));
 string(true) ->
