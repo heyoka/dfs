@@ -17,7 +17,10 @@
    not_member/2,
    size/1,
    list_join/1,
-   nth/2, list_unique/1]).
+   nth/2,
+   list_unique/1,
+   list_concat/1,
+   list_concat/2]).
 
 
 -export([
@@ -158,8 +161,17 @@ nth(_N, _L) -> throw("nth/2: second param is not a list!").
 list_unique(L) when is_list(L) ->
    sets:to_list(sets:from_list(L));
 list_unique(L) ->
-   throw("lists_unique/1: param is not a list!").
+   throw("list_unique/1: param is not a list!").
 
+list_concat(List) when is_list(List) ->
+   lists:concat(List);
+list_concat(NotList) ->
+   throw("list_concat/1: param is not a list!").
+
+list_concat(L1, L2) when is_list(L1), is_list(L2) ->
+   lists:concat([L1, L2]);
+list_concat(_L1, _L2) ->
+   throw("list_concat/2: one or all params not a list!").
 
 -spec member(binary()|number(), list()|map()) -> true|false.
 member(Ele, List) when is_list(List) -> lists:member(Ele, List);

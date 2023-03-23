@@ -578,7 +578,11 @@ param_pfunc({identifier, Ident}) ->
          lexp({tuple, TupleCont});
       {list, _LN, List} ->
          lexp({list, List});
+      OtherList when is_list(OtherList) ->
+%%         io:format("param_pfunc OtherList ~p", [OtherList]),
+         lexp({list, OtherList});
       Other ->
+%%         io:format("param_pfunc Other ~p", [Other]),
          binary_to_list(unwrap(Other))
    end;
 param_pfunc({reference, _Line, Ref}) ->
@@ -636,7 +640,9 @@ lexp({reference, _LN, Ref}) ->
    );
 lexp({operator, _LN, Op}) ->
    case Op of
+      'and' -> " andalso ";
       'AND' -> " andalso ";
+      'or'  -> " orelse ";
       'OR'  -> " orelse ";
       '<='  -> " =< ";
       '=>'  -> " >= ";

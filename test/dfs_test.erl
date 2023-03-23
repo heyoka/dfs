@@ -202,6 +202,21 @@ string_embedding_test() ->
 
    ?assertEqual(ExpectedResult, ParseResult).
 
+
+%%lambda_use_list_declaration_test() ->
+%%   {_NewDFS, ParseResult} = dfs:parse_file("test/lambda_use_list_dec.dfs", [test_lib], []),
+%%   ExpectedResult =
+%%      {[{{<<"eval">>,1},
+%%         [{string,<<"{\"alpha\":\"a,b,c,3\"}">>},
+%%            {string,<<"this is an embedded string">>},
+%%            {string,<<"this is a float: 2135.554 and this is an integer: 132154654">>},
+%%            {string,<<"tada: 23,467,44.5,is hello">>}],
+%%         []}],
+%%         []}
+%%   ,
+%%
+%%   ?assertEqual(ExpectedResult, ParseResult).
+
 -endif.
 
 
