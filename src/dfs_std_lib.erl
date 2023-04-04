@@ -19,8 +19,11 @@
    list_join/1,
    nth/2,
    list_unique/1,
+
    list_concat/1,
-   list_concat/2]).
+   list_concat/2,
+
+   list_append/2]).
 
 
 -export([
@@ -165,13 +168,19 @@ list_unique(L) ->
 
 list_concat(List) when is_list(List) ->
    lists:concat(List);
-list_concat(NotList) ->
+list_concat(_NotList) ->
    throw("list_concat/1: param is not a list!").
 
+%% deprecated, since the usage is misleading in dfs - use list_append instead
 list_concat(L1, L2) when is_list(L1), is_list(L2) ->
    lists:concat([L1, L2]);
 list_concat(_L1, _L2) ->
-   throw("list_concat/2: one or all params not a list!").
+   throw("list_concat/2: one or all params not type list!").
+
+list_append(L1, L2) when is_list(L1), is_list(L2) ->
+   lists:append([L1, L2]);
+list_append(_L1, _L2) ->
+   throw("list_append/2: one or all params not type list!").
 
 -spec member(binary()|number(), list()|map()) -> true|false.
 member(Ele, List) when is_list(List) -> lists:member(Ele, List);
