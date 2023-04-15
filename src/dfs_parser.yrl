@@ -60,6 +60,8 @@ function         -> identifier '(' parameters ')' : {func, unwrap('$1'), {params
 function         -> identifier '(' ')' : {func, unwrap('$1')}.
 primary          -> '(' primaryExpr ')' : {paren,'$2'}.
 primary          -> duration : '$1'.
+primary          -> '[' ']' : {list, []}.
+primary          -> '{' '}' : {tuple, [{}]}.
 primary          -> number : '$1'.
 primary          -> float : '$1'.
 primary          -> int : '$1'.

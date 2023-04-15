@@ -3,9 +3,9 @@ def womAddresses = ['blipp', 'blopp', 'blöpp']
 
 |eval(lambda:
     if(
-        member("destination", fimAddresses)
+        (member("destination", fimAddresses)
         or
-        member("destination", womAddresses),
+        member("destination", womAddresses)),
         'pco', 'p_pots')
     )
 .as('workstation_type')

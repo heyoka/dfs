@@ -1,0 +1,10 @@
+def list = [3h, 5m]
+def list1 = []
+
+|eval(lambda: list_concat(list, list1)).as('cList')
+
+
+def tuple = {1,2,3}
+def tuple1 = {}
+
+|eval(lambda: max(tuple, tuple1)).as('tuple_size')

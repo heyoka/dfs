@@ -217,6 +217,8 @@ parse_replacement(_Name, ("lambda:" ++ _R) = String ) ->
    end;
 parse_replacement(_Name, R) -> R.
 
+check_list_types(_Name, []) ->
+   [];
 check_list_types(Name, L) ->
    case list_type(L) of
       true -> L;
@@ -383,7 +385,7 @@ chain(ChainElements) when is_list(ChainElements) ->
 node_id() ->
    ets:update_counter(?ETS_TABLE(), node_id, 1).
 
-params(Params) when is_list(Params)->
+params(Params) when is_list(Params) ->
    lists:flatten([param(P) || P <- Params]).
 
 param({identifier, Ident}) ->
@@ -572,7 +574,8 @@ param_pfunc({identifier, Ident}) ->
       {tuple, _LN, Tuple}  when is_tuple(Tuple)->
          TupleCont = lists:map(fun
                                        ({Type, _Line, Val}) -> {Type, Val};
-                                       ({_Type, _Val}=C) -> C
+                                       ({_Type, _Val}=C) -> C;
+                                       ({}=C) -> []
                                     end,
             tuple_to_list(Tuple)),
          lexp({tuple, TupleCont});
@@ -706,11 +709,16 @@ escape(Bin) when is_binary(Bin) ->
 %% here is where declaration - overwriting happens,
 %% you know for templates: every declaration (def keyword) which is not a chain-declaration
 %% can be overwritten with a custom value
+save_declaration(Ident, []) ->
+   RVal = check_decl_get_repl(Ident),
+   NewValue =
+      case RVal of
+         norepl -> [];
+         NVal  -> [{list, 1, V} || V <- NVal]
+      end,
+   ets:insert(?ETS_TABLE(), {Ident, NewValue});
 save_declaration(Ident, [{VType, VLine, _Val}=_V|_R]=Vals) when is_list(Vals) ->
-   check_new_declaration(Ident),
-   [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
-   RVal = proplists:get_value(Ident, Replacements, norepl),
-%%   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Vals]),
+   RVal = check_decl_get_repl(Ident),
    NewValue =
       case RVal of
          norepl -> Vals;
@@ -721,9 +729,7 @@ save_declaration(Ident, [{_VType, _Val}|_R]=Vals) when is_list(Vals) ->
    NewVals = [{ValType, 1, ValVal} || {ValType, ValVal} <- Vals],
    save_declaration(Ident, NewVals);
 save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
-   check_new_declaration(Ident),
-   [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
-   RVal = proplists:get_value(Ident, Replacements, norepl),
+   RVal = check_decl_get_repl(Ident),
    NewValue =
       case RVal of
          norepl -> Value;
@@ -733,10 +739,7 @@ save_declaration(Ident, {lambda, _Fun, _Decs, _Refs}=Value) ->
 save_declaration(Ident, {VType, Val} = _V) ->
    save_declaration(Ident, {VType, 1, Val});
 save_declaration(Ident, {VType, VLine, _Val}=Value) ->
-   check_new_declaration(Ident),
-   [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
-   RVal = proplists:get_value(Ident, Replacements, norepl),
-%%   io:format("Replacements ~p~nKey: ~p~nrval: ~p~n~p",[Replacements, Ident, RVal, Value]),
+   RVal = check_decl_get_repl(Ident),
    NewValue =
    case RVal of
       norepl -> Value;
@@ -758,6 +761,11 @@ get_declaration(Ident) ->
 %%         io:format("get_declaration value: ~p~n",[Value]),
          Value
    end.
+
+check_decl_get_repl(Identifier) ->
+   check_new_declaration(Identifier),
+   [{replace_def, Replacements}] = ets:lookup(?ETS_TABLE(), replace_def),
+   proplists:get_value(Identifier, Replacements, norepl).
 
 check_new_declaration(Identifier) ->
    case get_declaration(Identifier) of

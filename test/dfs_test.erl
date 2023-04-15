@@ -203,19 +203,36 @@ string_embedding_test() ->
    ?assertEqual(ExpectedResult, ParseResult).
 
 
-%%lambda_use_list_declaration_test() ->
-%%   {_NewDFS, ParseResult} = dfs:parse_file("test/lambda_use_list_dec.dfs", [test_lib], []),
-%%   ExpectedResult =
-%%      {[{{<<"eval">>,1},
-%%         [{string,<<"{\"alpha\":\"a,b,c,3\"}">>},
-%%            {string,<<"this is an embedded string">>},
-%%            {string,<<"this is a float: 2135.554 and this is an integer: 132154654">>},
-%%            {string,<<"tada: 23,467,44.5,is hello">>}],
-%%         []}],
-%%         []}
-%%   ,
-%%
-%%   ?assertEqual(ExpectedResult, ParseResult).
+lambda_use_list_declaration_test() ->
+   {_NewDFS, ParseResult} = dfs:parse_file("test/lambda_use_list_dec.dfs", [test_lib], []),
+   ExpectedResult =
+      {[{{<<"eval">>,1},
+         [{lambda,"case (dfs_std_lib:member(Destination, [<<\"bli\">>, <<\"bla\">>, <<\"blupp\">>]) orelse dfs_std_lib:member(Destination, [<<\"blipp\">>, <<\"blopp\">>, <<\"blÃ¶pp\">>])) of true -> <<\"pco\">>; false -> <<\"p_pots\">> end",
+            [<<"destination">>],
+            ["Destination"]}],
+         [{<<"as">>,[{string,<<"workstation_type">>}]}]}],
+         []}
+
+   ,
+
+   ?assertEqual(ExpectedResult, ParseResult).
+
+empty_dec_list_tuple_test() ->
+   {_NewDFS, ParseResult} = dfs:parse_file("test/empty_list_tuple_test.dfs", [test_lib], []),
+   ExpectedResult =
+      {[{{<<"eval">>,1},
+         [{lambda,"dfs_std_lib:list_concat([<<\"3h\">>, <<\"5m\">>], [])",
+            [],[]}],
+         [{<<"as">>,[{string,<<"cList">>}]}]},
+         {{<<"eval">>,2},
+            [{lambda,"dfs_std_lib:max({1, 2, 3}, {})",[],[]}],
+            [{<<"as">>,[{string,<<"tuple_size">>}]}]}],
+         []}
+
+   ,
+
+   ?assertEqual(ExpectedResult, ParseResult).
+
 
 -endif.
 
