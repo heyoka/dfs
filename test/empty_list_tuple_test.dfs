@@ -8,3 +8,42 @@ def tuple = {1,2,3}
 def tuple1 = {}
 
 |eval(lambda: max(tuple, tuple1)).as('tuple_size')
+
+|eval(lambda: max({}, [])).as('tuple_list_size')
+
+
+def stream_ids = []
+def query = 'SELECT * FROM "doc"."tab" where $__timefilter'
+def stream_id_stmt = ' AND stream_id IN($stream_ids)'
+
+def read_query = e:
+    if(stream_ids != [],
+    str_concat(
+        query,
+        str_replace(
+          stream_id_stmt,
+          ['$stream_ids'],
+          [string(str_enclose('''', stream_ids))]
+        )),
+        query
+    )
+
+|query()
+.stmt(read_query)
+
+def stream_ids1 = ['abvv', '23i2j3o4ij', 'f323joifjionwefw']
+
+def read_query1 = e:
+    if(stream_ids1 != [],
+    str_concat(
+        query,
+        str_replace(
+          stream_id_stmt,
+          ['$stream_ids'],
+          [string(str_enclose('''', stream_ids1))]
+        )),
+        query
+    )
+
+|query1()
+.stmt(read_query1)

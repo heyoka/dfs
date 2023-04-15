@@ -226,8 +226,19 @@ empty_dec_list_tuple_test() ->
          [{<<"as">>,[{string,<<"cList">>}]}]},
          {{<<"eval">>,2},
             [{lambda,"dfs_std_lib:max({1, 2, 3}, {})",[],[]}],
-            [{<<"as">>,[{string,<<"tuple_size">>}]}]}],
-         []}
+            [{<<"as">>,[{string,<<"tuple_size">>}]}]},
+         {{<<"eval">>,3},
+            [{lambda,"dfs_std_lib:max({}, [])",[],[]}],
+            [{<<"as">>,[{string,<<"tuple_list_size">>}]}]},
+         {{<<"query">>,4},
+            [],
+            [{<<"stmt">>,
+               [{string,<<"SELECT * FROM \"doc\".\"tab\" where $__timefilter">>}]}]},
+         {{<<"query1">>,5},
+            [],
+            [{<<"stmt">>,
+               [{string,<<"SELECT * FROM \"doc\".\"tab\" where $__timefilter AND stream_id IN('abvv','23i2j3o4ij','f323joifjionwefw')">>}]}]}],
+         [{{<<"eval">>,3},{<<"eval">>,2}}]}
 
    ,
 

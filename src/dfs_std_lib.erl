@@ -163,7 +163,7 @@ nth(_N, _L) -> throw("nth/2: second param is not a list!").
 
 list_unique(L) when is_list(L) ->
    sets:to_list(sets:from_list(L));
-list_unique(L) ->
+list_unique(_) ->
    throw("list_unique/1: param is not a list!").
 
 list_concat(List) when is_list(List) ->

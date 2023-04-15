@@ -574,8 +574,7 @@ param_pfunc({identifier, Ident}) ->
       {tuple, _LN, Tuple}  when is_tuple(Tuple)->
          TupleCont = lists:map(fun
                                        ({Type, _Line, Val}) -> {Type, Val};
-                                       ({_Type, _Val}=C) -> C;
-                                       ({}=C) -> []
+                                       ({_Type, _Val}=C) -> C
                                     end,
             tuple_to_list(Tuple)),
          lexp({tuple, TupleCont});
