@@ -33,7 +33,7 @@
 
 -export([
    crc32/1,
-   phash/1]).
+   phash/1, base64_encode/1, base64_decode/1]).
 
 
 -export([test_fun/1, test_fun/2]).
@@ -212,6 +212,16 @@ crc32(Val) ->
 
 phash(Val) ->
    erlang:phash2(Val).
+
+base64_encode(Data) when is_binary(Data) ->
+   base64:encode(Data);
+base64_encode(_) ->
+   throw("base64_encode/1: parameter must be of type string!").
+
+base64_decode(Data) when is_binary(Data)->
+   base64:decode(Data);
+base64_decode(_) ->
+   throw("base64_decode/1: parameter must be of type string!").
 
 
 
