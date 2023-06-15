@@ -365,4 +365,21 @@ estr_test() ->
     ?assertEqual([<<"1">>,<<"2 3">>,<<"4 ">>], estr:str_split_by_re(estr:new("1,2 3,4 "), <<",">>)),
     ok.
 
+estr_adv_test() ->
+    ?assertEqual(<<"AD3 4DRT,">>, estr:str_upcase(<<"ad3 4drt,">>)),
+    ?assertEqual(true, estr:str_starts_with_any(<<"hallo">>, [<<"g">>, <<"t">>, <<"h">>])),
+    ?assertEqual(false, estr:str_starts_with(<<"hallo">>, <<"he">>)),
+    ?assertEqual(<<"p">>, estr:str_at(<<"alpa">>, 2)),
+    ?assertEqual(<<"plöpp">>, estr:str_downcase(<<"PlöPp">>)),
+    ?assertEqual(true, estr:str_ends_with(<<"po:the:289">>, <<"89">>)),
+    ?assertEqual(true, estr:str_eqi(<<"#+'+~4rä">>, <<"#+'+~4Rä">>)),
+    ?assertEqual(<<"#">>, estr:str_first(<<"#+'+~4rä">>)),
+    ?assertEqual(<<"#+'+~4rä">>, estr:str_lstrip(<<"  #+'+~4rä">>)).
+
+estr_adv2_test() ->
+    ?assertEqual(<<"olapalufx">>, estr:str_replace(<<"oiapaiufx">>, <<"i">>, <<"l">>)),
+    ?assertEqual(<<"olapalufx">>, estr:str_replace(<<"oiepeiufx">>, [<<"i">>, <<"e">>], [<<"l">>, <<"a">>])),
+    ?assertEqual(<<"#this#">>, estr:str_enclose(<<"#">>, <<"this">>)).
+
+
 -endif.
