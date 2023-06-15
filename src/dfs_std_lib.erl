@@ -162,7 +162,7 @@ nth(N, _L) when not is_integer(N) orelse N < 1 -> throw("nth/2: first param must
 nth(_N, _L) -> throw("nth/2: second param is not a list!").
 
 list_unique(L) when is_list(L) ->
-   sets:to_list(sets:from_list(L));
+   lists:uniq(L);
 list_unique(_) ->
    throw("list_unique/1: param is not a list!").
 

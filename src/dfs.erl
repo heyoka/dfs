@@ -449,7 +449,7 @@ param({lambda, LambdaList}) ->
             {L++[lexp(E)], Refs0}
          end,{[], []},LambdaList), %% foldl
    %% unique params
-   BRefs0 = sets:to_list(sets:from_list(BinRefs)),
+   BRefs0 = lists:uniq(BinRefs),
    %% rewrite text templates
    BRefs1 = [find_text_template({text, BinRef}) || BinRef <- BRefs0],
    {_, BRefs} = lists:unzip(BRefs1),
