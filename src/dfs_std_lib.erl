@@ -12,8 +12,8 @@
 
 -export([
    list_join/2,
-   list_of_strings/1
-   , member/2,
+   list_of_strings/1,
+   member/2,
    not_member/2,
    size/1,
    list_join/1,
@@ -23,7 +23,19 @@
    list_concat/1,
    list_concat/2,
 
-   list_append/2]).
+   list_append/2,
+   list_delete/2,
+   list_last/1,
+   list_max/1,
+   list_min/1,
+   nthtail/2,
+   list_reverse/1,
+   list_sort/1,
+   sublist/2,
+   sublist/3,
+   list_subtract/2,
+   list_sum/1,
+   list_usort/1]).
 
 
 -export([
@@ -33,7 +45,10 @@
 
 -export([
    crc32/1,
-   phash/1, base64_encode/1, base64_decode/1]).
+   phash/1,
+   base64_encode/1,
+   base64_decode/1,
+   bytesize/1]).
 
 
 -export([test_fun/1, test_fun/2]).
@@ -133,6 +148,12 @@ string(L) when is_list(L) ->
 %% type checks is_x will be used from the erlang module except for the following:
 is_string(BinString) -> erlang:is_binary(BinString).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% byte size
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+bytesize(String) when is_binary(String) ->
+   byte_size(String).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% String Manipulations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -181,6 +202,84 @@ list_append(L1, L2) when is_list(L1), is_list(L2) ->
    lists:append([L1, L2]);
 list_append(_L1, _L2) ->
    throw("list_append/2: one or all params not type list!").
+
+%% Returns a copy of List1 where the first element matching Elem is deleted, if there is such an element.
+list_delete(Elem, List) when is_list(List) ->
+   lists:delete(Elem, List);
+list_delete(_Elem, _NotList) ->
+   throw("list_delete/2: param is not a list!").
+
+% Returns the last element in List.
+list_last(List) when is_list(List) ->
+   lists:last(List);
+list_last(_NotList) ->
+   throw("list_last/1: param is not a list!").
+
+% Returns the first element of List that compares greater than or equal to all other elements of List.
+list_max(List) when is_list(List) ->
+   lists:max(List);
+list_max(_NotList) ->
+   throw("list_max/1: param is not a list!").
+
+% Returns the first element of List that compares less than or equal to all other elements of List.
+list_min(List) when is_list(List) ->
+   lists:min(List);
+list_min(_NotList) ->
+   throw("list_min/1: param is not a list!").
+
+% Returns the Nth tail of List, that is, the sublist of List starting at N+1 and continuing up to the end of the list.
+nthtail(N, List) when is_list(List) ->
+   lists:nthtail(N, List);
+nthtail(_N, _NotList) ->
+   throw("nthtail/2: param is not a list!").
+
+% Returns a list with the elements in List1 in reverse order.
+list_reverse(List) when is_list(List) ->
+   lists:reverse(List);
+list_reverse(_NotList) ->
+   throw("list_reverse/1: param is not a list!").
+
+% Returns a list containing the sorted elements of List1.
+list_sort(List) when is_list(List) ->
+   lists:sort(List);
+list_sort(_NotList) ->
+   throw("list_sort/1: param is not a list!").
+
+% Returns the sublist of List1 starting at position 1 and with (maximum) Len elements.
+% It is not an error for Len to exceed the length of the list, in that case the whole list is returned.
+sublist(List, Len) when is_list(List) ->
+   lists:sublist(List, Len);
+sublist(_List, _Len) ->
+   throw("sublist/2: param is not a list!").
+
+% Returns the sublist of List1 starting at Start and with (maximum) Len elements.
+% It is not an error for Start+Len to exceed the length of the list.
+sublist(List, Start, Len) when is_list(List) ->
+   lists:sublist(List, Start, Len);
+sublist(_List, _Start, _Len) ->
+   throw("sublist/3: param is not a list!").
+
+% Returns a new list List3 that is a copy of List1, subjected to the following procedure:
+% for each element in List2, its first occurrence in List1 is deleted.
+list_subtract(L1, L2) when is_list(L1), is_list(L2) ->
+   lists:subtract(L1, L2);
+list_subtract(_L1, _L2) ->
+   throw("list_subtract/2: at least one of the params is not of type list!").
+
+% Returns the sum of the elements in List.
+list_sum(List) when is_list(List) ->
+   lists:sum(List);
+list_sum(_List) ->
+   throw("list_sum/1: param is not a list!").
+
+% Returns a list containing the sorted elements of List1 where all
+% except the first element of the elements comparing equal have been deleted.
+-spec list_usort(List :: list()) -> list().
+list_usort(List) when is_list(List) ->
+   lists:usort(List);
+list_usort(_NotList) ->
+   throw("list_usort/1: param is not a list!").
+
 
 -spec member(binary()|number(), list()|map()) -> true|false.
 member(Ele, List) when is_list(List) -> lists:member(Ele, List);
