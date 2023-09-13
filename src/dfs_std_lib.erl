@@ -51,8 +51,10 @@
    bytesize/1]).
 
 
--export([test_fun/1, test_fun/2]).
+-export([test_fun/1, test_fun/2, test_fun/3]).
 
+test_fun(_Any, _Other, _B) ->
+   <<>>.
 test_fun(_Any, _Other) ->
    2.
 test_fun(_Any) ->
