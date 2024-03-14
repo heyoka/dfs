@@ -46,7 +46,7 @@
     , str_strip/1
     , str_strip/2
     , str_upcase/1
-    , duplicate/2, graphemes/1, next_grapheme/1, is_printable/1, is_valid/1, str_enclose/1, str_enclose/2]).
+    , duplicate/2, graphemes/1, next_grapheme/1, is_printable/1, is_valid/1, str_enclose/1, str_enclose/2, str_slice/2]).
 
 -type estr()        :: binary().
 -type grapheme()    :: binary().
@@ -261,6 +261,12 @@ str_rstrip(String) when is_binary(String) ->
 -spec str_rstrip(estr(), non_neg_integer()) -> estr().
 str_rstrip(String, Char) when is_binary(String), is_integer(Char), Char >= 0 ->
     'Elixir.String':rstrip(String, Char).
+
+%% @doc Returns a substring starting at the offset given by the first, and a length given by the second
+%%      if offset is negative, count back from end of string.
+-spec str_slice(estr(), integer()) -> estr().
+str_slice(String, Start) when is_binary(String) andalso is_integer(Start) ->
+    string:slice(String, Start).
 
 %%  Returns a substring from the offset given by the start of the range to the offset given by the end of the range
 %%slice(String, Start, End) when is_binary(String), is_integer(Start), is_integer(End) ->
