@@ -58,8 +58,8 @@ macro_test() ->
    Expected =
       {[{{<<"case">>,1},
          [{lambda,"Data_State_Err == 1 orelse Data_State_Warn == 1",
-            [<<"data.State.Err">>,<<"data.State.Warn">>],
-            ["Data_State_Err","Data_State_Warn"]},
+            [<<"data.State.Warn">>,<<"data.State.Err">>],
+            ["Data_State_Warn","Data_State_Err"]},
             {lambda,"Data_State_Auto == 1",
                [<<"data.State.Auto">>],
                ["Data_State_Auto"]}],
@@ -102,8 +102,7 @@ macro_test() ->
             {{<<"default">>,10},{<<"delete">>,9}},
             {{<<"s7read">>,2},{<<"case">>,1}},
             {{<<"where">>,5},{<<"s7read">>,2}},
-            {{<<"debug">>,4},{<<"default">>,10}}]}
-   ,
+            {{<<"debug">>,4},{<<"default">>,10}}]},
 
    ?assertEqual(Expected, Res).
 

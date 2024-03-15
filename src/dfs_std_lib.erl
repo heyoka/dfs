@@ -35,7 +35,7 @@
    sublist/3,
    list_subtract/2,
    list_sum/1,
-   list_usort/1]).
+   list_usort/1, list_string_concat/2, list_string_concat/3]).
 
 
 -export([
@@ -200,10 +200,29 @@ list_concat(L1, L2) when is_list(L1), is_list(L2) ->
 list_concat(_L1, _L2) ->
    throw("list_concat/2: one or all params not type list!").
 
+%% concat the strings of 2 lists, the resulting list is as long as the shorter of the two lists
+%% optionally a separator can be used to be set between each entry from the two lists
+list_string_concat(L1, L2) when is_list(L1), is_list(L2) ->
+   list_string_concat(L1, L2, <<"">>).
+list_string_concat(L1, L2, Sep) when is_list(L1), is_list(L2), is_binary(Sep) ->
+   L1Strings = list_of_strings(L1),
+   L2Strings = list_of_strings(L2),
+   string_list_concat(L1Strings, L2Strings, Sep, []);
+list_string_concat(_L1, _L2, _S) ->
+   throw("list_concat/2: one or all params not of type list, or separator is not a string!").
+
+
+string_list_concat(_, [], _Sep, Acc) ->
+   Acc;
+string_list_concat([], _, _Sep, Acc) ->
+   Acc;
+string_list_concat([S1|R1], [S2|R2], Sep, Acc) ->
+   string_list_concat(R1, R2, Sep, Acc ++ [<<S1/binary, Sep/binary, S2/binary>>]).
+
 list_append(L1, L2) when is_list(L1), is_list(L2) ->
    lists:append([L1, L2]);
 list_append(_L1, _L2) ->
-   throw("list_append/2: one or all params not type list!").
+   throw("list_append/2: one or all params not of type list!").
 
 %% Returns a copy of List1 where the first element matching Elem is deleted, if there is such an element.
 list_delete(Elem, List) when is_list(List) ->
