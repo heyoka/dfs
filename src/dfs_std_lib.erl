@@ -35,7 +35,11 @@
    sublist/3,
    list_subtract/2,
    list_sum/1,
-   list_usort/1, list_string_concat/2, list_string_concat/3]).
+   list_usort/1,
+   list_string_concat/2,
+   list_string_concat/3,
+   list_string_prefix/2,
+   list_string_postfix/2]).
 
 
 -export([
@@ -199,6 +203,16 @@ list_concat(L1, L2) when is_list(L1), is_list(L2) ->
    lists:concat([L1, L2]);
 list_concat(_L1, _L2) ->
    throw("list_concat/2: one or all params not type list!").
+
+list_string_prefix(List, String) when is_list(List), is_binary(String) ->
+   [<<String/binary, ListEle/binary>> || ListEle <- List];
+list_string_prefix(_L, _S) ->
+   throw("list_string_prefix/2: param 1 is not of type list or prefix is not a string!").
+
+list_string_postfix(List, String) when is_list(List), is_binary(String) ->
+   [<<ListEle/binary, String/binary>> || ListEle <- List];
+list_string_postfix(_L, _S) ->
+   throw("list_string_postfix/2: param 1 is not of type list or prefix is not a string!").
 
 %% concat the strings of 2 lists, the resulting list is as long as the shorter of the two lists
 %% optionally a separator can be used to be set between each entry from the two lists

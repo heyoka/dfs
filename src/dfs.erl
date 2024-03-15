@@ -698,7 +698,17 @@ lexp({tuple, ValList}) ->
    L2;
 lexp(Bin) when is_binary(Bin) ->
    {text, Text} = find_text_template({text, Bin}),
-   "<<\"" ++ binary_to_list(escape(Text)) ++ "\">>".
+   "<<\"" ++ binary_to_list(escape(Text)) ++ "\">>";
+
+lexp(Int) when is_integer(Int) ->
+  integer_to_list(Int);
+
+lexp(Float) when is_float(Float) ->
+  float_to_list(Float);
+
+lexp(Other) ->
+   Err = io_lib:format("unrecognized param in lexp/1: ~p", [Other]),
+   throw(Err).
 
 %% just escaped double quotes for now
 escape(Bin) when is_binary(Bin) ->
