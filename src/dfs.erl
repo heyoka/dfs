@@ -941,7 +941,7 @@ eval_inline_expression({inline, InlineList}) ->
 %%   io:format("the EXPRESSION: ~p~n",[Expr]),
    try do_eval_inline_expression(Expr) of
       {Res, Raw} ->
-         gen_event:notify(?DEBUG_HANDLER, #{expression => Expr, result => Raw}),
+         catch gen_event:notify(?DEBUG_HANDLER, #{expression => Expr, result => Raw}),
          Res
    catch
       _:What ->
