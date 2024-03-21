@@ -10,6 +10,7 @@
 
 -define(TABLE_KEY, ets_table_id).
 -define(ETS_TABLE(), get(?TABLE_KEY)).
+-define(DEBUG_HANDLER, dfs_debug).
 
 %% manually testing
 test(FileName) ->
@@ -939,7 +940,9 @@ eval_inline_expression({inline, InlineList}) ->
    Expr = lists:concat(Lambda),
 %%   io:format("the EXPRESSION: ~p~n",[Expr]),
    try do_eval_inline_expression(Expr) of
-      Res -> Res
+      {Res, Raw} ->
+         gen_event:notify(?DEBUG_HANDLER, #{expression => Expr, result => Raw}),
+         Res
    catch
       _:What ->
          WhatString = lists:flatten(io_lib:format("~p", [What])),
@@ -966,7 +969,7 @@ do_eval_inline_expression(Expr) ->
 %%               Msg1 = io_lib:format("Invalid return value from inline-expression: ~p",[Other1]),
 %%               throw(Msg1)
          end,
-   Out.
+   {Out, Result}.
 
 make_fun(LambdaString) ->
 

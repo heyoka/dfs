@@ -56,7 +56,13 @@ init([]) ->
 
    SupFlags = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
 
-   {ok, {SupFlags, []}}.
+   P =
+      [{dfs_debug,
+         {gen_event, start_link, [{local, dfs_debug}]},
+         permanent, 5000, worker, []}
+         ],
+
+   {ok, {SupFlags, P}}.
 
 %%%===================================================================
 %%% Internal functions
