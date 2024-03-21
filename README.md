@@ -87,7 +87,7 @@ Long Chain Statement with multiple Nodes
       .when(lambda: hour() >= 8 AND hour <= 18)
 
 # Erlang
-18+
+24|25
 
 # Compile
 
