@@ -39,7 +39,7 @@
    list_string_concat/2,
    list_string_concat/3,
    list_string_prefix/2,
-   list_string_postfix/2]).
+   list_string_postfix/2, list_filter/1]).
 
 
 -export([
@@ -193,6 +193,11 @@ list_unique(L) when is_list(L) ->
 list_unique(_) ->
    throw("list_unique/1: param is not a list!").
 
+list_filter(L) when is_list(L) ->
+   lists:filter(fun(E) -> not lists:member(E, [undefined, null, [], <<>>]) end, L);
+list_filter(_) ->
+   throw("list_filter/1: param is not a list!").
+
 list_concat(List) when is_list(List) ->
    lists:concat(List);
 list_concat(_NotList) ->
@@ -245,6 +250,8 @@ list_delete(_Elem, _NotList) ->
    throw("list_delete/2: param is not a list!").
 
 % Returns the last element in List.
+list_last([]) ->
+   throw("list_last/1: param is an empty list!");
 list_last(List) when is_list(List) ->
    lists:last(List);
 list_last(_NotList) ->
