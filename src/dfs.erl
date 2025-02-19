@@ -712,8 +712,14 @@ lexp(Other) ->
    throw(Err).
 
 %% just escaped double quotes for now
+escape({string, Bin}) ->
+   escape(Bin);
+escape({string, _Line, Bin}) ->
+   escape(Bin);
 escape(Bin) when is_binary(Bin) ->
-   binary:replace(Bin, <<"\"">>, <<"\\\"">>, [global]).
+   binary:replace(Bin, <<"\"">>, <<"\\\"">>, [global]);
+escape(Other) ->
+   Other.
 
 %% save a simple declaration,
 %% here is where declaration - overwriting happens,
@@ -946,7 +952,8 @@ eval_inline_expression({inline, InlineList}) ->
    catch
       _:What ->
          WhatString = lists:flatten(io_lib:format("~p", [What])),
-         Msg1 = lists:flatten("error in inline expression '" ++ Expr ++ "': " ++ WhatString),
+         Shortened = string:sub_string(Expr, 1, 400),
+         Msg1 = lists:flatten("error in inline expression '" ++ Shortened ++ "': " ++ WhatString),
          throw(Msg1)
    end.
 
