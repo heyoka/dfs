@@ -13,6 +13,8 @@
     , str_ends_with/2
     , str_ends_with_any/2
     , str_eqi/2
+    , str_find/2
+    , str_find/3
     , str_first/1
     , str_last/1
     , str_length/1
@@ -144,6 +146,20 @@ str_ends_with(String, Suffix) when is_binary(String), is_binary(Suffix) ->
 -spec str_ends_with_any(estr(), [estr()]) -> boolean().
 str_ends_with_any(String, Suffixes = [S1|_]) when is_binary(String), is_binary(S1) ->
     'Elixir.String':'ends_with?'(String, Suffixes).
+
+
+str_find(String, Pattern) ->
+    str_find(String, Pattern, leading).
+str_find(String, Pattern, <<"leading">>) ->
+    str_find(String, Pattern, leading);
+str_find(String, Pattern, <<"trailing">>) ->
+    str_find(String, Pattern, trailing);
+str_find(String, Pattern, Dir) ->
+    case string:find(String, Pattern, Dir) of
+        nomatch -> undefined;
+        R -> R
+    end.
+
 
 %% @doc Returns the first grapheme from an utf8 string, undefined if the string is empty
 -spec str_first(estr()) -> grapheme() | undefined.
