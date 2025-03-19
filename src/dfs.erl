@@ -579,6 +579,8 @@ param_pfunc({identifier, Ident}) ->
                                     end,
             tuple_to_list(Tuple)),
          lexp({tuple, TupleCont});
+      {list, List} ->
+         lexp({list, List});
       {list, _LN, List} ->
          lexp({list, List});
       OtherList when is_list(OtherList) ->
@@ -698,6 +700,7 @@ lexp({tuple, ValList}) ->
    L2 = "{" ++ lists:flatten(lists:join(", ", L1)) ++ "}",
    L2;
 lexp(Bin) when is_binary(Bin) ->
+%%   io:format("lexp(Bin) ~p~n",[Bin]),
    {text, Text} = find_text_template({text, Bin}),
    "<<\"" ++ binary_to_list(escape(Text)) ++ "\">>";
 
