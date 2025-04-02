@@ -48,7 +48,7 @@
     , str_strip/1
     , str_strip/2
     , str_upcase/1
-    , duplicate/2, graphemes/1, next_grapheme/1, is_printable/1, is_valid/1, str_enclose/1, str_enclose/2, str_slice/2]).
+    , duplicate/2, graphemes/1, next_grapheme/1, is_printable/1, is_valid/1, str_enclose/1, str_enclose/2, str_slice/2, str_trim_end/2]).
 
 -type estr()        :: binary().
 -type grapheme()    :: binary().
@@ -159,6 +159,10 @@ str_find(String, Pattern, Dir) ->
         nomatch -> undefined;
         R -> R
     end.
+
+
+str_trim_end(String, Pattern) ->
+    hd(string:split(String, Pattern)).
 
 
 %% @doc Returns the first grapheme from an utf8 string, undefined if the string is empty
