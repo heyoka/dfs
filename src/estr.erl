@@ -48,7 +48,7 @@
     , str_strip/1
     , str_strip/2
     , str_upcase/1
-    , duplicate/2, graphemes/1, next_grapheme/1, is_printable/1, is_valid/1, str_enclose/1, str_enclose/2, str_slice/2, str_trim_end/2]).
+    , duplicate/2, graphemes/1, next_grapheme/1, is_printable/1, is_valid/1, str_enclose/1, str_enclose/2, str_slice/2, str_trim_end/2, str_split_trailing/2, str_split_leading/2]).
 
 -type estr()        :: binary().
 -type grapheme()    :: binary().
@@ -311,8 +311,18 @@ str_split(String) when is_binary(String) ->
 -spec str_split(estr(), estr()) -> [estr()].
 str_split(String, Pattern) ->
     str_split(String, Pattern, []).
+
+str_split(String, Pattern, Dir) when Dir == leading orelse Dir == trailing ->
+    string:split(String, Pattern, Dir);
+str_split(String, Pattern, Dir) when Dir == <<"leading">> orelse Dir == <<"trailing">> ->
+    string:split(String, Pattern, binary_to_existing_atom(Dir));
 str_split(String, Pattern, Options) when is_binary(String), is_binary(Pattern), is_list(Options) ->
     'Elixir.String':split(String, Pattern, Options).
+
+str_split_trailing(String, Pattern) when is_binary(String), is_binary(Pattern) ->
+    string:split(String, Pattern, trailing).
+str_split_leading(String, Pattern) when is_binary(String), is_binary(Pattern) ->
+    string:split(String, Pattern, leading).
 
 %% @doc Divides a string into substrings based on a list of estr patterns
 -spec str_split_by_any(estr(), [estr()]) -> [estr()].
