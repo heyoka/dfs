@@ -364,10 +364,10 @@ str_strip(String) when is_binary(String) ->
 str_strip(String, Char) when is_binary(String), is_integer(Char), Char >= 0 ->
     'Elixir.String':strip(String, Char).
 
-%% @doc Converts a string into a char list
--spec to_char_list(estr()) -> [non_neg_integer()].
-to_char_list(String) when is_binary(String) ->
-    'Elixir.String':to_char_list(String).
+%%%% @doc Converts a string into a char list
+%%-spec to_char_list(estr()) -> [non_neg_integer()].
+%%to_char_list(String) when is_binary(String) ->
+%%    'Elixir.String':to_char_list(String).
 
 %% @doc Convert all characters on the given string to uppercase
 -spec str_upcase(estr()) -> estr().
