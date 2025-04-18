@@ -45,7 +45,7 @@
 -export([
    min/2,
    max/2,
-   head/1]).
+   head/1, tail/1]).
 
 -export([
    crc32/1,
@@ -184,6 +184,7 @@ list_of_strings(L) when is_list(L) ->
 %%% maps and lists
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 head([H|_L]) -> H.
+tail(L) when is_list(L) -> tl(L).
 nth(N, L) when is_list(L), is_integer(N), N > 0 -> lists:nth(N, L);
 nth(N, _L) when not is_integer(N) orelse N < 1 -> throw("nth/2: first param must be an integer > 0!");
 nth(_N, _L) -> throw("nth/2: second param is not a list!").
